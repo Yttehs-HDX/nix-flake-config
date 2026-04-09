@@ -100,12 +100,14 @@
 ---
 ## Schema 总览
 顶层推荐 schema 形态如下：
-    profile = {
-      users = attrsOf User;
-      hosts = attrsOf Host;
-      relations = attrsOf Relation;
-    };
+```nix
+profile = {
+  users = attrsOf User;
+  hosts = attrsOf Host;
+  relations = attrsOf Relation;
+};
 
+```
 其中：
 - `users`：键为 `userId`
 - `hosts`：键为 `hostId`
@@ -189,40 +191,42 @@ key 即 `relationId`，推荐使用 `userId@hostId`。
 ---
 ## User 总体结构
 推荐结构如下：
-    User = {
-      enable = true;
+```nix
+User = {
+  enable = true;
 
-      meta = {
-        displayName = null;
-        description = null;
-        tags = [ ];
-      };
+  meta = {
+    displayName = null;
+    description = null;
+    tags = [ ];
+  };
 
-      preferences = {
-        shell = null;
-        editor = null;
-        terminal = null;
-      };
+  preferences = {
+    shell = null;
+    editor = null;
+    terminal = null;
+  };
 
-      capabilities = {
-        desktop.enable = false;
-        development.enable = false;
-        theme.enable = false;
-      };
+  capabilities = {
+    desktop.enable = false;
+    development.enable = false;
+    theme.enable = false;
+  };
 
-      packages = {
-        common = [ ];
-      };
+  packages = {
+    common = [ ];
+  };
 
-      programs = { };
+  programs = { };
 
-      services = { };
+  services = { };
 
-      theme = { };
+  theme = { };
 
-      policy = { };
-    };
+  policy = { };
+};
 
+```
 ---
 ## `profile.users.<userId>.enable`
 ### 类型
@@ -474,12 +478,14 @@ attrsOf ProgramDeclaration
 
 ---
 ## `ProgramDeclaration` 推荐结构
-    ProgramDeclaration = {
-      enable = false;
-      package = null;
-      settings = { };
-    };
+```nix
+ProgramDeclaration = {
+  enable = false;
+  package = null;
+  settings = { };
+};
 
+```
 这是推荐最小形态，不要求一开始实现所有字段。
 
 ---
@@ -536,11 +542,13 @@ attrsOf ServiceDeclaration
 
 ---
 ## `ServiceDeclaration` 推荐结构
-    ServiceDeclaration = {
-      enable = false;
-      settings = { };
-    };
+```nix
+ServiceDeclaration = {
+  enable = false;
+  settings = { };
+};
 
+```
 ---
 ## `profile.users.<userId>.theme`
 ### 类型
@@ -663,49 +671,51 @@ attrset
 ---
 ## Host 总体结构
 推荐结构如下：
-    Host = {
-      enable = true;
+```nix
+Host = {
+  enable = true;
 
-      meta = {
-        displayName = null;
-        description = null;
-        tags = [ ];
-      };
+  meta = {
+    displayName = null;
+    description = null;
+    tags = [ ];
+  };
 
-      backend = {
-        type = "nixos";
-      };
+  backend = {
+    type = "nixos";
+  };
 
-      platform = {
-        system = null;
-      };
+  platform = {
+    system = null;
+  };
 
-      capabilities = {
-        system.enable = false;
-        home.enable = false;
-        desktop.enable = false;
-        userManagement.enable = false;
-      };
+  capabilities = {
+    system.enable = false;
+    home.enable = false;
+    desktop.enable = false;
+    userManagement.enable = false;
+  };
 
-      roles = [ ];
+  roles = [ ];
 
-      system = { };
+  system = { };
 
-      hardware = { };
+  hardware = { };
 
-      networking = { };
+  networking = { };
 
-      security = { };
+  security = { };
 
-      desktop = { };
+  desktop = { };
 
-      packages = {
-        system = [ ];
-      };
+  packages = {
+    system = [ ];
+  };
 
-      policy = { };
-    };
+  policy = { };
+};
 
+```
 ---
 ## `profile.hosts.<hostId>.enable`
 ### 类型
@@ -1021,38 +1031,40 @@ attrset
 ---
 ## Relation 总体结构
 推荐结构如下：
-    Relation = {
-      enable = true;
+```nix
+Relation = {
+  enable = true;
 
-      user = null;
-      host = null;
+  user = null;
+  host = null;
 
-      identity = {
-        name = null;
-        uid = null;
-        homeDirectory = null;
-      };
+  identity = {
+    name = null;
+    uid = null;
+    homeDirectory = null;
+  };
 
-      membership = {
-        primaryGroup = null;
-        extraGroups = [ ];
-      };
+  membership = {
+    primaryGroup = null;
+    extraGroups = [ ];
+  };
 
-      activation = {
-        desktop.enable = null;
-        development.enable = null;
-        theme.enable = null;
-      };
+  activation = {
+    desktop.enable = null;
+    development.enable = null;
+    theme.enable = null;
+  };
 
-      state = {
-        home.stateVersion = null;
-      };
+  state = {
+    home.stateVersion = null;
+  };
 
-      policy = { };
+  policy = { };
 
-      overrides = { };
-    };
+  overrides = { };
+};
 
+```
 ---
 ## `profile.relations.<relationId>.enable`
 ### 类型
@@ -1327,26 +1339,32 @@ attrset
 ---
 ## `Meta`
 推荐结构：
-    Meta = {
-      displayName = null;
-      description = null;
-      tags = [ ];
-    };
+```nix
+Meta = {
+  displayName = null;
+  description = null;
+  tags = [ ];
+};
 
+```
 ---
 ## `CapabilitySwitch`
 推荐结构：
-    CapabilitySwitch = {
-      enable = false;
-    };
+```nix
+CapabilitySwitch = {
+  enable = false;
+};
 
+```
 ---
 ## `ActivationSwitch`
 推荐结构：
-    ActivationSwitch = {
-      enable = null;
-    };
+```nix
+ActivationSwitch = {
+  enable = null;
+};
 
+```
 ### 区别
 - `CapabilitySwitch` 默认 `false`
 - `ActivationSwitch` 默认 `null`
@@ -1358,35 +1376,41 @@ attrset
 ---
 ## `ProgramDeclaration`
 推荐结构：
-    ProgramDeclaration = {
-      enable = false;
-      package = null;
-      settings = { };
-    };
+```nix
+ProgramDeclaration = {
+  enable = false;
+  package = null;
+  settings = { };
+};
 
+```
 ---
 ## `ServiceDeclaration`
 推荐结构：
-    ServiceDeclaration = {
-      enable = false;
-      settings = { };
-    };
+```nix
+ServiceDeclaration = {
+  enable = false;
+  settings = { };
+};
 
+```
 ---
 ## `ThemeDeclaration`
 推荐结构：
-    ThemeDeclaration = {
-      name = null;
-      accent = null;
-      flavor = null;
+```nix
+ThemeDeclaration = {
+  name = null;
+  accent = null;
+  flavor = null;
 
-      fonts = {
-        sans = null;
-        mono = null;
-        emoji = null;
-      };
-    };
+  fonts = {
+    sans = null;
+    mono = null;
+    emoji = null;
+  };
+};
 
+```
 ---
 # 字段必填性规则
 为了避免写 option 时又反复犹豫，下面直接冻结哪些字段必须显式填写。
@@ -1565,66 +1589,72 @@ attrset
 
 ---
 ## 最小 User 子集
-    User = {
-      enable = true;
-      preferences = {
-        shell = null;
-        editor = null;
-        terminal = null;
-      };
-      capabilities = {
-        desktop.enable = false;
-        development.enable = false;
-        theme.enable = false;
-      };
-      packages = {
-        common = [ ];
-      };
-      programs = { };
-      theme = { };
-    };
+```nix
+User = {
+  enable = true;
+  preferences = {
+    shell = null;
+    editor = null;
+    terminal = null;
+  };
+  capabilities = {
+    desktop.enable = false;
+    development.enable = false;
+    theme.enable = false;
+  };
+  packages = {
+    common = [ ];
+  };
+  programs = { };
+  theme = { };
+};
 
+```
 ---
 ## 最小 Host 子集
-    Host = {
-      enable = true;
-      backend.type = ...;
-      platform.system = null;
-      capabilities = {
-        system.enable = false;
-        home.enable = false;
-        desktop.enable = false;
-        userManagement.enable = false;
-      };
-      roles = [ ];
-    };
+```nix
+Host = {
+  enable = true;
+  backend.type = ...;
+  platform.system = null;
+  capabilities = {
+    system.enable = false;
+    home.enable = false;
+    desktop.enable = false;
+    userManagement.enable = false;
+  };
+  roles = [ ];
+};
 
+```
 ---
 ## 最小 Relation 子集
-    Relation = {
-      enable = true;
-      user = ...;
-      host = ...;
+```nix
+Relation = {
+  enable = true;
+  user = ...;
+  host = ...;
 
-      identity = {
-        name = null;
-      };
+  identity = {
+    name = null;
+  };
 
-      membership = {
-        extraGroups = [ ];
-      };
+  membership = {
+    extraGroups = [ ];
+  };
 
-      activation = {
-        desktop.enable = null;
-        development.enable = null;
-        theme.enable = null;
-      };
+  activation = {
+    desktop.enable = null;
+    development.enable = null;
+    theme.enable = null;
+  };
 
-      state = {
-        home.stateVersion = null;
-      };
-    };
+  state = {
+    home.stateVersion = null;
+  };
+};
 
+```
 ---
 ## 为什么推荐先从最小子集开始
 因为你下一步更重要的事情不是把所有字段都一次实现完，  
@@ -1644,91 +1674,93 @@ attrset
 # 示例声明
 下面给出一份符合本 schema 的示例。
 
-    profile = {
-      users = {
-        alice = {
-          meta = {
-            displayName = "Alice";
-            tags = [ "desktop" "dev" ];
-          };
-
-          preferences = {
-            shell = "zsh";
-            editor = "nvim";
-            terminal = "ghostty";
-          };
-
-          capabilities = {
-            desktop.enable = true;
-            development.enable = true;
-            theme.enable = true;
-          };
-
-          packages = {
-            common = [ git ripgrep ];
-          };
-
-          programs = {
-            git.enable = true;
-            zsh.enable = true;
-            neovim.enable = true;
-          };
-
-          theme = {
-            name = "catppuccin";
-            accent = "lavender";
-            flavor = "mocha";
-            fonts = {
-              mono = "JetBrainsMono Nerd Font";
-            };
-          };
-        };
+```nix
+profile = {
+  users = {
+    alice = {
+      meta = {
+        displayName = "Alice";
+        tags = [ "desktop" "dev" ];
       };
 
-      hosts = {
-        laptop = {
-          backend.type = "nixos";
-          platform.system = "x86_64-linux";
-
-          capabilities = {
-            system.enable = true;
-            home.enable = true;
-            desktop.enable = true;
-            userManagement.enable = true;
-          };
-
-          roles = [ "desktop" "laptop" ];
-        };
+      preferences = {
+        shell = "zsh";
+        editor = "nvim";
+        terminal = "ghostty";
       };
 
-      relations = {
-        "alice@laptop" = {
-          user = "alice";
-          host = "laptop";
+      capabilities = {
+        desktop.enable = true;
+        development.enable = true;
+        theme.enable = true;
+      };
 
-          identity = {
-            name = "alice";
-            uid = 1000;
-            homeDirectory = "/home/alice";
-          };
+      packages = {
+        common = [ git ripgrep ];
+      };
 
-          membership = {
-            extraGroups = [ "wheel" "networkmanager" ];
-          };
+      programs = {
+        git.enable = true;
+        zsh.enable = true;
+        neovim.enable = true;
+      };
 
-          activation = {
-            desktop.enable = true;
-            development.enable = true;
-            theme.enable = true;
-          };
-
-          state = {
-            home.stateVersion = "25.05";
-          };
+      theme = {
+        name = "catppuccin";
+        accent = "lavender";
+        flavor = "mocha";
+        fonts = {
+          mono = "JetBrainsMono Nerd Font";
         };
       };
     };
+  };
 
+  hosts = {
+    laptop = {
+      backend.type = "nixos";
+      platform.system = "x86_64-linux";
+
+      capabilities = {
+        system.enable = true;
+        home.enable = true;
+        desktop.enable = true;
+        userManagement.enable = true;
+      };
+
+      roles = [ "desktop" "laptop" ];
+    };
+  };
+
+  relations = {
+    "alice@laptop" = {
+      user = "alice";
+      host = "laptop";
+
+      identity = {
+        name = "alice";
+        uid = 1000;
+        homeDirectory = "/home/alice";
+      };
+
+      membership = {
+        extraGroups = [ "wheel" "networkmanager" ];
+      };
+
+      activation = {
+        desktop.enable = true;
+        development.enable = true;
+        theme.enable = true;
+      };
+
+      state = {
+        home.stateVersion = "25.05";
+      };
+    };
+  };
+};
+
+```
 ---
 # 与 Nix Option 实现的映射建议
 虽然本文档不是实现代码，但为了帮助下一步落地，这里给出直接指导。
