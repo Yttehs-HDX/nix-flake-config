@@ -367,7 +367,8 @@ null or string
 - 它不属于 `Relation`，因为它不是用户名、uid、group、home 路径这类实例身份。
 - 它不属于 `home-manager`，因为 `home-manager` 不负责创建系统用户。
 - 当前实现以 `initialHashedPassword` 为主，并在 NixOS system 投影时映射到 `users.users.<name>.initialHashedPassword`。
-- 应与 `users.mutableUsers = true` 配合使用，使其保持“首次创建时的初始值”语义，而不是退化为持续覆盖密码。
+- 当某个 NixOS 用户实例声明了该字段时，system projector 会为 `users.mutableUsers` 提供 `mkDefault true`。
+- 如果 host 或其他系统模块显式把 `users.mutableUsers` 设为 `false`，评估会报错，而不是让该字段静默退化为持续覆盖密码的声明式方案。
 - 使用者应替换成自己的密码哈希，例如 `mkpasswd -m sha-512` 生成的结果。
 
 ---

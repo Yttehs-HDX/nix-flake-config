@@ -678,7 +678,8 @@ projectionInputs."<relationId>".system = { ... };
 如果某项共享用户初始化语义只在系统用户创建时生效，  
 那么 system projector 还应在合适层显式设置与之匹配的 backend 约束。  
 例如 NixOS 中的初始密码哈希应与 `users.mutableUsers = true` 配合，  
-以保证它只在用户首次创建时参与初始化，而不是被实现成持续覆盖密码的声明式机制。
+以保证它只在用户首次创建时参与初始化，而不是被实现成持续覆盖密码的声明式机制。  
+当前实现会在需要时为该选项提供 `mkDefault true`，并在外部显式设为 `false` 时直接报错。
 
 这类逻辑仍然属于 system / backend 投影，  
 不应被塞进 host 声明，也不应由 home-manager 模块承担。
