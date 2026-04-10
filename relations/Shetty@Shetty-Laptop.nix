@@ -9,9 +9,7 @@
     homeDirectory = "/home/shetty";
   };
 
-  membership = {
-    extraGroups = [ "wheel" ];
-  };
+  membership = { extraGroups = [ "wheel" ]; };
 
   activation = {
     desktop.enable = true;

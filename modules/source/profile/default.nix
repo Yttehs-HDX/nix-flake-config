@@ -1,8 +1,1 @@
-{ ... }:
-{
-  imports = [
-    ./users.nix
-    ./hosts.nix
-    ./relations.nix
-  ];
-}
+{ ... }: { imports = [ ./users.nix ./hosts.nix ./relations.nix ]; }

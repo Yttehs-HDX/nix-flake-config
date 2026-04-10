@@ -1,6 +1,5 @@
 { lib, ... }:
-let
-  types = lib.types;
+let types = lib.types;
 in {
   options = {
     enable = lib.mkOption {

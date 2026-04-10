@@ -1,2 +1,3 @@
 { lib, profile }:
-lib.mapAttrs (relationId: relation: relation // { inherit relationId; }) profile.relations
+lib.mapAttrs (relationId: relation: relation // { inherit relationId; })
+profile.relations

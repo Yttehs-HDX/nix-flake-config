@@ -3,6 +3,10 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nix-darwin = {
+      url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -22,6 +26,7 @@
       };
 
       nixosConfigurations = entrypoints.nixosConfigurations;
+      darwinConfigurations = entrypoints.darwinConfigurations;
       homeConfigurations = entrypoints.homeConfigurations;
 
       checks = forAllSystems (system:
@@ -32,13 +37,14 @@
             profile = entrypoints.profile;
             pipeline = entrypoints.pipeline;
             nixosConfigurations = entrypoints.nixosConfigurations;
+            darwinConfigurations = entrypoints.darwinConfigurations;
             homeConfigurations = entrypoints.homeConfigurations;
           };
-          _ = builtins.deepSeq tests tests;
         in {
-          architecture = pkgs.runCommand "nix-flake-config-checks" { } ''
-            touch "$out"
-          '';
+          architecture = builtins.seq tests
+            (pkgs.runCommand "nix-flake-config-checks" { } ''
+              touch "$out"
+            '');
         });
     };
 }

@@ -20,13 +20,9 @@
 
   roles = [ "laptop" "desktop" ];
 
-  system = {
-    stateVersion = "25.11";
-  };
+  system = { stateVersion = "25.11"; };
 
-  hardware = {
-    modules = [ ./hardware-configuration.nix ];
-  };
+  hardware = { modules = [ ./hardware-configuration.nix ]; };
 
   networking = { };
   security = { };

@@ -1,6 +1,5 @@
 { lib, ... }:
-let
-  types = lib.types;
+let types = lib.types;
 in {
   options = {
     enable = lib.mkOption {
@@ -8,13 +7,9 @@ in {
       default = true;
     };
 
-    user = lib.mkOption {
-      type = types.str;
-    };
+    user = lib.mkOption { type = types.str; };
 
-    host = lib.mkOption {
-      type = types.str;
-    };
+    host = lib.mkOption { type = types.str; };
 
     identity = {
       name = lib.mkOption {

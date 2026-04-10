@@ -1,4 +1,1 @@
-{ host }:
-{
-  type = host.backend.type;
-}
+{ host }: { type = host.backend.type; }

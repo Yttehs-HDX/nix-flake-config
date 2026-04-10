@@ -1,3 +1,1 @@
-{
-  "Shetty-Laptop" = import ./Shetty-Laptop;
-}
+{ "Shetty-Laptop" = import ./Shetty-Laptop; }

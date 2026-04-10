@@ -924,6 +924,11 @@ attrset
 这里只允许主机本体语义。  
 不允许偷偷塞某用户的个人偏好。
 
+### 当前实现要求
+当启用主机且 `backend.type` 为 `nixos` 或 `nix-darwin` 时，
+实现层会要求 `system.stateVersion` 已经声明，
+以便在校验阶段尽早失败，而不是拖到最终 backend 组装阶段。
+
 ---
 ## `profile.hosts.<hostId>.hardware`
 ### 类型
@@ -1161,6 +1166,11 @@ null or string
 
 ### 含义
 该实例在目标主机上的 home 路径。
+
+### 说明
+若未显式填写，当前实现会在 context 阶段按 backend 推导默认值：
+- `nix-darwin` 默认为 `/Users/<name>`
+- 其他当前已实现 backend 默认为 `/home/<name>`
 
 ---
 ## `profile.relations.<relationId>.membership`

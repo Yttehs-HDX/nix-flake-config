@@ -1,6 +1,6 @@
-{ pkgs, input }:
-let
-  resolvePackages = import ./packages/default.nix { inherit pkgs; };
+{ input }:
+{ pkgs, ... }:
+let resolvePackages = import ./packages/default.nix { inherit pkgs; };
 in {
   home.username = input.identity.name;
   home.homeDirectory = input.identity.homeDirectory;

@@ -1,21 +1,19 @@
-{ lib, inputs, system, profile, pipeline, nixosConfigurations, homeConfigurations }:
+{ lib, inputs, system, profile, pipeline, nixosConfigurations
+, darwinConfigurations, homeConfigurations }:
 let
   pkgs = import inputs.nixpkgs { inherit system; };
-  projection = import ../modules/projection/default.nix {
-    inherit lib pkgs;
-    context = {
-      projectionInputs = pipeline.projectionInputs;
-    };
-  };
+  projection =
+    import ../modules/projection/default.nix { inherit lib pipeline; };
 
   results = [
     (import ./normalize.nix { inherit pipeline; })
     (import ./instantiate.nix { inherit pipeline; })
     (import ./context.nix { inherit pipeline; })
-    (import ./projection.nix { inherit projection; })
-    (import ./assembly.nix { inherit nixosConfigurations homeConfigurations; })
+    (import ./projection.nix { inherit pkgs projection; })
+    (import ./assembly.nix {
+      inherit nixosConfigurations darwinConfigurations homeConfigurations;
+    })
+    (import ./failures.nix { inherit lib inputs; })
+    (import ./darwin.nix { inherit lib inputs; })
   ];
-in
-builtins.deepSeq results {
-  inherit profile pipeline projection;
-}
+in builtins.deepSeq results { inherit profile pipeline projection; }

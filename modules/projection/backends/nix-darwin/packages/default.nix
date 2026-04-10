@@ -5,4 +5,4 @@ map (name:
   if builtins.hasAttr name registry then
     registry.${name}
   else
-    throw "Unknown NixOS package `${name}`.") packageNames
+    throw "Unknown nix-darwin package `${name}`.") packageNames

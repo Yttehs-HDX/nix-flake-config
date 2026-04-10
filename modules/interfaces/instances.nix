@@ -1,2 +1,1 @@
-{ pipeline }:
-pipeline.instances
+{ pipeline }: pipeline.instances

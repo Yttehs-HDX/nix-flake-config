@@ -1,4 +1,1 @@
-{ pkgs, input }:
-{
-  homeModule = import ./home.nix { inherit pkgs input; };
-}
+{ input }: { homeModule = import ./home.nix { inherit input; }; }

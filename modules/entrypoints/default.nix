@@ -3,8 +3,11 @@ let
   lib = inputs.nixpkgs.lib;
   profile = import ./profile-eval.nix { inherit lib; };
   pipeline = import ../interfaces/default.nix { inherit lib profile; };
-  nixosConfigurations = import ./nixos.nix { inherit inputs lib pipeline; };
-  homeConfigurations = import ./home-manager.nix { inherit inputs lib pipeline; };
+  projection = import ../projection/default.nix { inherit lib pipeline; };
+  assembly =
+    import ../assembly/default.nix { inherit inputs lib pipeline projection; };
 in {
-  inherit profile pipeline nixosConfigurations homeConfigurations;
+  inherit profile pipeline;
+  inherit (assembly)
+    nixosConfigurations darwinConfigurations homeConfigurations;
 }

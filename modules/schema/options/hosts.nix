@@ -1,6 +1,5 @@
 { lib, ... }:
-let
-  types = lib.types;
+let types = lib.types;
 in {
   options = {
     enable = lib.mkOption {
@@ -62,12 +61,22 @@ in {
     };
 
     system = lib.mkOption {
-      type = types.attrs;
+      type = types.submodule {
+        options.stateVersion = lib.mkOption {
+          type = types.nullOr (types.oneOf [ types.str types.int ]);
+          default = null;
+        };
+      };
       default = { };
     };
 
     hardware = lib.mkOption {
-      type = types.attrs;
+      type = types.submodule {
+        options.modules = lib.mkOption {
+          type = types.listOf types.anything;
+          default = [ ];
+        };
+      };
       default = { };
     };
 

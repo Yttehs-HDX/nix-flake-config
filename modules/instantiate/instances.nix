@@ -11,10 +11,6 @@ let
       userId = relation.user;
       hostId = relation.host;
     };
-in
-lib.mapAttrs instantiateRelation (lib.filterAttrs
-  (_: relation:
-    relation.enable
-    && normalized.users.${relation.user}.enable
-    && normalized.hosts.${relation.host}.enable)
-  normalized.relations)
+in lib.mapAttrs instantiateRelation (lib.filterAttrs (_: relation:
+  relation.enable && normalized.users.${relation.user}.enable
+  && normalized.hosts.${relation.host}.enable) normalized.relations)

@@ -2,12 +2,6 @@
 let
   declarations = import ../source/declarations/default.nix;
   evaluated = lib.evalModules {
-    modules = [
-      ../source/default.nix
-      {
-        config.profile = declarations;
-      }
-    ];
+    modules = [ ../source/default.nix { config.profile = declarations; } ];
   };
-in
-  evaluated.config.profile
+in evaluated.config.profile

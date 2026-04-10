@@ -6,13 +6,13 @@ let
   else
     input.userId;
 in {
+  users.knownUsers = [ input.identity.name ];
+
   users.users.${input.identity.name} = {
-    isNormalUser = true;
-    inherit description;
+    name = input.identity.name;
+    createHome = true;
+    description = description;
     home = input.identity.homeDirectory;
-    extraGroups = input.membership.extraGroups;
-  } // lib.optionalAttrs (input.membership.primaryGroup != null) {
-    group = input.membership.primaryGroup;
   } // lib.optionalAttrs (input.identity.uid != null) {
     uid = input.identity.uid;
   };

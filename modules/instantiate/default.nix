@@ -1,2 +1,3 @@
 { lib, normalized, validation }:
-import ./instances.nix { inherit lib normalized; }
+let instances = import ./instances.nix { inherit lib normalized; };
+in builtins.deepSeq validation instances

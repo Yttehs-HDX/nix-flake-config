@@ -1,2 +1,1 @@
-{ pipeline }:
-pipeline.current
+{ pipeline }: pipeline.current

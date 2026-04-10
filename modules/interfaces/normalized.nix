@@ -1,2 +1,1 @@
-{ pipeline }:
-pipeline.normalized
+{ pipeline }: pipeline.normalized

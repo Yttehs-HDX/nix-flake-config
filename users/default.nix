@@ -1,3 +1,1 @@
-{
-  Shetty = import ./Shetty;
-}
+{ Shetty = import ./Shetty; }

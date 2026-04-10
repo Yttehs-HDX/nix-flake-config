@@ -1,32 +1,27 @@
 { inputs, lib, pipeline, projection }:
 let
-  nixosHosts =
-    lib.filterAttrs (_: host: host.enable && host.backend.type == "nixos")
+  darwinHosts =
+    lib.filterAttrs (_: host: host.enable && host.backend.type == "nix-darwin")
     pipeline.normalized.hosts;
 
   foldHomeModules = projections:
-    lib.foldl' (acc: projection:
+    lib.foldl' (acc: realization:
       lib.foldl' (innerAcc: username:
         innerAcc // {
           ${username} = (innerAcc.${username} or [ ])
-            ++ projection.homeModules.${username};
-        }) acc (builtins.attrNames projection.homeModules)) { }
+            ++ realization.homeModules.${username};
+        }) acc (builtins.attrNames realization.homeModules)) { }
     (lib.attrValues projections);
 
   buildHost = hostId: host:
     let
       system = host.platform.system;
-      pkgs = import inputs.nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      };
-
       projections = lib.filterAttrs (_: realization:
-        realization.backend.type == "nixos" && realization.hostId == hostId)
-        projection;
+        realization.backend.type == "nix-darwin" && realization.hostId
+        == hostId) projection;
 
       systemModules = lib.flatten
-        (lib.mapAttrsToList (_: projection: projection.systemModules)
+        (lib.mapAttrsToList (_: realization: realization.systemModules)
           projections);
       homeModules = foldHomeModules projections;
 
@@ -37,10 +32,10 @@ let
         home-manager.users =
           lib.mapAttrs (_: modules: { imports = modules; }) homeModules;
       };
-    in inputs.nixpkgs.lib.nixosSystem {
+    in inputs.nix-darwin.lib.darwinSystem {
       inherit system;
       specialArgs = { inherit inputs pipeline hostId; };
       modules = (host.hardware.modules or [ ]) ++ systemModules
-        ++ [ inputs.home-manager.nixosModules.home-manager homeManagerBridge ];
+        ++ [ inputs.home-manager.darwinModules.home-manager homeManagerBridge ];
     };
-in lib.mapAttrs buildHost nixosHosts
+in lib.mapAttrs buildHost darwinHosts
