@@ -3,7 +3,7 @@ let
   evaluated = import ./eval-profile.nix {
     inherit lib inputs;
     declarations = {
-      users.Alice = { packages.common = [ "hello" ]; };
+      users.Alice = { packages.hello = { }; };
       hosts.Workspace = {
         backend.type = "home-manager";
         platform.system = "x86_64-linux";

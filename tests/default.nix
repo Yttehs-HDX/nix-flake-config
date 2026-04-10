@@ -13,6 +13,7 @@ let
     (import ./assembly.nix {
       inherit nixosConfigurations darwinConfigurations homeConfigurations;
     })
+    (import ./packages-parity.nix { inherit lib inputs; })
     (import ./failures.nix { inherit lib inputs; })
     (import ./nixos.nix { inherit lib inputs; })
     (import ./home-manager.nix { inherit lib inputs; })

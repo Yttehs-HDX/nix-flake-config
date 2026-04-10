@@ -9,7 +9,7 @@
     homeDirectory = "/home/shetty";
   };
 
-  membership = { extraGroups = [ "wheel" "docker" "wireshark" ]; };
+  membership = { extraGroups = [ "wheel" ]; };
 
   activation = {
     desktop.enable = true;

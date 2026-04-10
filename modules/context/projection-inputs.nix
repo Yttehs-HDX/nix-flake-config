@@ -41,8 +41,7 @@ lib.mapAttrs (relationId: instance:
       home = { stateVersion = instance.relation.state.home.stateVersion; };
     };
 
-    packages = import ./packages.nix { current = instance; };
-    software = import ./software.nix {
+    packages = import ./packages.nix {
       inherit lib;
       current = instance;
     };

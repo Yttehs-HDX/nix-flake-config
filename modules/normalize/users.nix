@@ -1,7 +1,7 @@
 { lib, profile }:
-let normalizeSoftware = import ./software.nix { inherit lib; };
+let normalizePackages = import ./packages.nix { inherit lib; };
 in lib.mapAttrs (userId: user:
   user // {
     inherit userId;
-    software = normalizeSoftware.user user;
+    packages = normalizePackages.user user;
   }) profile.users

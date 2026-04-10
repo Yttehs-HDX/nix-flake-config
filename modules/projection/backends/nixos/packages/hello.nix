@@ -1,1 +1,1 @@
-{ pkgs }: pkgs.hello
+{ ... }: { pkgs, ... }: { environment.systemPackages = [ pkgs.hello ]; }

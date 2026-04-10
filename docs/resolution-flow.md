@@ -196,7 +196,7 @@ profile = {
 例如：
 - `enable` 缺省时补成 `true`
 - `meta.tags` 缺省时补成空列表
-- `packages.common` 缺省时补成空列表
+- `packages.<name>.enable` 缺省时补成 `true`
 - `activation.*` 缺省时补成 `null` 或继承待决状态
 
 ---
@@ -620,7 +620,9 @@ projectionInputs."<relationId>".system = { ... };
 例如：
 - `programs.git.enable = true`
   可以投影为某 backend 的 `programs.git.enable`
-- `packages.common = [ git ripgrep ]`
+- `packages.ripgrep = { }`
+  可以投影为 `programs.ripgrep.enable = true`
+- `packages.fastfetch = { }`
   可以投影为 `home.packages`
 - `membership.extraGroups = [ "wheel" ]`
   可以投影为 `users.users.<name>.extraGroups`

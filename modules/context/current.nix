@@ -5,7 +5,7 @@ lib.mapAttrs (_: instance:
       import ./effective-capabilities.nix { current = instance; };
     current = instance // { inherit effectiveCapabilities; };
   in current // {
-    software = import ./software.nix {
+    packages = import ./packages.nix {
       inherit lib;
       current = current;
     };

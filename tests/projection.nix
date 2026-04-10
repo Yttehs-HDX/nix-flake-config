@@ -12,10 +12,10 @@ let
     inherit pkgs;
     lib = pkgs.lib;
   };
-in assert builtins.length relation.systemModules == 2;
+in assert builtins.length relation.systemModules == 3;
 assert builtins.hasAttr "shetty" relation.homeModules;
-assert builtins.length systemConfig.imports == 3;
-assert builtins.length homeConfig.imports == 5;
+assert builtins.length systemConfig.imports == 4;
+assert builtins.length homeConfig.imports == 20;
 assert homeConfig.programs.home-manager.enable;
 assert !(systemConfig ? boot);
 assert !(builtins.hasAttr "initialPassword" identityConfig.users.users.shetty);

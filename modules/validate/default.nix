@@ -59,8 +59,8 @@ let
       backendType = host.backend.type;
       platformSystem = host.platform.system;
       stateVersion = host.system.stateVersion;
-      hasEnabledSoftware =
-        lib.any (software: software.enable) (lib.attrValues host.software);
+      hasEnabledPackages =
+        lib.any (pkg: pkg.enable) (lib.attrValues host.packages);
       expectedSystemScope = hasSystemScope backendType;
       expectedHomeScope = hasHomeScope backendType;
     in if !host.enable then
@@ -76,11 +76,8 @@ let
     else if host.capabilities.home.enable != expectedHomeScope then
       throw
       "Host `${hostId}` must keep `capabilities.home.enable` consistent with backend `${backendType}`."
-    else if !host.capabilities.system.enable && hasEnabledSoftware then
-      throw "Host `${hostId}` must not declare `software` without system scope."
-    else if !host.capabilities.system.enable && host.packages.system != [ ] then
-      throw
-      "Host `${hostId}` must not declare `packages.system` without system scope."
+    else if !host.capabilities.system.enable && hasEnabledPackages then
+      throw "Host `${hostId}` must not declare `packages` without system scope."
     else if backendType == "nixos" && stateVersion == null then
       throw "NixOS host `${hostId}` must declare `system.stateVersion`."
     else if backendType == "nixos" && !(builtins.isString stateVersion) then
@@ -117,6 +114,25 @@ let
     else
       true) enabledRelations;
 
+  relationPackageConflictChecks = lib.mapAttrsToList (relationId: relation:
+    let
+      host = normalized.hosts.${relation.host};
+      user = normalized.users.${relation.user};
+      usesZsh = user.preferences.shell == "zsh";
+      hasNixIndex = builtins.hasAttr "nix-index" user.packages
+        && user.packages."nix-index".enable;
+      hasCommandNotFound = builtins.hasAttr "command-not-found" user.packages
+        && user.packages."command-not-found".enable;
+    in if relation.enable && host.capabilities.home.enable && usesZsh
+    && hasNixIndex && hasCommandNotFound then
+      throw ''
+        Relation `${relationId}` enables both `packages.nix-index` and `packages.command-not-found` for a zsh home environment.
+        These packages both provide command-not-found handling and must not be enabled together.
+        Choose exactly one of `packages.nix-index` or `packages.command-not-found`.
+      ''
+    else
+      true) enabledRelations;
+
   uniquenessCheck =
     if lib.length relationPairs == lib.length (lib.unique relationPairs) then
       true
@@ -149,6 +165,7 @@ in builtins.deepSeq [
   hostChecks
   relationStateChecks
   relationScopeChecks
+  relationPackageConflictChecks
   uniquenessCheck
   hostIdentityUniquenessCheck
 ] { inherit indexes; }

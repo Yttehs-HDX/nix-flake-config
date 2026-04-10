@@ -97,13 +97,8 @@ in {
       default = { };
     };
 
-    packages.system = lib.mkOption {
-      type = types.listOf types.str;
-      default = [ ];
-    };
-
-    software = lib.mkOption {
-      type = types.attrsOf schema.softwareItemType;
+    packages = lib.mkOption {
+      type = types.attrsOf schema.packageItemType;
       default = { };
     };
 

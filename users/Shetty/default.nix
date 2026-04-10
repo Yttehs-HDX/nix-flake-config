@@ -22,11 +22,26 @@
     theme.enable = true;
   };
 
-  software = {
+  packages = {
+    bat = { };
+    eza = { };
+    fastfetch = { };
+    fzf = { };
+    gh = { };
     git = { };
+    htop = { };
     direnv = { };
     jq = { };
     btop = { };
+    nix-index = { };
+    nmap = { };
+    ripgrep = { };
+    tgpt = { };
+    tldr = { };
+    tmux = { };
+    wget = { };
+    yazi = { };
+    zsh = { };
     kitty.settings = {
       fontSize = 14.0;
       backgroundOpacity = 0.9;

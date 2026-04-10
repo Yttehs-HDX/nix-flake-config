@@ -5,7 +5,7 @@ let
     declarations = {
       users.Alice = {
         capabilities.desktop.enable = true;
-        packages.common = [ "hello" ];
+        packages.hello = { };
       };
       hosts.Mac = {
         backend.type = "nix-darwin";
@@ -14,7 +14,7 @@ let
         capabilities.home.enable = true;
         capabilities.desktop.enable = true;
         system.stateVersion = 6;
-        packages.system = [ "hello" ];
+        packages.hello = { };
       };
       relations."Alice@Mac" = {
         user = "Alice";

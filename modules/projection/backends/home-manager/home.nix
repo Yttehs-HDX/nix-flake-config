@@ -1,8 +1,8 @@
 { input }:
 { lib, ... }:
-let softwareModules = import ./software/default.nix { inherit lib input; };
+let packageModules = import ./packages/default.nix { inherit lib input; };
 in {
-  imports = softwareModules;
+  imports = packageModules;
 
   home.username = input.identity.name;
   home.homeDirectory = input.identity.homeDirectory;

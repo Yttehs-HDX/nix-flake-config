@@ -1,7 +1,7 @@
 { lib, profile }:
-let normalizeSoftware = import ./software.nix { inherit lib; };
+let normalizePackages = import ./packages.nix { inherit lib; };
 in lib.mapAttrs (hostId: host:
   host // {
     inherit hostId;
-    software = normalizeSoftware.host host;
+    packages = normalizePackages.host host;
   }) profile.hosts

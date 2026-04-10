@@ -2,12 +2,12 @@
 assert pipeline.normalized.users.Shetty.userId == "Shetty";
 assert pipeline.normalized.users.Shetty.initialHashedPassword
   == "$y$j9T$IbyB4U5AIUqcxol3JR60E0$/Wr3iDHuKpYBX7lkBSMJHGWlRS3quNv.DqQvkpKK4dD";
-assert pipeline.normalized.users.Shetty.software.kitty.enable;
-assert pipeline.normalized.users.Shetty.software.kitty.settings.fontSize
+assert pipeline.normalized.users.Shetty.packages.kitty.enable;
+assert pipeline.normalized.users.Shetty.packages.kitty.settings.fontSize
   == 14.0;
 assert pipeline.normalized.hosts."Shetty-Laptop".hostId == "Shetty-Laptop";
-assert pipeline.normalized.hosts."Shetty-Laptop".software.docker.enable;
-assert pipeline.normalized.hosts."Shetty-Laptop".software.docker.settings.storageDriver
+assert pipeline.normalized.hosts."Shetty-Laptop".packages.docker.enable;
+assert pipeline.normalized.hosts."Shetty-Laptop".packages.docker.settings.storageDriver
   == "btrfs";
 assert pipeline.normalized.relations."Shetty@Shetty-Laptop".relationId
   == "Shetty@Shetty-Laptop";

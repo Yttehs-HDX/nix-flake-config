@@ -206,7 +206,7 @@
 - `Relation` 作为唯一实例化入口
 - `current` 与 `projectionInputs` 两个中间接口
 - `nixos`、`home-manager`、`nix-darwin` 三类 backend 的最小组装闭环
-- 用户身份、home 路径、home state version、统一 `software` 抽象与主题资源解析这几类最小投影能力
+- 用户身份、home 路径、home state version、统一 `packages` 抽象与主题资源解析这几类最小投影能力
 
 当前尚未作为稳定实现面的字段包括但不限于：
 - `theme`
@@ -216,8 +216,8 @@
 - 各类 `policy` / `overrides`
 
 其中：
-- `software` 已作为稳定 source/context/projection 接口进入实现，用于统一表达 package / program / service 类软件意图。
-- `packages` / `programs` / `services` 仍保留在 schema 中作为兼容入口，但会在 normalize 阶段被收束进 `software`，不再作为 projector 的主消费接口。
+- `packages` 已作为稳定 source/context/projection 接口进入实现，用于统一表达 package / program / service 类软件意图。
+- `programs` / `services` 仍保留在 schema 中作为兼容入口，但会在 normalize 阶段被收束进 `packages`，不再作为 projector 的主消费接口。
 - `theme` 当前只实现了最小资源解析闭环，不应被视为已经覆盖所有桌面与 toolkit 投影。
 
 ---

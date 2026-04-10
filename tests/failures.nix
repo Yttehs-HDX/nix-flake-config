@@ -200,7 +200,27 @@ let
       backend.type = "home-manager";
       platform.system = "x86_64-linux";
       capabilities.home.enable = true;
-      packages.system = [ "hello" ];
+      packages.hello = { };
+    };
+    relations."Alice@Workspace" = {
+      user = "Alice";
+      host = "Workspace";
+      state.home.stateVersion = "25.05";
+    };
+  }).pipeline.instances);
+
+  conflictingCommandDiscoveryPackages = builtins.tryEval ((evalProfile {
+    users.Alice = {
+      preferences.shell = "zsh";
+      packages = {
+        command-not-found = { };
+        nix-index = { };
+      };
+    };
+    hosts.Workspace = {
+      backend.type = "home-manager";
+      platform.system = "x86_64-linux";
+      capabilities.home.enable = true;
     };
     relations."Alice@Workspace" = {
       user = "Alice";
@@ -240,6 +260,7 @@ assert !invalidDarwinRelationMembershipFields.success;
 assert !invalidNixosHomeCapabilityMismatch.success;
 assert !invalidDarwinPlatformMismatch.success;
 assert !invalidHomeManagerSystemPackages.success;
+assert !conflictingCommandDiscoveryPackages.success;
 assert invalidInitialHashedPasswordWithMutableUsersFalse.success;
 
 let
