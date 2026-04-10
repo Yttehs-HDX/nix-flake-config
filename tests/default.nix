@@ -14,6 +14,8 @@ let
       inherit nixosConfigurations darwinConfigurations homeConfigurations;
     })
     (import ./failures.nix { inherit lib inputs; })
+    (import ./nixos.nix { inherit lib inputs; })
+    (import ./home-manager.nix { inherit lib inputs; })
     (import ./darwin.nix { inherit lib inputs; })
   ];
 in builtins.deepSeq results { inherit profile pipeline projection; }
