@@ -207,6 +207,8 @@ User = {
     terminal = null;
   };
 
+  initialHashedPassword = null;
+
   capabilities = {
     desktop.enable = false;
     development.enable = false;
@@ -344,6 +346,30 @@ null or string
 
 ### 含义
 用户偏好的默认终端。
+
+---
+## `profile.users.<userId>.initialHashedPassword`
+### 类型
+null or string
+
+### 默认值
+`null`
+
+### 必填
+否
+
+### 含义
+该用户在系统侧首次创建账号时使用的初始密码哈希。
+
+### 说明
+- 它属于 `User`，因为它描述的是共享用户初始化语义，而不是某台 host 的启用决策。
+- 它不属于 `Host`，因为 host 只负责声明“哪些用户出现在这台机器上”。
+- 它不属于 `Relation`，因为它不是用户名、uid、group、home 路径这类实例身份。
+- 它不属于 `home-manager`，因为 `home-manager` 不负责创建系统用户。
+- 当前实现以 `initialHashedPassword` 为主，并在 NixOS system 投影时映射到 `users.users.<name>.initialHashedPassword`。
+- 当某个 NixOS 用户实例声明了该字段时，system projector 会为 `users.mutableUsers` 提供 `mkDefault true`。
+- 如果 host 或其他系统模块显式把 `users.mutableUsers` 设为 `false`，评估会报错，而不是让该字段静默退化为持续覆盖密码的声明式方案。
+- 使用者应替换成自己的密码哈希，例如 `mkpasswd -m sha-512` 生成的结果。
 
 ---
 ## `profile.users.<userId>.capabilities`

@@ -13,6 +13,9 @@
     terminal = "kitty";
   };
 
+  initialHashedPassword =
+    "$y$j9T$IbyB4U5AIUqcxol3JR60E0$/Wr3iDHuKpYBX7lkBSMJHGWlRS3quNv.DqQvkpKK4dD";
+
   capabilities = {
     desktop.enable = true;
     development.enable = false;

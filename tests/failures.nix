@@ -208,6 +208,26 @@ let
       state.home.stateVersion = "25.05";
     };
   }).pipeline.instances);
+
+  invalidInitialHashedPasswordWithMutableUsersFalse = builtins.tryEval
+    ((evalProfile {
+      users.Alice = {
+        initialHashedPassword =
+          "$6$testonlysalt$9OipY8KrPmahUAlTv.LIW2rPsfo4zOwwKACKyaX0j9K3YOgF1.phJdokYGk/Bmoe3dctJoCj1bNPW4UZQcG9e0";
+      };
+      hosts.Workstation = {
+        backend.type = "nixos";
+        platform.system = "x86_64-linux";
+        capabilities.system.enable = true;
+        capabilities.home.enable = true;
+        system.stateVersion = "25.11";
+      };
+      relations."Alice@Workstation" = {
+        user = "Alice";
+        host = "Workstation";
+        state.home.stateVersion = "25.05";
+      };
+    }).assembly.nixosConfigurations.Workstation.config.users.mutableUsers);
 in assert !(builtins.tryEval invalidCapability.pipeline.instances).success;
 assert !(builtins.tryEval missingReference.pipeline.instances).success;
 assert !(builtins.tryEval missingDarwinStateVersion.pipeline.instances).success;
@@ -220,4 +240,27 @@ assert !invalidDarwinRelationMembershipFields.success;
 assert !invalidNixosHomeCapabilityMismatch.success;
 assert !invalidDarwinPlatformMismatch.success;
 assert !invalidHomeManagerSystemPackages.success;
-true
+assert invalidInitialHashedPasswordWithMutableUsersFalse.success;
+
+let
+  forcedFalse = builtins.tryEval ((evalProfile {
+    users.Alice = {
+      initialHashedPassword =
+        "$6$testonlysalt$9OipY8KrPmahUAlTv.LIW2rPsfo4zOwwKACKyaX0j9K3YOgF1.phJdokYGk/Bmoe3dctJoCj1bNPW4UZQcG9e0";
+    };
+    hosts.Workstation = {
+      backend.type = "nixos";
+      platform.system = "x86_64-linux";
+      capabilities.system.enable = true;
+      capabilities.home.enable = true;
+      system.stateVersion = "25.11";
+    };
+    relations."Alice@Workstation" = {
+      user = "Alice";
+      host = "Workstation";
+      state.home.stateVersion = "25.05";
+    };
+  }).assembly.nixosConfigurations.Workstation.extendModules {
+    modules = [{ users.mutableUsers = false; }];
+  }).config.system.build.toplevel;
+in assert !forcedFalse.success; true

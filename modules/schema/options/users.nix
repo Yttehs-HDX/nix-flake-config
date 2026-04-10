@@ -41,6 +41,11 @@ in {
       };
     };
 
+    initialHashedPassword = lib.mkOption {
+      type = types.nullOr types.str;
+      default = null;
+    };
+
     capabilities = {
       desktop.enable = lib.mkOption {
         type = types.bool;

@@ -30,6 +30,8 @@ lib.mapAttrs (relationId: instance:
       inherit homeDirectory;
     };
 
+    account = { initialHashedPassword = instance.user.initialHashedPassword; };
+
     membership = {
       primaryGroup = instance.relation.membership.primaryGroup;
       extraGroups = instance.relation.membership.extraGroups;

@@ -15,5 +15,7 @@ in {
     group = input.membership.primaryGroup;
   } // lib.optionalAttrs (input.identity.uid != null) {
     uid = input.identity.uid;
+  } // lib.optionalAttrs (input.account.initialHashedPassword != null) {
+    initialHashedPassword = input.account.initialHashedPassword;
   };
 }
