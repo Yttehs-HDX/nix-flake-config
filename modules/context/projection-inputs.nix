@@ -42,4 +42,9 @@ lib.mapAttrs (relationId: instance:
     };
 
     packages = import ./packages.nix { current = instance; };
+    software = import ./software.nix {
+      inherit lib;
+      current = instance;
+    };
+    theme = import ./theme.nix { current = instance; };
   }) current

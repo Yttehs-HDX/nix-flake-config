@@ -9,12 +9,12 @@
     homeDirectory = "/home/shetty";
   };
 
-  membership = { extraGroups = [ "wheel" ]; };
+  membership = { extraGroups = [ "wheel" "docker" "wireshark" ]; };
 
   activation = {
     desktop.enable = true;
     development.enable = false;
-    theme.enable = false;
+    theme.enable = true;
   };
 
   state.home.stateVersion = "25.05";

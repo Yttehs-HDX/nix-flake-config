@@ -28,7 +28,11 @@
   security = { };
   desktop = { };
 
-  packages.system = [ "hello" ];
+  software = {
+    docker.settings.storageDriver = "btrfs";
+    nix-ld = { };
+    wireshark.settings.package = "qt";
+  };
 
   policy = { };
 }

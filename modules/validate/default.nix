@@ -59,6 +59,8 @@ let
       backendType = host.backend.type;
       platformSystem = host.platform.system;
       stateVersion = host.system.stateVersion;
+      hasEnabledSoftware =
+        lib.any (software: software.enable) (lib.attrValues host.software);
       expectedSystemScope = hasSystemScope backendType;
       expectedHomeScope = hasHomeScope backendType;
     in if !host.enable then
@@ -74,6 +76,8 @@ let
     else if host.capabilities.home.enable != expectedHomeScope then
       throw
       "Host `${hostId}` must keep `capabilities.home.enable` consistent with backend `${backendType}`."
+    else if !host.capabilities.system.enable && hasEnabledSoftware then
+      throw "Host `${hostId}` must not declare `software` without system scope."
     else if !host.capabilities.system.enable && host.packages.system != [ ] then
       throw
       "Host `${hostId}` must not declare `packages.system` without system scope."

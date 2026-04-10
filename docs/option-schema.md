@@ -215,6 +215,8 @@ User = {
     theme.enable = false;
   };
 
+  software = { };
+
   packages = {
     common = [ ];
   };
@@ -443,6 +445,35 @@ bool
 因为那不是用户能力，而是 backend 语义。
 
 ---
+## `profile.users.<userId>.software`
+### 类型
+`attrsOf SoftwareDeclaration`
+
+### 默认值
+空 attrset
+
+### 说明
+这是当前推荐的统一软件声明入口。  
+它用于统一表达：
+- package 注入
+- program 启用
+- service 启用
+- 其他“启用某个软件能力”的声明
+
+它不要求声明层先区分自己最终会落到哪一种 backend 节点。  
+这类差异由 projection 阶段吸收。
+
+---
+## `SoftwareDeclaration` 推荐结构
+```nix
+SoftwareDeclaration = {
+  enable = true;
+  settings = { };
+};
+
+```
+
+---
 ## `profile.users.<userId>.packages`
 ### 类型
 submodule
@@ -451,9 +482,9 @@ submodule
 空结构
 
 ### 说明
-表达用户长期持有的软件需求。
-
-推荐按语义类别组织，而不是一开始完全平铺。
+这是兼容旧声明形态保留的入口。  
+当前推荐写法是优先使用 `software`。  
+若继续使用 `packages` / `programs` / `services`，normalize 阶段会把它们收束进统一 `software` 模型。
 
 ---
 ## `profile.users.<userId>.packages.common`
@@ -493,14 +524,8 @@ attrsOf ProgramDeclaration
 空 attrset
 
 ### 说明
-表达用户级程序意图。
-
-推荐 key 为程序语义名，例如：
-- `git`
-- `zsh`
-- `neovim`
-
-而 value 为统一的小型 declaration submodule。
+兼容旧声明形态保留的入口。  
+推荐仅用于过渡迁移，不应再作为 projector 的主消费接口。
 
 ---
 ## `ProgramDeclaration` 推荐结构
@@ -562,9 +587,8 @@ attrsOf ServiceDeclaration
 空 attrset
 
 ### 说明
-表达用户级服务意图。
-
-和 `programs` 类似，建议采用统一 declaration 形态。
+兼容旧声明形态保留的入口。  
+和 `programs` 一样，它最终会被 normalize 到统一 `software` 模型。
 
 ---
 ## `ServiceDeclaration` 推荐结构
@@ -1028,6 +1052,30 @@ submodule
 
 ### 含义
 主机级软件需求。
+
+### 说明
+这是兼容旧声明形态保留的入口。  
+当前推荐优先使用 `profile.hosts.<hostId>.software`。
+
+---
+## `profile.hosts.<hostId>.software`
+### 类型
+`attrsOf SoftwareDeclaration`
+
+### 默认值
+空 attrset
+
+### 含义
+主机级统一软件声明。
+
+### 说明
+它用于统一表达主机侧的：
+- `environment.systemPackages`
+- `programs.*`
+- `services.*`
+- 其他系统级软件能力
+
+如果 host 不具备 `system` scope，则不应声明该字段；当前实现会在 validation 阶段直接报错。
 
 ---
 ## `profile.hosts.<hostId>.packages.system`

@@ -19,13 +19,30 @@
   capabilities = {
     desktop.enable = true;
     development.enable = false;
-    theme.enable = false;
+    theme.enable = true;
   };
 
-  packages.common = [ "hello" ];
+  software = {
+    git = { };
+    direnv = { };
+    jq = { };
+    btop = { };
+    kitty.settings = {
+      fontSize = 14.0;
+      backgroundOpacity = 0.9;
+      backgroundBlur = 1;
+      rememberWindowSize = false;
+      shellIntegrationMode = "no_cursor";
+    };
+  };
 
   programs = { };
   services = { };
-  theme = { };
+  theme = {
+    name = "catppuccin";
+    accent = "lavender";
+    flavor = "mocha";
+    fonts.monospace.family = "JetBrainsMono Nerd Font";
+  };
   policy = { };
 }

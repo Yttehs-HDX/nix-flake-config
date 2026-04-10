@@ -1,11 +1,12 @@
 { input }:
-{ pkgs, ... }:
-let resolvePackages = import ./packages/default.nix { inherit pkgs; };
+{ lib, ... }:
+let softwareModules = import ./software/default.nix { inherit lib input; };
 in {
+  imports = softwareModules;
+
   home.username = input.identity.name;
   home.homeDirectory = input.identity.homeDirectory;
   home.stateVersion = input.state.home.stateVersion;
-  home.packages = resolvePackages input.packages.home;
 
   programs.home-manager.enable = true;
 }

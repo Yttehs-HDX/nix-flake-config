@@ -223,6 +223,8 @@ User = {
     theme.enable = false;
   };
 
+  software = { };
+
   packages = {
     common = [ ];
   };
@@ -278,31 +280,33 @@ User = {
 
 也就是说，`User` 负责声明能力的存在可能性。
 
-#### `packages`
-表达用户长期持有的软件包需求。  
-应优先以抽象分类组织，例如：
-- `common`
-- `development`
-- `desktop`
-- `cli`
+#### `software`
+表达用户级统一软件语义。  
+这里的 key 应是稳定的软件语义名，例如：
+- `git`
+- `kitty`
+- `direnv`
+- `docker`
 
-而不建议一开始就把所有内容平铺成无语义列表。
+而 value 应尽量保持统一的小型 declaration 结构，例如：
+- `enable`
+- `settings`
+
+这一层只表达“用户要这个软件能力”，  
+不直接暴露它最终是 `programs.*`、`services.*`，还是包列表注入。
+
+#### `packages`
+这是兼容旧声明形态保留的入口。  
+当前推荐做法是优先写入 `software`，再由 normalize 统一整理。  
+`packages` / `programs` / `services` 若继续存在，也应被视为进入 `software` 的过渡输入，而不是新的稳定 projector 接口。
 
 #### `programs`
-表达用户级程序能力声明。  
-例如：
-```nix
-git.enable = true
-zsh.enable = true
-neovim.enable = true
-```
-
-这一层表达的是“用户需要该程序能力”，不等于某个 backend 的具体实现节点。
+兼容旧声明形态保留的入口。  
+它描述的仍然是用户软件意图，但在新架构里应被 normalize 到统一 `software` 抽象，而不是由 projector 直接消费。
 
 #### `services`
-表达用户级服务意图。  
-例如某些用户级守护进程、用户 session 服务等。  
-它仍然属于用户语义层，而不是具体 systemd 节点实现。
+兼容旧声明形态保留的入口。  
+它同样会被 normalize 到统一 `software` 抽象。
 
 #### `theme`
 表达主题语义，而不是具体 toolkit 配置片段。  
@@ -402,6 +406,8 @@ Host = {
   security = { };
   desktop = { };
 
+  software = { };
+
   packages = {
     system = [ ];
   };
@@ -451,9 +457,20 @@ Host = {
 它们可以继续向下拆分，但必须保持一个原则：
 > 描述的是主机自己，而不是某个用户的实例。
 
+#### `software`
+表达主机级统一软件语义。  
+它适合承载：
+- 系统级全局工具
+- 主机级程序开关
+- 主机级服务启用意图
+
+与 `User.software` 的区别在于：
+- `User.software` 表达个人长期偏好
+- `Host.software` 表达机器自身需要承载的系统级软件能力
+
 #### `packages.system`
-表达主机级软件需求。  
-例如系统包、全局工具链等。
+这是兼容旧声明形态保留的入口。  
+当前推荐做法是优先写入 `software`，再由 normalize 整理为统一的软件模型。
 
 #### `policy`
 表达主机级策略，例如默认约束、安全策略、环境规则。
