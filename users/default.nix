@@ -1,0 +1,3 @@
+{
+  Shetty = import ./Shetty;
+}
