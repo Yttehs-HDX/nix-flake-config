@@ -2,6 +2,17 @@
 let
   references = import ./references.nix { inherit lib normalized; };
   capabilities = import ./capabilities.nix { inherit lib normalized; };
+  hasSystemScope = backendType:
+    backendType == "nixos" || backendType == "nix-darwin";
+  hasHomeScope = backendType:
+    backendType == "nixos" || backendType == "home-manager"
+    || backendType == "nix-darwin";
+  relationSystemOnlyFields = relation:
+    (lib.optional (relation.identity.uid != null) "identity.uid")
+    ++ (lib.optional (relation.membership.primaryGroup != null)
+      "membership.primaryGroup")
+    ++ (lib.optional (relation.membership.extraGroups != [ ])
+      "membership.extraGroups");
   resolveIdentityName = relation:
     if relation.identity.name != null then
       relation.identity.name
@@ -25,28 +36,47 @@ let
     normalized.relations;
 
   hostChecks = lib.mapAttrsToList (hostId: host:
-    if !host.enable then
+    let
+      backendType = host.backend.type;
+      stateVersion = host.system.stateVersion;
+    in if !host.enable then
       true
     else if host.platform.system == null then
       throw "Enabled host `${hostId}` must declare `platform.system`."
-    else if host.backend.type == "nixos" && host.system.stateVersion
-    == null then
+    else if backendType == "nixos" && stateVersion == null then
       throw "NixOS host `${hostId}` must declare `system.stateVersion`."
-    else if host.backend.type == "nix-darwin" && host.system.stateVersion
-    == null then
+    else if backendType == "nixos" && !(builtins.isString stateVersion) then
+      throw
+      "NixOS host `${hostId}` must declare `system.stateVersion` as a string."
+    else if backendType == "nix-darwin" && stateVersion == null then
       throw "nix-darwin host `${hostId}` must declare `system.stateVersion`."
+    else if backendType == "nix-darwin" && !(builtins.isInt stateVersion) then
+      throw
+      "nix-darwin host `${hostId}` must declare `system.stateVersion` as an integer."
+    else if !(hasSystemScope backendType) && stateVersion != null then
+      throw
+      "Host `${hostId}` must not declare `system.stateVersion` without system scope."
     else
       true) normalized.hosts;
 
   relationStateChecks = lib.mapAttrsToList (relationId: relation:
     let
       host = normalized.hosts.${relation.host};
-      hasHomeScope = host.backend.type == "nixos" || host.backend.type
-        == "home-manager" || host.backend.type == "nix-darwin";
-    in if relation.enable && hasHomeScope && relation.state.home.stateVersion
+    in if relation.enable && (hasHomeScope host.backend.type)
+      && relation.state.home.stateVersion
     == null then
       throw
       "Relation `${relationId}` must declare `state.home.stateVersion` for home scope."
+    else
+      true) enabledRelations;
+
+  relationScopeChecks = lib.mapAttrsToList (relationId: relation:
+    let
+      host = normalized.hosts.${relation.host};
+      systemOnlyFields = relationSystemOnlyFields relation;
+    in if relation.enable && !(hasSystemScope host.backend.type)
+      && systemOnlyFields != [ ] then
+      throw "Relation `${relationId}` must not declare `${lib.concatStringsSep "`, `" systemOnlyFields}` on a host without system scope."
     else
       true) enabledRelations;
 
@@ -81,6 +111,7 @@ in builtins.deepSeq [
   relationIdChecks
   hostChecks
   relationStateChecks
+  relationScopeChecks
   uniquenessCheck
   hostIdentityUniquenessCheck
 ] { inherit indexes; }

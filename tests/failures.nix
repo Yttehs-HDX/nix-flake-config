@@ -80,12 +80,12 @@ let
     };
   };
 
-  invalidHostStateVersion = builtins.tryEval ((evalProfile {
+  invalidNixosHostStateVersionType = builtins.tryEval ((evalProfile {
     users.Alice = { };
     hosts.Workstation = {
       backend.type = "nixos";
       platform.system = "x86_64-linux";
-      system.stateVersion = true;
+      system.stateVersion = 25;
       capabilities.system.enable = true;
       capabilities.home.enable = true;
     };
@@ -94,10 +94,61 @@ let
       host = "Workstation";
       state.home.stateVersion = "25.05";
     };
-  }).profile.hosts.Workstation.system.stateVersion);
+  }).pipeline.instances);
+
+  invalidDarwinHostStateVersionType = builtins.tryEval ((evalProfile {
+    users.Alice = { };
+    hosts.Mac = {
+      backend.type = "nix-darwin";
+      platform.system = "aarch64-darwin";
+      system.stateVersion = "6";
+      capabilities.system.enable = true;
+      capabilities.home.enable = true;
+    };
+    relations."Alice@Mac" = {
+      user = "Alice";
+      host = "Mac";
+      state.home.stateVersion = "25.05";
+    };
+  }).pipeline.instances);
+
+  invalidHomeManagerHostSystemStateVersion = builtins.tryEval ((evalProfile {
+    users.Alice = { };
+    hosts.Workspace = {
+      backend.type = "home-manager";
+      platform.system = "x86_64-linux";
+      system.stateVersion = "25.11";
+      capabilities.home.enable = true;
+    };
+    relations."Alice@Workspace" = {
+      user = "Alice";
+      host = "Workspace";
+      state.home.stateVersion = "25.05";
+    };
+  }).pipeline.instances);
+
+  invalidHomeOnlyRelationSystemFields = builtins.tryEval ((evalProfile {
+    users.Alice = { };
+    hosts.Workspace = {
+      backend.type = "home-manager";
+      platform.system = "x86_64-linux";
+      capabilities.home.enable = true;
+    };
+    relations."Alice@Workspace" = {
+      user = "Alice";
+      host = "Workspace";
+      identity.uid = 1000;
+      membership.primaryGroup = "staff";
+      membership.extraGroups = [ "wheel" ];
+      state.home.stateVersion = "25.05";
+    };
+  }).pipeline.instances);
 in assert !(builtins.tryEval invalidCapability.pipeline.instances).success;
 assert !(builtins.tryEval missingReference.pipeline.instances).success;
 assert !(builtins.tryEval missingDarwinStateVersion.pipeline.instances).success;
 assert !(builtins.tryEval duplicateHostUsername.pipeline.instances).success;
-assert !invalidHostStateVersion.success;
+assert !invalidNixosHostStateVersionType.success;
+assert !invalidDarwinHostStateVersionType.success;
+assert !invalidHomeManagerHostSystemStateVersion.success;
+assert !invalidHomeOnlyRelationSystemFields.success;
 true
