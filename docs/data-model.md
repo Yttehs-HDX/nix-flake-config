@@ -215,6 +215,8 @@ User = {
     terminal = null;
   };
 
+  initialHashedPassword = null;
+
   capabilities = {
     desktop.enable = false;
     development.enable = false;
@@ -252,6 +254,16 @@ User = {
 - 默认终端
 
 它是语义型偏好，而不是 backend 节点路径。
+
+#### `initialHashedPassword`
+表达该用户在“首次创建系统账号时”可复用的初始密码哈希。  
+它属于共享用户语义，而不是某台主机的局部细节，因为：
+- host 只负责决定这个用户是否在该主机上启用
+- relation 只负责实例身份、组、home 路径等实例化信息
+- home-manager 不创建系统用户，因此不消费这类字段
+
+当前这类语义主要会被具备系统用户管理能力的 backend 消费。  
+对已经存在的账号，它不应被当作持续覆盖本机密码的声明式来源。
 
 #### `capabilities`
 表达用户“拥有哪些可被投影的能力”。  
@@ -679,6 +691,7 @@ profile.relations."alice@laptop" = {
 ### 属于 User
 - 默认 shell
 - 默认 editor
+- 用户首次创建时的初始密码哈希
 - 主题语义
 - 用户级 packages
 - 用户级 programs

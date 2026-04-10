@@ -588,6 +588,7 @@ projectionInputs."<relationId>".system = { ... };
 ---
 ## Projection Input 至少应包含
 - `identity`
+- `account`
 - `preferences`
 - `theme`
 - `packages`
@@ -600,6 +601,10 @@ projectionInputs."<relationId>".system = { ... };
 - `host.roles`
 - `membership`（若 scope 合法）
 - 其他公共接口字段
+
+共享用户初始密码哈希若存在，应在这一步以稳定接口形态进入投影输入，  
+例如 `account.initialHashedPassword`。  
+这样 backend projector 只需要消费统一的 `projectionInputs`，而不需要回头读取原始 `users`。
 
 ---
 ## 阶段十：投影（Project）
@@ -666,8 +671,17 @@ projectionInputs."<relationId>".system = { ... };
 
 对于 `alice@laptop.system`：
 - 用户 identity 进入 `users.users.<name>`
+- `account.initialHashedPassword` 进入 `users.users.<name>.initialHashedPassword`
 - `extraGroups` 进入用户组配置
 - 可能需要的系统级桌面支持进入主机 system 配置
+
+如果某项共享用户初始化语义只在系统用户创建时生效，  
+那么 system projector 还应在合适层显式设置与之匹配的 backend 约束。  
+例如 NixOS 中的初始密码哈希应与 `users.mutableUsers = true` 配合，  
+以保证它只在用户首次创建时参与初始化，而不是被实现成持续覆盖密码的声明式机制。
+
+这类逻辑仍然属于 system / backend 投影，  
+不应被塞进 host 声明，也不应由 home-manager 模块承担。
 
 ---
 ## 阶段十一：结果合并（Merge）
