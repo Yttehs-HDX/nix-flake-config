@@ -5,14 +5,26 @@ let
   hasSystemScope = backendType:
     backendType == "nixos" || backendType == "nix-darwin";
   hasHomeScope = backendType:
-    backendType == "nixos" || backendType == "home-manager"
-    || backendType == "nix-darwin";
+    backendType == "nixos" || backendType == "home-manager" || backendType
+    == "nix-darwin";
   relationSystemOnlyFields = relation:
     (lib.optional (relation.identity.uid != null) "identity.uid")
     ++ (lib.optional (relation.membership.primaryGroup != null)
       "membership.primaryGroup")
     ++ (lib.optional (relation.membership.extraGroups != [ ])
       "membership.extraGroups");
+  relationUnsupportedFields = host: relation:
+    let
+      backendType = host.backend.type;
+      systemOnlyFields = if host.capabilities.system.enable then
+        [ ]
+      else
+        relationSystemOnlyFields relation;
+      darwinUnsupportedFields = (lib.optional (backendType == "nix-darwin"
+        && relation.membership.primaryGroup != null) "membership.primaryGroup")
+        ++ (lib.optional (backendType == "nix-darwin"
+          && relation.membership.extraGroups != [ ]) "membership.extraGroups");
+    in lib.unique (systemOnlyFields ++ darwinUnsupportedFields);
   resolveIdentityName = relation:
     if relation.identity.name != null then
       relation.identity.name
@@ -39,10 +51,18 @@ let
     let
       backendType = host.backend.type;
       stateVersion = host.system.stateVersion;
+      expectedSystemScope = hasSystemScope backendType;
+      expectedHomeScope = hasHomeScope backendType;
     in if !host.enable then
       true
     else if host.platform.system == null then
       throw "Enabled host `${hostId}` must declare `platform.system`."
+    else if host.capabilities.system.enable != expectedSystemScope then
+      throw
+      "Host `${hostId}` must keep `capabilities.system.enable` consistent with backend `${backendType}`."
+    else if host.capabilities.home.enable != expectedHomeScope then
+      throw
+      "Host `${hostId}` must keep `capabilities.home.enable` consistent with backend `${backendType}`."
     else if backendType == "nixos" && stateVersion == null then
       throw "NixOS host `${hostId}` must declare `system.stateVersion`."
     else if backendType == "nixos" && !(builtins.isString stateVersion) then
@@ -60,11 +80,9 @@ let
       true) normalized.hosts;
 
   relationStateChecks = lib.mapAttrsToList (relationId: relation:
-    let
-      host = normalized.hosts.${relation.host};
-    in if relation.enable && (hasHomeScope host.backend.type)
-      && relation.state.home.stateVersion
-    == null then
+    let host = normalized.hosts.${relation.host};
+    in if relation.enable && host.capabilities.home.enable
+    && relation.state.home.stateVersion == null then
       throw
       "Relation `${relationId}` must declare `state.home.stateVersion` for home scope."
     else
@@ -73,10 +91,11 @@ let
   relationScopeChecks = lib.mapAttrsToList (relationId: relation:
     let
       host = normalized.hosts.${relation.host};
-      systemOnlyFields = relationSystemOnlyFields relation;
-    in if relation.enable && !(hasSystemScope host.backend.type)
-      && systemOnlyFields != [ ] then
-      throw "Relation `${relationId}` must not declare `${lib.concatStringsSep "`, `" systemOnlyFields}` on a host without system scope."
+      unsupportedFields = relationUnsupportedFields host relation;
+    in if relation.enable && unsupportedFields != [ ] then
+      throw "Relation `${relationId}` must not declare `${
+        lib.concatStringsSep "`, `" unsupportedFields
+      }` for backend `${host.backend.type}`."
     else
       true) enabledRelations;
 

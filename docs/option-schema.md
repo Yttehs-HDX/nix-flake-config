@@ -844,6 +844,11 @@ bool
 ### 含义
 该主机是否具备 system scope。
 
+### 当前实现约束
+当前实现会在 validation 阶段要求该字段与 `backend.type` 保持一致：
+- `nixos` / `nix-darwin` 必须为 `true`
+- `home-manager` 必须为 `false`
+
 ---
 ## `profile.hosts.<hostId>.capabilities.home.enable`
 ### 类型
@@ -854,6 +859,10 @@ bool
 
 ### 含义
 该主机是否具备 home scope。
+
+### 当前实现约束
+当前实现会在 validation 阶段要求该字段与 `backend.type` 保持一致：
+- `nixos` / `home-manager` / 当前已实现的 `nix-darwin` 集成必须为 `true`
 
 ---
 ## `profile.hosts.<hostId>.capabilities.desktop.enable`
@@ -1206,7 +1215,10 @@ list of string
 附加组列表。
 
 ### 说明
-通常只在具备 system scope 的 host 上可合法投影。
+当前实现仅在 `nixos` backend 上投影成员组相关字段。  
+因此：
+- 无 system scope 的 host 会在 validation 阶段拒绝这些字段
+- `nix-darwin` relation 当前也会拒绝这些字段，而不是静默忽略
 
 ---
 ## `profile.relations.<relationId>.activation`

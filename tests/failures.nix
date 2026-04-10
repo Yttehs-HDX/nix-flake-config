@@ -143,6 +143,40 @@ let
       state.home.stateVersion = "25.05";
     };
   }).pipeline.instances);
+
+  invalidDarwinRelationMembershipFields = builtins.tryEval ((evalProfile {
+    users.Alice = { };
+    hosts.Mac = {
+      backend.type = "nix-darwin";
+      platform.system = "aarch64-darwin";
+      capabilities.system.enable = true;
+      capabilities.home.enable = true;
+      system.stateVersion = 6;
+    };
+    relations."Alice@Mac" = {
+      user = "Alice";
+      host = "Mac";
+      membership.primaryGroup = "staff";
+      membership.extraGroups = [ "admin" ];
+      state.home.stateVersion = "25.05";
+    };
+  }).pipeline.instances);
+
+  invalidNixosHomeCapabilityMismatch = builtins.tryEval ((evalProfile {
+    users.Alice = { };
+    hosts.Workstation = {
+      backend.type = "nixos";
+      platform.system = "x86_64-linux";
+      capabilities.system.enable = true;
+      capabilities.home.enable = false;
+      system.stateVersion = "25.11";
+    };
+    relations."Alice@Workstation" = {
+      user = "Alice";
+      host = "Workstation";
+      state.home.stateVersion = "25.05";
+    };
+  }).pipeline.instances);
 in assert !(builtins.tryEval invalidCapability.pipeline.instances).success;
 assert !(builtins.tryEval missingReference.pipeline.instances).success;
 assert !(builtins.tryEval missingDarwinStateVersion.pipeline.instances).success;
@@ -151,4 +185,6 @@ assert !invalidNixosHostStateVersionType.success;
 assert !invalidDarwinHostStateVersionType.success;
 assert !invalidHomeManagerHostSystemStateVersion.success;
 assert !invalidHomeOnlyRelationSystemFields.success;
+assert !invalidDarwinRelationMembershipFields.success;
+assert !invalidNixosHomeCapabilityMismatch.success;
 true
