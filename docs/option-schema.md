@@ -822,6 +822,12 @@ null or string
 ### 说明
 `null` 表示尚未声明，允许由更高层入口或外部组合时补充，但推荐在实际主机声明中尽量显式填写。
 
+### 当前实现约束
+当主机启用时，validation 会要求它与 `backend.type` 保持平台兼容：
+- `nixos` 必须使用 `*-linux`
+- `nix-darwin` 必须使用 `*-darwin`
+- `home-manager` 当前不额外限制平台后缀
+
 ---
 ## `profile.hosts.<hostId>.capabilities`
 ### 类型
@@ -1007,6 +1013,10 @@ list of package-like value
 
 ### 含义
 系统级软件集合。
+
+### 当前实现约束
+当前实现仅在具备 system scope 的 backend 上消费该字段。  
+因此 `home-manager` host 若声明 `packages.system`，会在 validation 阶段直接报错，而不是静默忽略。
 
 ---
 ## `profile.hosts.<hostId>.policy`

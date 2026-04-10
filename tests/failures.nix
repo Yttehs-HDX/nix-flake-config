@@ -177,6 +177,37 @@ let
       state.home.stateVersion = "25.05";
     };
   }).pipeline.instances);
+
+  invalidDarwinPlatformMismatch = builtins.tryEval ((evalProfile {
+    users.Alice = { };
+    hosts.Mac = {
+      backend.type = "nix-darwin";
+      platform.system = "x86_64-linux";
+      capabilities.system.enable = true;
+      capabilities.home.enable = true;
+      system.stateVersion = 6;
+    };
+    relations."Alice@Mac" = {
+      user = "Alice";
+      host = "Mac";
+      state.home.stateVersion = "25.05";
+    };
+  }).pipeline.instances);
+
+  invalidHomeManagerSystemPackages = builtins.tryEval ((evalProfile {
+    users.Alice = { };
+    hosts.Workspace = {
+      backend.type = "home-manager";
+      platform.system = "x86_64-linux";
+      capabilities.home.enable = true;
+      packages.system = [ "hello" ];
+    };
+    relations."Alice@Workspace" = {
+      user = "Alice";
+      host = "Workspace";
+      state.home.stateVersion = "25.05";
+    };
+  }).pipeline.instances);
 in assert !(builtins.tryEval invalidCapability.pipeline.instances).success;
 assert !(builtins.tryEval missingReference.pipeline.instances).success;
 assert !(builtins.tryEval missingDarwinStateVersion.pipeline.instances).success;
@@ -187,4 +218,6 @@ assert !invalidHomeManagerHostSystemStateVersion.success;
 assert !invalidHomeOnlyRelationSystemFields.success;
 assert !invalidDarwinRelationMembershipFields.success;
 assert !invalidNixosHomeCapabilityMismatch.success;
+assert !invalidDarwinPlatformMismatch.success;
+assert !invalidHomeManagerSystemPackages.success;
 true
