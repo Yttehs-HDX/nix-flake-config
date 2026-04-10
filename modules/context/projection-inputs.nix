@@ -1,6 +1,10 @@
 { lib, current }:
 lib.mapAttrs (relationId: instance:
   let
+    platformSystem = instance.host.platform.system;
+    isDarwinPlatform = platformSystem != null
+      && lib.hasSuffix "-darwin" platformSystem;
+
     username = if instance.relation.identity.name != null then
       instance.relation.identity.name
     else
@@ -8,7 +12,7 @@ lib.mapAttrs (relationId: instance:
 
     homeDirectory = if instance.relation.identity.homeDirectory != null then
       instance.relation.identity.homeDirectory
-    else if instance.backend.type == "nix-darwin" then
+    else if isDarwinPlatform then
       "/Users/${username}"
     else
       "/home/${username}";
@@ -35,5 +39,5 @@ lib.mapAttrs (relationId: instance:
       home = { stateVersion = instance.relation.state.home.stateVersion; };
     };
 
-    packages = import ../projection/common/packages.nix { current = instance; };
+    packages = import ./packages.nix { current = instance; };
   }) current

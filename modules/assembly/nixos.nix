@@ -38,6 +38,7 @@ let
           lib.mapAttrs (_: modules: { imports = modules; }) homeModules;
       };
     in inputs.nixpkgs.lib.nixosSystem {
+      inherit pkgs;
       inherit system;
       specialArgs = { inherit inputs pipeline hostId; };
       modules = (host.hardware.modules or [ ]) ++ systemModules
