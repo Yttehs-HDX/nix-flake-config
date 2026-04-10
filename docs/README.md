@@ -198,6 +198,28 @@
 这些内容更适合在代码开始落地后，再继续补充新的文档。
 
 ---
+## 当前代码已实现的最小支持面
+截至当前仓库实现，代码层已经具备一条可验证的最小闭环，但支持面仍然刻意保持收敛。
+
+当前已落地并被测试覆盖的内容主要包括：
+- `profile.users / hosts / relations` 的 source schema 与最小 normalize / validate / instantiate / context 流水线
+- `Relation` 作为唯一实例化入口
+- `current` 与 `projectionInputs` 两个中间接口
+- `nixos`、`home-manager`、`nix-darwin` 三类 backend 的最小组装闭环
+- 用户身份、home 路径、home state version、系统/用户包这几类最小投影能力
+
+当前尚未作为稳定实现面的字段包括但不限于：
+- `programs`
+- `services`
+- `theme`
+- `networking`
+- `security`
+- `desktop`
+- 各类 `policy` / `overrides`
+
+这些字段目前仍保留在 schema 中作为未来扩展入口，但不应被视为已经具备完整投影支持。
+
+---
 ## 一句话总结
 `docs/` 目录记录的不是一些分散的说明文件，  
 而是 `nix-flake-config` 的完整设计骨架。

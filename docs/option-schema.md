@@ -822,6 +822,12 @@ null or string
 ### 说明
 `null` 表示尚未声明，允许由更高层入口或外部组合时补充，但推荐在实际主机声明中尽量显式填写。
 
+### 当前实现约束
+当主机启用时，validation 会要求它与 `backend.type` 保持平台兼容：
+- `nixos` 必须使用 `*-linux`
+- `nix-darwin` 必须使用 `*-darwin`
+- `home-manager` 当前不额外限制平台后缀
+
 ---
 ## `profile.hosts.<hostId>.capabilities`
 ### 类型
@@ -844,6 +850,11 @@ bool
 ### 含义
 该主机是否具备 system scope。
 
+### 当前实现约束
+当前实现会在 validation 阶段要求该字段与 `backend.type` 保持一致：
+- `nixos` / `nix-darwin` 必须为 `true`
+- `home-manager` 必须为 `false`
+
 ---
 ## `profile.hosts.<hostId>.capabilities.home.enable`
 ### 类型
@@ -854,6 +865,10 @@ bool
 
 ### 含义
 该主机是否具备 home scope。
+
+### 当前实现约束
+当前实现会在 validation 阶段要求该字段与 `backend.type` 保持一致：
+- `nixos` / `home-manager` / 当前已实现的 `nix-darwin` 集成必须为 `true`
 
 ---
 ## `profile.hosts.<hostId>.capabilities.desktop.enable`
@@ -924,6 +939,11 @@ attrset
 这里只允许主机本体语义。  
 不允许偷偷塞某用户的个人偏好。
 
+### 当前实现要求
+当启用主机且 `backend.type` 为 `nixos` 或 `nix-darwin` 时，
+实现层会要求 `system.stateVersion` 已经声明，
+以便在校验阶段尽早失败，而不是拖到最终 backend 组装阶段。
+
 ---
 ## `profile.hosts.<hostId>.hardware`
 ### 类型
@@ -993,6 +1013,10 @@ list of package-like value
 
 ### 含义
 系统级软件集合。
+
+### 当前实现约束
+当前实现仅在具备 system scope 的 backend 上消费该字段。  
+因此 `home-manager` host 若声明 `packages.system`，会在 validation 阶段直接报错，而不是静默忽略。
 
 ---
 ## `profile.hosts.<hostId>.policy`
@@ -1162,6 +1186,11 @@ null or string
 ### 含义
 该实例在目标主机上的 home 路径。
 
+### 说明
+若未显式填写，当前实现会在 context 阶段按 backend 推导默认值：
+- `nix-darwin` 默认为 `/Users/<name>`
+- 其他当前已实现 backend 默认为 `/home/<name>`
+
 ---
 ## `profile.relations.<relationId>.membership`
 ### 类型
@@ -1196,7 +1225,10 @@ list of string
 附加组列表。
 
 ### 说明
-通常只在具备 system scope 的 host 上可合法投影。
+当前实现仅在 `nixos` backend 上投影成员组相关字段。  
+因此：
+- 无 system scope 的 host 会在 validation 阶段拒绝这些字段
+- `nix-darwin` relation 当前也会拒绝这些字段，而不是静默忽略
 
 ---
 ## `profile.relations.<relationId>.activation`
