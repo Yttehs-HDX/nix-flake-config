@@ -33,7 +33,6 @@
     clash-verge-rev = { };
     cmatrix = { };
     codex = { };
-    copilot-cli = { };
     cryptsetup = { };
     dig = { };
     direnv = { };
@@ -48,6 +47,7 @@
     fzf = { };
     gh = { };
     git = { };
+    github-copilot-cli = { };
     gnome-keyring = { };
     google-chrome = { };
     hmcl = { };

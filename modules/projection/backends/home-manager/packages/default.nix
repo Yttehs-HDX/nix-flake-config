@@ -13,7 +13,6 @@ let
     cmatrix = import ./cmatrix.nix;
     codex = import ./codex.nix;
     command-not-found = import ./command-not-found.nix;
-    copilot-cli = import ./copilot-cli.nix;
     cryptsetup = import ./cryptsetup.nix;
     dig = import ./dig.nix;
     direnv = import ./direnv.nix;
@@ -28,6 +27,7 @@ let
     fzf = import ./fzf.nix;
     gh = import ./gh.nix;
     git = import ./git.nix;
+    github-copilot-cli = import ./github-copilot-cli.nix;
     gnome-keyring = import ./gnome-keyring.nix;
     google-chrome = import ./google-chrome.nix;
     hexecute = import ./hexecute.nix;
