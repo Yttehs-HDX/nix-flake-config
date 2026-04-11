@@ -87,6 +87,32 @@ let
     };
   };
 
+  unsupportedSystemPackageEvaluated = import ./eval-profile.nix {
+    inherit lib inputs;
+    declarations = {
+      users.Alice = { };
+
+      hosts.MacUnsupported = {
+        backend.type = "nix-darwin";
+        platform.system = "aarch64-darwin";
+        capabilities.system.enable = true;
+        capabilities.home.enable = true;
+        system.stateVersion = 6;
+        packages = {
+          nix-ld = { };
+          virt-manager = { };
+        };
+      };
+
+      relations."Alice@MacUnsupported" = {
+        user = "Alice";
+        host = "MacUnsupported";
+        identity.name = "alice";
+        state.home.stateVersion = "25.05";
+      };
+    };
+  };
+
   unsupportedInput = unsupportedEvaluated.pipeline.projectionInputs."Alice@Mac";
   unsupportedConfig = unsupportedEvaluated.assembly.darwinConfigurations.Mac;
   unsupportedWarnings =
@@ -98,6 +124,11 @@ let
   systemPackageConfig =
     systemPackageEvaluated.assembly.darwinConfigurations.MacTools;
   systemWarnings = systemPackageConfig.config.warnings;
+  unsupportedSystemInput =
+    unsupportedSystemPackageEvaluated.pipeline.projectionInputs."Alice@MacUnsupported";
+  unsupportedSystemConfig =
+    unsupportedSystemPackageEvaluated.assembly.darwinConfigurations.MacUnsupported;
+  unsupportedSystemWarnings = unsupportedSystemConfig.config.warnings;
 in assert relation.backend.type == "nix-darwin";
 assert builtins.length relation.systemModules == 2;
 assert relation.homeModule != null;
@@ -151,4 +182,15 @@ assert builtins.any (warning:
 assert builtins.any (warning:
   lib.hasInfix "Package `wireshark` on nix-darwin installs the application"
   warning) systemWarnings;
+assert !(builtins.hasAttr "nix-ld" unsupportedSystemInput.packages.system);
+assert !(builtins.hasAttr "virt-manager"
+  unsupportedSystemInput.packages.system);
+assert unsupportedSystemInput.unsupportedPackages.system.nix-ld.platform
+  == "darwin";
+assert unsupportedSystemInput.unsupportedPackages.system.virt-manager.backend
+  == "nix-darwin";
+assert builtins.any (warning: lib.hasInfix "Package `nix-ld`" warning)
+  unsupportedSystemWarnings;
+assert builtins.any (warning: lib.hasInfix "Package `virt-manager`" warning)
+  unsupportedSystemWarnings;
 true

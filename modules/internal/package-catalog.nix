@@ -133,7 +133,7 @@ let
       hello = { kind = "package"; };
       locale = { kind = "service"; };
       networking = { kind = "service"; };
-      nix-ld = { kind = "package"; };
+      nix-ld = linuxSystem "package";
       nvidia = linuxSystem "service";
       pipewire = linuxSystem "service";
       refind = linuxSystem "package";
@@ -142,7 +142,7 @@ let
       supergfxctl = linuxSystem "service";
       tlp = linuxSystem "service";
       udisks2 = linuxSystem "service";
-      virt-manager = { kind = "package"; };
+      virt-manager = linuxSystem "package";
       waydroid = linuxSystem "service";
       wireshark = { kind = "package"; };
       zram = linuxSystem "service";
