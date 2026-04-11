@@ -255,6 +255,38 @@ in {
         };
       };
 
+      swaylockEffects = {
+        font = {
+          family = sansFamily;
+          size = 12;
+        };
+        colors = {
+          text = palette.lavender;
+          capsLock = palette.pink;
+          ring = palette.lavender;
+          keyHighlight = palette.pink;
+          line = "00000000";
+          inside = "00000088";
+          separator = "00000000";
+        };
+        indicator = {
+          radius = 100;
+          thickness = 7;
+        };
+        effects = {
+          blur = "25x25";
+          vignette = "0.5:0.5";
+        };
+      };
+
+      swaync = {
+        font = {
+          family = sansFamily;
+          size = 14;
+        };
+        colors = palette;
+      };
+
       waybar = {
         font = {
           family = sansFamily;

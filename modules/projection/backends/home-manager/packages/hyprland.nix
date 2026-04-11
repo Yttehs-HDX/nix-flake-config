@@ -7,12 +7,19 @@ let
     desktopTheme.consumers.hyprland or null
   else
     null;
+  sessionCommands =
+    import ../integrations/session-commands.nix { inherit input; };
   stripHash = color: lib.removePrefix "#" color;
   rgba = color: alpha: "rgba(${stripHash color}${alpha})";
   preferredTerminal = input.current.user.preferences.terminal;
   terminalCmd =
     if preferredTerminal != null then preferredTerminal else "kitty";
   launcherCmd = definition.settings.launcherCommand or "rofi -show drun";
+  ocrCmd = if input.packages.home ? ocr then "ocr" else null;
+  emojiCmd = if input.packages.home ? rofimoji then
+    "rofimoji --action copy --prompt '󰞅  emoji' --use-icons"
+  else
+    null;
   execOnce = lib.optionals (input.packages.home ? fcitx5) [ "fcitx5 -d" ];
   workspaceBindings = builtins.concatLists ((builtins.genList (i:
     let
@@ -60,6 +67,7 @@ in {
         "$mod, F, fullscreen"
         "$mod, C, killactive"
         "$mod, V, togglefloating"
+        "$mod, escape, exec, hexecute"
         "$mod, left, movefocus, l"
         "$mod, right, movefocus, r"
         "$mod, up, movefocus, u"
@@ -74,7 +82,18 @@ in {
         "$mod SHIFT, J, movewindow, d"
         "$mod, mouse_down, workspace, e-1"
         "$mod, mouse_up, workspace, e+1"
-      ] ++ workspaceBindings;
+      ] ++ lib.optionals (sessionCommands.clipboard != null)
+        [ "$mod, W, exec, ${sessionCommands.clipboard}" ]
+        ++ lib.optionals (emojiCmd != null) [ "$mod, E, exec, ${emojiCmd}" ]
+        ++ lib.optionals (sessionCommands.screenshot != null) [
+          ", Print, exec, ${sessionCommands.screenshot}"
+          "$mod SHIFT, S, exec, ${sessionCommands.screenshot}"
+        ] ++ lib.optionals (ocrCmd != null) [ "$mod SHIFT, T, exec, ${ocrCmd}" ]
+        ++ lib.optionals (sessionCommands.lock != null)
+        [ "$mod ALT, L, exec, ${sessionCommands.lock}" ]
+        ++ lib.optionals (sessionCommands.colorPicker != null)
+        [ "$mod ALT, DELETE, exec, ${sessionCommands.colorPicker}" ]
+        ++ workspaceBindings;
 
       general = {
         gaps_in = 2;

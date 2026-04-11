@@ -32,6 +32,7 @@ let
       cava = { kind = "theme-consumer"; };
       cbonsai = { kind = "package"; };
       clash-verge-rev = darwinManualGui "integration-heavy";
+      cliphist = desktopLinux "desktop-component";
       cmatrix = { kind = "package"; };
       codex = { kind = "integration-heavy"; };
       command-not-found = { kind = "environment"; };
@@ -52,12 +53,16 @@ let
       git = { kind = "package"; };
       gnome-keyring = desktopLinux "service";
       google-chrome = darwinManualGui "gui";
+      grimblast = desktopLinux "desktop-component";
       hexecute = { kind = "custom"; };
       hello = { kind = "package"; };
       hmcl = darwinManualGui "gui";
       htop = { kind = "package"; };
       huggingface-hub = { kind = "package"; };
+      hypridle = desktopLinux "service";
+      hyprpicker = desktopLinux "desktop-component";
       hyprland = desktopLinux "desktop-session";
+      hyprpolkitagent = desktopLinux "service";
       jq = { kind = "package"; };
       jetbrains-toolbox = darwinManualGui "gui";
       kdeconnect = desktopLinux "service";

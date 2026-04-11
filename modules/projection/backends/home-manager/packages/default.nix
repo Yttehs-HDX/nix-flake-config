@@ -10,6 +10,7 @@ let
     cava = import ./cava.nix;
     cbonsai = import ./cbonsai.nix;
     clash-verge-rev = import ./clash-verge-rev.nix;
+    cliphist = null;
     cmatrix = import ./cmatrix.nix;
     codex = import ./codex.nix;
     command-not-found = import ./command-not-found.nix;
@@ -30,12 +31,16 @@ let
     github-copilot-cli = import ./github-copilot-cli.nix;
     gnome-keyring = import ./gnome-keyring.nix;
     google-chrome = import ./google-chrome.nix;
+    grimblast = import ./grimblast.nix;
     hexecute = import ./hexecute.nix;
     hello = import ./hello.nix;
     hmcl = import ./hmcl.nix;
     htop = import ./htop.nix;
     huggingface-hub = import ./huggingface-hub.nix;
+    hypridle = null;
+    hyprpicker = import ./hyprpicker.nix;
     hyprland = import ./hyprland.nix;
+    hyprpolkitagent = null;
     jq = import ./jq.nix;
     jetbrains-toolbox = import ./jetbrains-toolbox.nix;
     kdeconnect = import ./kdeconnect.nix;
@@ -73,6 +78,11 @@ let
     rofimoji = import ./rofimoji.nix;
     scrcpy = import ./scrcpy.nix;
     seahorse = import ./seahorse.nix;
+    swayidle = null;
+    swaylock-effects = import ./swaylock-effects.nix;
+    swaync = import ./swaync.nix;
+    swww = null;
+    swappy = import ./swappy.nix;
     tgpt = import ./tgpt.nix;
     tesseract = import ./tesseract.nix;
     tldr = import ./tldr.nix;
@@ -87,6 +97,7 @@ let
     waybar = import ./waybar.nix;
     wechat = import ./wechat.nix;
     wget = import ./wget.nix;
+    wl-clipboard = import ./wl-clipboard.nix;
     xdg = import ./xdg.nix;
     yazi = import ./yazi.nix;
     zip = import ./zip.nix;
@@ -95,7 +106,10 @@ let
 
   resolve = packageId: definition:
     if builtins.hasAttr packageId registry then
-      registry.${packageId} { inherit input definition; }
+      if registry.${packageId} == null then
+        ({ ... }: { })
+      else
+        registry.${packageId} { inherit input definition; }
     else
       throw
       "Unsupported Home Manager package `${packageId}` on `${input.relationId}`.";

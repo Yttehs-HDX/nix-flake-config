@@ -1,5 +1,35 @@
-{ ... }:
-{ lib, ... }: {
+{ input, definition, ... }:
+{ lib, ... }:
+let
+  preferredTerminal = input.current.user.preferences.terminal;
+  terminalCmd =
+    if preferredTerminal != null then preferredTerminal else "kitty";
+  launcherCmd = definition.settings.launcherCommand or "rofi -show drun";
+  sessionCommands =
+    import ../integrations/session-commands.nix { inherit input; };
+  ocrCmd = if input.packages.home ? ocr then "ocr" else null;
+  emojiCmd = if input.packages.home ? rofimoji then
+    "rofimoji --action copy --prompt '󰞅  emoji' --use-icons"
+  else
+    null;
+  extraBindings = lib.concatStringsSep "\n"
+    (lib.optionals (sessionCommands.clipboard != null)
+      [ ''Mod+W repeat=false { spawn-sh "${sessionCommands.clipboard}"; }'' ]
+      ++ lib.optionals (emojiCmd != null)
+      [ ''Mod+E repeat=false { spawn-sh "${emojiCmd}"; }'' ]
+      ++ lib.optionals (sessionCommands.screenshot != null) [
+        ''Print repeat=false { spawn-sh "${sessionCommands.screenshot}"; }''
+        ''
+          Mod+Shift+S repeat=false { spawn-sh "${sessionCommands.screenshot}"; }''
+      ] ++ lib.optionals (ocrCmd != null)
+      [ ''Mod+Shift+T repeat=false { spawn-sh "${ocrCmd}"; }'' ]
+      ++ lib.optionals (sessionCommands.lock != null)
+      [ ''Mod+Alt+L repeat=false { spawn "${sessionCommands.lock}"; }'' ]
+      ++ lib.optionals (sessionCommands.colorPicker != null) [
+        ''
+          Mod+Alt+Delete repeat=false { spawn-sh "${sessionCommands.colorPicker}"; }''
+      ]);
+in {
   home.sessionVariables = {
     XDG_CURRENT_DESKTOP = lib.mkForce "niri";
     XDG_SESSION_DESKTOP = lib.mkForce "niri";
@@ -61,25 +91,28 @@
   '';
 
   xdg.configFile."niri/bindings.kdl".text = ''
-    binds {
-        Mod+Q repeat=false { spawn "kitty"; }
-        Mod+R repeat=false { spawn-sh "rofi -show drun"; }
-        Mod+F { maximize-column; }
-        Mod+Shift+F { fullscreen-window; }
-        Mod+C repeat=false { close-window; }
-        Mod+V { toggle-window-floating; }
-        Mod+Tab repeat=false { toggle-overview; }
+        binds {
+            Mod+Q repeat=false { spawn "${terminalCmd}"; }
+            Mod+R repeat=false { spawn-sh "${launcherCmd}"; }
+            Mod+F { maximize-column; }
+            Mod+Shift+F { fullscreen-window; }
+            Mod+C repeat=false { close-window; }
+            Mod+V { toggle-window-floating; }
+            Mod+Tab repeat=false { toggle-overview; }
+            Mod+Escape repeat=false { spawn "hexecute"; }
 
-        Mod+Left  { focus-column-left; }
-        Mod+Right { focus-column-right; }
-        Mod+Up    { focus-window-up; }
-        Mod+Down  { focus-window-down; }
+            Mod+Left  { focus-column-left; }
+            Mod+Right { focus-column-right; }
+            Mod+Up    { focus-window-up; }
+            Mod+Down  { focus-window-down; }
 
-        XF86AudioNext allow-when-locked=true { spawn "playerctl" "next"; }
-        XF86AudioPause allow-when-locked=true { spawn "playerctl" "play-pause"; }
-        XF86AudioPlay allow-when-locked=true { spawn "playerctl" "play-pause"; }
-        XF86AudioPrev allow-when-locked=true { spawn "playerctl" "previous"; }
-    }
+    ${extraBindings}
+
+            XF86AudioNext allow-when-locked=true { spawn "playerctl" "next"; }
+            XF86AudioPause allow-when-locked=true { spawn "playerctl" "play-pause"; }
+            XF86AudioPlay allow-when-locked=true { spawn "playerctl" "play-pause"; }
+            XF86AudioPrev allow-when-locked=true { spawn "playerctl" "previous"; }
+        }
   '';
 
   xdg.configFile."niri/window-rules.kdl".text = ''
