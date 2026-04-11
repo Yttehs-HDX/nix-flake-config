@@ -9,6 +9,10 @@ lib.mapAttrs (_: instance:
       inherit lib;
       current = current;
     };
+    unsupportedPackages = import ./unsupported-packages.nix {
+      inherit lib;
+      current = current;
+    };
     theme = import ./theme.nix {
       inherit lib;
       current = current;

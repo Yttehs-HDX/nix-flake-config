@@ -45,6 +45,10 @@ lib.mapAttrs (relationId: instance:
       inherit lib;
       current = instance;
     };
+    unsupportedPackages = import ./unsupported-packages.nix {
+      inherit lib;
+      current = instance;
+    };
     theme = import ./theme.nix {
       inherit lib;
       current = instance;

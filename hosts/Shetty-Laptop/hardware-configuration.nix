@@ -6,8 +6,18 @@
 {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot = {
+    loader = {
+      efi = {
+        canTouchEfiVariables = true;
+        efiSysMountPoint = "/boot/efi";
+      };
+      grub = {
+        efiSupport = true;
+        device = "nodev";
+      };
+    };
+  };
 
   boot.initrd.availableKernelModules =
     [ "xhci_pci" "thunderbolt" "nvme" "usbhid" ];

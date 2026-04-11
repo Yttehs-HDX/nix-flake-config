@@ -217,6 +217,7 @@
 
 其中：
 - `packages` 已作为稳定 source/context/projection 接口进入实现，用于统一表达 package / program / service 类软件意图。
+- `unsupportedPackages` 已作为 `current` / `projectionInputs` 的配套派生接口进入实现，用于保留声明语义并向 backend 输出显式 unsupported 信息，特别是 Darwin 下的 no-op 场景。
 - `programs` / `services` 仍保留在 schema 中作为兼容入口，但会在 normalize 阶段被收束进 `packages`，不再作为 projector 的主消费接口。
 - `theme` 当前只实现了最小资源解析闭环，不应被视为已经覆盖所有桌面与 toolkit 投影。
 
