@@ -10,7 +10,6 @@ let
     locale = import ./locale.nix;
     networking = import ./networking.nix;
     nix-ld = import ./nix-ld.nix;
-    niri = import ./niri.nix;
     nvidia = import ./nvidia.nix;
     pipewire = import ./pipewire.nix;
     refind = import ./refind.nix;

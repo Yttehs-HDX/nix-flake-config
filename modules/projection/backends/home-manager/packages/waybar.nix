@@ -20,13 +20,14 @@ let
   toggleMuteCmd = "pactl set-sink-mute @DEFAULT_SINK@ toggle";
   toggleNotificationCmd = "swaync-client -t";
   menuCmd = definition.settings.menuCommand or "hexecute";
+  menuTooltip = definition.settings.menuTooltip or "魔法使い";
 in {
   home.packages = [ pkgs.playerctl ];
 
   programs.waybar = {
     enable = true;
     systemd.enable = true;
-    settings.main = {
+    settings.main = ({
       layer = "top";
       position = "top";
       mode = "dock";
@@ -41,8 +42,8 @@ in {
       margin-right = 5;
       margin-bottom = 0;
 
-      modules-left = [ "group/hyprland" "group/misc" ];
-      modules-center = [ ];
+      modules-left = [ "group/hyprland" "cava" ];
+      modules-center = [ "group/misc" ];
       modules-right = [ "group/monitor" "group/connection" "group/menu" ];
 
       "group/hyprland" = {
@@ -186,7 +187,7 @@ in {
           transition-duration = 300;
           transition-left-to-right = false;
         };
-        modules = [ "battery" "tray" "custom/menu" ];
+        modules = [ "battery" "tray" "custom/hexecute" ];
       };
 
       tray = {
@@ -205,12 +206,23 @@ in {
         on-click = toggleNotificationCmd;
       };
 
-      "custom/menu" = {
+      "custom/hexecute" = {
         format = " ";
-        tooltip-format = "Launcher";
+        tooltip-format = menuTooltip;
         on-click = menuCmd;
       };
-    };
+
+      cava = {
+        hide_on_silence = true;
+        framerate = 60;
+        bars = 8;
+        format-icons = [ "▁" "▂" "▃" "▄" "▅" "▆" "▇" "█" ];
+        input_delay = 1;
+        sleep_timer = 5;
+        bar_delimiter = 0;
+        on-click = playPauseCmd;
+      };
+    });
   } // lib.optionalAttrs (waybarTheme != null) {
     style = ''
       @define-color rosewater ${waybarTheme.colors.rosewater};
@@ -256,6 +268,7 @@ in {
       }
 
       #hyprland,
+      #cava,
       #misc,
       #monitor,
       #connection,
@@ -294,6 +307,12 @@ in {
 
       #window {
         margin: 0rem 0.4rem 0rem 0.1rem;
+      }
+
+      #cava {
+        border-color: @pink;
+        color: @pink;
+        margin: 0rem 0rem 0rem 0.3rem;
       }
 
       #misc {
@@ -368,6 +387,27 @@ in {
 
       #menu {
         border-color: @green;
+      }
+
+      #tray,
+      #custom-hexecute {
+        margin: 0rem 1rem 0rem 0rem;
+      }
+
+      #custom-hexecute {
+        color: @green;
+      }
+
+      #battery {
+        color: @green;
+      }
+
+      #battery.charging {
+        color: @green;
+      }
+
+      #battery.warning:not(.charging) {
+        color: @red;
       }
     '';
   };

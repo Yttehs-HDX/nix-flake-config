@@ -258,7 +258,7 @@ in {
       swaylockEffects = {
         font = {
           family = sansFamily;
-          size = 12;
+          size = 64;
         };
         colors = {
           text = palette.lavender;

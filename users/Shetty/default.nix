@@ -54,6 +54,9 @@
     htop = { };
     huggingface-hub = { };
     hyprland = { };
+    hypridle = { };
+    hyprpicker = { };
+    hyprpolkitagent = { };
     jq = { };
     jetbrains-toolbox = { };
     kdeconnect = { };
@@ -66,7 +69,6 @@
     net-tools = { };
     network-manager = { };
     nerd-fonts-jetbrains-mono = { };
-    niri = { };
     nixfmt-classic = { };
     nix-index = { };
     nmap = { };
@@ -86,6 +88,14 @@
     rofi = { };
     scrcpy = { };
     seahorse = { };
+    # helper programs for hyprland keybindings
+    wl-clipboard = { };
+    rofimoji = { };
+    grimblast = { };
+    swappy = { };
+    ocr = { };
+    swaylock-effects = { };
+    swaync = { };
     tgpt = { };
     tldr = { };
     tmux = { };
@@ -97,6 +107,8 @@
     vlc = { };
     vscode = { };
     waybar = { };
+    cliphist = { };
+    swww = { };
     wechat = { };
     wget = { };
     xdg = { };

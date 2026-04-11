@@ -36,7 +36,7 @@ let
       cmatrix = { kind = "package"; };
       codex = { kind = "integration-heavy"; };
       command-not-found = { kind = "environment"; };
-      copilot-cli = { kind = "integration-heavy"; };
+      github-copilot-cli = { kind = "integration-heavy"; };
       cryptsetup = { kind = "package"; };
       dig = { kind = "package"; };
       direnv = { kind = "package"; };
@@ -77,7 +77,6 @@ let
       net-tools = { kind = "package"; };
       network-manager = desktopLinux "service";
       nerd-fonts-jetbrains-mono = { kind = "theme-consumer"; };
-      niri = desktopLinux "desktop-session";
       nix-index = { kind = "environment"; };
       nixfmt-classic = { kind = "package"; };
       nmap = { kind = "package"; };
@@ -88,7 +87,6 @@ let
       obs-studio = darwinManualGui "gui";
       ocr = desktopLinux "custom";
       onlyoffice = darwinManualGui "gui";
-      openclaw = { kind = "custom"; };
       osu-lazer-bin = darwinManualGui "gui";
       pipewire = desktopLinux "service";
       pipes-rs = { kind = "package"; };
@@ -101,7 +99,6 @@ let
       rofimoji = desktopLinux "desktop-component";
       scrcpy = { kind = "package"; };
       seahorse = desktopLinux "gui";
-      swayidle = desktopLinux "service";
       swaylock-effects = desktopLinux "theme-consumer";
       swaync = desktopLinux "desktop-component";
       swww = desktopLinux "desktop-component";
@@ -134,10 +131,9 @@ let
       firewall = linuxSystem "service";
       grub = linuxSystem "service";
       hello = { kind = "package"; };
-      locale = linuxSystem "service";
-      networking = linuxSystem "service";
+      locale = { kind = "service"; };
+      networking = { kind = "service"; };
       nix-ld = { kind = "package"; };
-      niri = desktopLinux "desktop-session";
       nvidia = linuxSystem "service";
       pipewire = linuxSystem "service";
       refind = linuxSystem "package";

@@ -4,7 +4,6 @@ let
     blueman = import ./blueman.nix;
     gnome-keyring = import ./gnome-keyring.nix;
     hyprland = import ./hyprland-session.nix;
-    niri = import ./niri-session.nix;
     pipewire = import ./pipewire.nix;
     udisks2 = import ./udisks2.nix;
   };

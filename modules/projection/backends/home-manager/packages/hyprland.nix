@@ -61,13 +61,29 @@ in {
       exec-once = execOnce;
 
       bindm = [ "$mod, mouse:272, movewindow" "$mod, mouse:273, resizewindow" ];
+      bindl = [
+        ", XF86AudioNext, exec, playerctl next"
+        ", XF86AudioPause, exec, playerctl play-pause"
+        ", XF86AudioPlay, exec, playerctl play-pause"
+        ", XF86AudioPrev, exec, playerctl previous"
+      ];
+      bindel = [
+        ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+        ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+        ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+        ", XF86MonBrightnessUp, exec, brightnessctl s 5%+"
+        ", XF86MonBrightnessDown, exec, brightnessctl s 5%-"
+      ];
       bind = [
         "$mod, Q, exec, ${terminalCmd}"
         "$mod, R, exec, ${launcherCmd}"
         "$mod, F, fullscreen"
         "$mod, C, killactive"
-        "$mod, V, togglefloating"
+        "$mod, V, exec, hyprctl dispatch togglefloating"
+        "$mod, TAB, hyprexpo:expo, toggle"
         "$mod, escape, exec, hexecute"
+        "$mod, M, exec, hyprctl dispatch exit"
         "$mod, left, movefocus, l"
         "$mod, right, movefocus, r"
         "$mod, up, movefocus, u"
@@ -92,8 +108,10 @@ in {
         ++ lib.optionals (sessionCommands.lock != null)
         [ "$mod ALT, L, exec, ${sessionCommands.lock}" ]
         ++ lib.optionals (sessionCommands.colorPicker != null)
-        [ "$mod ALT, DELETE, exec, ${sessionCommands.colorPicker}" ]
-        ++ workspaceBindings;
+        [ "$mod ALT, DELETE, exec, ${sessionCommands.colorPicker}" ] ++ [
+          ", xf86KbdBrightnessUp, exec, brightnessctl -d *::kbd_backlight set 33%+"
+          ", xf86KbdBrightnessDown, exec, brightnessctl -d *::kbd_backlight set 33%-"
+        ] ++ workspaceBindings;
 
       general = {
         gaps_in = 2;
@@ -155,8 +173,27 @@ in {
       layerrule =
         [ "blur,rofi" "ignorezero,rofi" "blur,waybar" "ignorezero,waybar" ];
 
+      plugin = {
+        hyprexpo = {
+          columns = 3;
+          gap_size = 4;
+          bg_col = rgba (hyprlandTheme.background or "#1e1e2e") "cc";
+          workspace_method = "center current";
+          gesture_distance = 300;
+        };
+
+        dynamic-cursors = {
+          enabled = true;
+          mode = "tilt";
+        };
+      };
+
       xwayland.force_zero_scaling = true;
     };
+    plugins = [
+      pkgs.hyprlandPlugins.hyprexpo
+      pkgs.hyprlandPlugins."hypr-dynamic-cursors"
+    ];
   } // lib.optionalAttrs (input.backend.type == "nixos") {
     package = null;
     portalPackage = null;

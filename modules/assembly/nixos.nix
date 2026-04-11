@@ -16,11 +16,6 @@ let
   buildHost = hostId: host:
     let
       system = host.platform.system;
-      pkgs = import inputs.nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      };
-
       projections = lib.filterAttrs (_: realization:
         realization.backend.type == "nixos" && realization.hostId == hostId)
         projection;
@@ -38,10 +33,10 @@ let
           lib.mapAttrs (_: modules: { imports = modules; }) homeModules;
       };
     in inputs.nixpkgs.lib.nixosSystem {
-      inherit pkgs;
       inherit system;
       specialArgs = { inherit inputs pipeline hostId; };
-      modules = (host.hardware.modules or [ ]) ++ systemModules
+      modules = [{ nixpkgs.config.allowUnfree = true; }]
+        ++ (host.hardware.modules or [ ]) ++ systemModules
         ++ [ inputs.home-manager.nixosModules.home-manager homeManagerBridge ];
     };
 in lib.mapAttrs buildHost nixosHosts

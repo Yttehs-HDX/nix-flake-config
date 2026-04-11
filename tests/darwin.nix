@@ -59,12 +59,45 @@ let
     };
   };
 
+  systemPackageEvaluated = import ./eval-profile.nix {
+    inherit lib inputs;
+    declarations = {
+      users.Alice = { };
+
+      hosts.MacTools = {
+        backend.type = "nix-darwin";
+        platform.system = "aarch64-darwin";
+        capabilities.system.enable = true;
+        capabilities.home.enable = true;
+        system.stateVersion = 6;
+        packages = {
+          docker.settings.storageDriver = "btrfs";
+          locale = { };
+          networking = { };
+          wireshark.settings.package = "qt";
+        };
+      };
+
+      relations."Alice@MacTools" = {
+        user = "Alice";
+        host = "MacTools";
+        identity.name = "alice";
+        state.home.stateVersion = "25.05";
+      };
+    };
+  };
+
   unsupportedInput = unsupportedEvaluated.pipeline.projectionInputs."Alice@Mac";
   unsupportedConfig = unsupportedEvaluated.assembly.darwinConfigurations.Mac;
   unsupportedWarnings =
     unsupportedConfig.config.home-manager.users.alice.warnings;
   unsupportedHomePackages = map (drv: drv.name)
     unsupportedConfig.config.home-manager.users.alice.home.packages;
+  systemPackageInput =
+    systemPackageEvaluated.pipeline.projectionInputs."Alice@MacTools";
+  systemPackageConfig =
+    systemPackageEvaluated.assembly.darwinConfigurations.MacTools;
+  systemWarnings = systemPackageConfig.config.warnings;
 in assert relation.backend.type == "nix-darwin";
 assert builtins.length relation.systemModules == 2;
 assert relation.homeModule != null;
@@ -87,4 +120,35 @@ assert builtins.any (warning: lib.hasInfix "Package `feishu`" warning)
 assert !(builtins.any (name: lib.hasPrefix "qq-" name) unsupportedHomePackages);
 assert !(builtins.any (name: lib.hasPrefix "feishu-" name)
   unsupportedHomePackages);
+assert builtins.hasAttr "docker" systemPackageInput.packages.system;
+assert builtins.hasAttr "locale" systemPackageInput.packages.system;
+assert builtins.hasAttr "networking" systemPackageInput.packages.system;
+assert builtins.hasAttr "wireshark" systemPackageInput.packages.system;
+assert systemPackageConfig.config.networking.hostName == "MacTools";
+assert systemPackageConfig.config.networking.localHostName == "MacTools";
+assert systemPackageConfig.config.networking.computerName == "MacTools";
+assert systemPackageConfig.config.time.timeZone == "Asia/Taipei";
+assert systemPackageConfig.config.environment.variables.LANG == "en_US.UTF-8";
+assert systemPackageConfig.config.environment.variables.LC_ALL == "en_US.UTF-8";
+assert systemPackageConfig.config.system.defaults.NSGlobalDomain.AppleMetricUnits
+  == 1;
+assert systemPackageConfig.config.system.defaults.NSGlobalDomain.AppleICUForce24HourTime;
+assert builtins.elem systemPackageConfig.pkgs.docker
+  systemPackageConfig.config.environment.systemPackages;
+assert builtins.elem systemPackageConfig.pkgs.docker-compose
+  systemPackageConfig.config.environment.systemPackages;
+assert builtins.elem systemPackageConfig.pkgs.wireshark-qt
+  systemPackageConfig.config.environment.systemPackages;
+assert builtins.any (warning:
+  lib.hasInfix "Package `docker` on nix-darwin installs the Docker CLI" warning)
+  systemWarnings;
+assert builtins.any (warning:
+  lib.hasInfix "ignores `settings.storageDriver` on nix-darwin" warning)
+  systemWarnings;
+assert builtins.any (warning:
+  lib.hasInfix "Package `locale` on nix-darwin currently projects timezone"
+  warning) systemWarnings;
+assert builtins.any (warning:
+  lib.hasInfix "Package `wireshark` on nix-darwin installs the application"
+  warning) systemWarnings;
 true

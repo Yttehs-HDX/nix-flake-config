@@ -1,6 +1,12 @@
 { lib, input }:
 let
-  registry = { hello = import ./hello.nix; };
+  registry = {
+    docker = import ./docker.nix;
+    hello = import ./hello.nix;
+    locale = import ./locale.nix;
+    networking = import ./networking.nix;
+    wireshark = import ./wireshark.nix;
+  };
 
   resolve = packageId: definition:
     if builtins.hasAttr packageId registry then

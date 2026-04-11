@@ -10,7 +10,7 @@ let
     cava = import ./cava.nix;
     cbonsai = import ./cbonsai.nix;
     clash-verge-rev = import ./clash-verge-rev.nix;
-    cliphist = null;
+    cliphist = import ./cliphist.nix;
     cmatrix = import ./cmatrix.nix;
     codex = import ./codex.nix;
     command-not-found = import ./command-not-found.nix;
@@ -37,10 +37,10 @@ let
     hmcl = import ./hmcl.nix;
     htop = import ./htop.nix;
     huggingface-hub = import ./huggingface-hub.nix;
-    hypridle = null;
+    hypridle = import ./hypridle.nix;
     hyprpicker = import ./hyprpicker.nix;
     hyprland = import ./hyprland.nix;
-    hyprpolkitagent = null;
+    hyprpolkitagent = import ./hyprpolkitagent.nix;
     jq = import ./jq.nix;
     jetbrains-toolbox = import ./jetbrains-toolbox.nix;
     kdeconnect = import ./kdeconnect.nix;
@@ -55,7 +55,6 @@ let
     net-tools = import ./net-tools.nix;
     network-manager = import ./network-manager.nix;
     nerd-fonts-jetbrains-mono = import ./nerd-fonts-jetbrains-mono.nix;
-    niri = import ./niri.nix;
     nix-index = import ./nix-index.nix;
     nixfmt-classic = import ./nixfmt-classic.nix;
     nmap = import ./nmap.nix;
@@ -78,10 +77,9 @@ let
     rofimoji = import ./rofimoji.nix;
     scrcpy = import ./scrcpy.nix;
     seahorse = import ./seahorse.nix;
-    swayidle = null;
     swaylock-effects = import ./swaylock-effects.nix;
     swaync = import ./swaync.nix;
-    swww = null;
+    swww = import ./swww.nix;
     swappy = import ./swappy.nix;
     tgpt = import ./tgpt.nix;
     tesseract = import ./tesseract.nix;

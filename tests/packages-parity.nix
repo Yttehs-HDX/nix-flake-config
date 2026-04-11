@@ -24,6 +24,7 @@ let
           blueman = { };
           cava = { };
           clash-verge-rev = { };
+          github-copilot-cli = { };
           direnv = { };
           embedded-dev = { };
           eza = { };
@@ -35,6 +36,7 @@ let
           gh = { };
           git = { };
           google-chrome = { };
+          hexecute = { };
           hmcl = { };
           htop = { };
           hyprland = { };
@@ -47,10 +49,12 @@ let
             rememberWindowSize = false;
             shellIntegrationMode = "no_cursor";
           };
+          mikusays = { };
           neovim = { };
           network-manager = { };
           nix-index = { };
           nmap = { };
+          onlyoffice = { };
           pipewire = { };
           qq = { };
           ripgrep = { };
@@ -85,7 +89,7 @@ let
           locale = { };
           nix-ld = { };
           networking = { };
-          niri = { };
+          nvidia = { };
           pipewire = { };
           rog-control-center = { };
           sddm = { };
@@ -143,12 +147,38 @@ let
     };
   };
 
+  wiresharkOnlyEvaluated = import ./eval-profile.nix {
+    inherit lib inputs;
+    declarations = {
+      users.Alice = { };
+
+      hosts.PacketLab = {
+        backend.type = "nixos";
+        platform.system = "x86_64-linux";
+        capabilities.system.enable = true;
+        capabilities.home.enable = true;
+        capabilities.userManagement.enable = true;
+        system.stateVersion = "25.11";
+        packages.wireshark.settings.package = "qt";
+      };
+
+      relations."Alice@PacketLab" = {
+        user = "Alice";
+        host = "PacketLab";
+        identity.name = "alice";
+        state.home.stateVersion = "25.05";
+      };
+    };
+  };
+
   nixosConfig = evaluated.assembly.nixosConfigurations.Workstation;
   homeConfig = nixosConfig.config.home-manager.users.alice;
   userConfig = nixosConfig.config.users.users.alice;
 
   commandNotFoundConfig =
     commandNotFoundEvaluated.assembly.nixosConfigurations.TerminalHost.config.home-manager.users.terminal;
+  wiresharkOnlyConfig =
+    wiresharkOnlyEvaluated.assembly.nixosConfigurations.PacketLab;
 in assert homeConfig.programs.bat.enable;
 assert homeConfig.home.sessionVariables.PAGER
   == "${nixosConfig.pkgs.bat}/bin/bat";
@@ -160,6 +190,8 @@ assert homeConfig.programs.fzf.enable;
 assert homeConfig.programs.fzf.enableZshIntegration;
 assert homeConfig.programs.gh.enable;
 assert homeConfig.programs.gh.gitCredentialHelper.enable;
+assert builtins.elem nixosConfig.pkgs.github-copilot-cli
+  homeConfig.home.packages;
 assert homeConfig.programs.git.enable;
 assert homeConfig.programs.direnv.enable;
 assert homeConfig.programs.direnv.silent;
@@ -174,6 +206,22 @@ assert homeConfig.home.sessionVariables.XMODIFIERS == "@im=fcitx";
 assert homeConfig.wayland.windowManager.hyprland.enable;
 assert builtins.elem "fcitx5 -d"
   homeConfig.wayland.windowManager.hyprland.settings.exec-once;
+assert builtins.elem "$mod, TAB, hyprexpo:expo, toggle"
+  homeConfig.wayland.windowManager.hyprland.settings.bind;
+assert builtins.elem "$mod, M, exec, hyprctl dispatch exit"
+  homeConfig.wayland.windowManager.hyprland.settings.bind;
+assert builtins.elem ", XF86AudioNext, exec, playerctl next"
+  homeConfig.wayland.windowManager.hyprland.settings.bindl;
+assert builtins.elem ", XF86MonBrightnessUp, exec, brightnessctl s 5%+"
+  homeConfig.wayland.windowManager.hyprland.settings.bindel;
+assert builtins.elem
+  ", xf86KbdBrightnessUp, exec, brightnessctl -d *::kbd_backlight set 33%+"
+  homeConfig.wayland.windowManager.hyprland.settings.bind;
+assert homeConfig.wayland.windowManager.hyprland.settings.plugin.hyprexpo.columns
+  == 3;
+assert homeConfig.wayland.windowManager.hyprland.settings.plugin.dynamic-cursors.mode
+  == "tilt";
+assert builtins.length homeConfig.wayland.windowManager.hyprland.plugins == 2;
 assert homeConfig.home.sessionVariables.XDG_CURRENT_DESKTOP == "Hyprland";
 assert homeConfig.home.sessionVariables.QT_QPA_PLATFORM == "wayland;xcb";
 assert homeConfig.programs.nix-index.enable;
@@ -186,9 +234,19 @@ assert homeConfig.programs.tmux.enable;
 assert homeConfig.programs.waybar.enable;
 assert homeConfig.programs.waybar.systemd.enable;
 assert homeConfig.programs.waybar.settings.main.position == "top";
+assert homeConfig.programs.waybar.settings.main.modules-left
+  == [ "group/hyprland" "cava" ];
+assert homeConfig.programs.waybar.settings.main.modules-center
+  == [ "group/misc" ];
 assert homeConfig.programs.waybar.settings.main."hyprland/workspaces".persistent-workspaces."*"
   == [ 1 2 3 4 5 6 ];
+assert homeConfig.programs.waybar.settings.main.cava.on-click
+  == "playerctl play-pause";
+assert homeConfig.programs.waybar.settings.main."custom/hexecute".tooltip-format
+  == "魔法使い";
 assert lib.hasInfix "@define-color accent" homeConfig.programs.waybar.style;
+assert lib.hasInfix "#cava" homeConfig.programs.waybar.style;
+assert lib.hasInfix "#custom-hexecute" homeConfig.programs.waybar.style;
 assert homeConfig.programs.yazi.enable;
 assert homeConfig.programs.yazi.enableZshIntegration;
 assert homeConfig.programs.zsh.enable;
@@ -208,6 +266,10 @@ assert homeConfig.programs.kitty.font.name == "JetBrainsMono Nerd Font";
 assert homeConfig.programs.kitty.font.size == 14.0;
 assert homeConfig.programs.kitty.settings.background_opacity == 0.9;
 assert homeConfig.programs.kitty.shellIntegration.enableZshIntegration;
+assert homeConfig.programs.onlyoffice.enable;
+assert homeConfig.programs.onlyoffice.settings.UITheme == "theme-night";
+assert homeConfig.programs.onlyoffice.settings.editorWindowMode == false;
+assert homeConfig.programs.onlyoffice.settings.locale == "zh-CN";
 assert homeConfig.programs.btop.enable;
 assert homeConfig.programs.cava.enable;
 assert homeConfig.services.blueman-applet.enable;
@@ -233,14 +295,22 @@ assert builtins.elem nixosConfig.pkgs.tgpt homeConfig.home.packages;
 assert builtins.elem nixosConfig.pkgs.tldr homeConfig.home.packages;
 assert builtins.elem nixosConfig.pkgs.wechat homeConfig.home.packages;
 assert builtins.elem nixosConfig.pkgs.wget homeConfig.home.packages;
+assert builtins.any
+  (warning: lib.hasInfix "Package `hexecute` is declared" warning)
+  homeConfig.warnings;
+assert builtins.any
+  (warning: lib.hasInfix "Package `mikusays` is declared" warning)
+  homeConfig.warnings;
 assert nixosConfig.config.programs.adb.enable;
 assert nixosConfig.config.virtualisation.docker.enable;
 assert nixosConfig.config.virtualisation.docker.storageDriver == "btrfs";
 assert nixosConfig.config.programs.clash-verge.enable;
 assert nixosConfig.config.programs.hyprland.enable;
-assert nixosConfig.config.programs.niri.enable;
 assert nixosConfig.config.programs.nix-ld.enable;
 assert nixosConfig.config.programs.neovim.enable;
+assert nixosConfig.config.nixpkgs.config.nvidia.acceptLicense;
+assert nixosConfig.config.nixpkgs.config.cudaSupport;
+assert nixosConfig.config.hardware.nvidia.prime.offload.enable;
 assert nixosConfig.config.services.asusd.enable;
 assert nixosConfig.config.services.blueman.enable;
 assert nixosConfig.config.services.displayManager.sddm.enable;
@@ -271,6 +341,10 @@ assert builtins.elem "docker" userConfig.extraGroups;
 assert builtins.elem "libvirtd" userConfig.extraGroups;
 assert builtins.elem "wireshark" userConfig.extraGroups;
 assert nixosConfig.config.zramSwap.enable;
+assert wiresharkOnlyConfig.config.virtualisation.libvirtd.enable;
+assert wiresharkOnlyConfig.config.virtualisation.spiceUSBRedirection.enable;
+assert builtins.elem "wireshark"
+  wiresharkOnlyConfig.config.users.users.alice.extraGroups;
 assert commandNotFoundConfig.programs."command-not-found".enable;
 assert lib.hasInfix "command_not_found_handler"
   commandNotFoundConfig.programs.zsh.initContent;

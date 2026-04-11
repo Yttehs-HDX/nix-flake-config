@@ -3,9 +3,7 @@
 let
   homePackages = input.packages.home or { };
   hasPackage = packageId: builtins.hasAttr packageId homePackages;
-  hasWaylandSession = hasPackage "hyprland" || hasPackage "niri";
-  hasHyprlandSession = hasPackage "hyprland";
-  hasNiriSession = hasPackage "niri";
+  hasWaylandSession = hasPackage "hyprland";
   lockCommand = if hasPackage "swaylock-effects" then
     "swaylock-themed"
   else
@@ -26,7 +24,7 @@ in lib.mkMerge [
     services.swww.enable = true;
   })
 
-  (lib.mkIf (hasHyprlandSession && hasPackage "hypridle") {
+  (lib.mkIf (hasWaylandSession && hasPackage "hypridle") {
     services.hypridle = {
       enable = true;
       systemdTarget = "hyprland-session.target";
@@ -48,26 +46,6 @@ in lib.mkMerge [
           }
         ];
       };
-    };
-  })
-
-  (lib.mkIf (hasNiriSession && hasPackage "swayidle") {
-    services.swayidle = {
-      enable = true;
-      events = [{
-        event = "before-sleep";
-        command = lockCommand;
-      }];
-      timeouts = [
-        {
-          timeout = 300;
-          command = lockCommand;
-        }
-        {
-          timeout = 600;
-          command = "niri msg action power-off-monitors";
-        }
-      ];
     };
   })
 ]
