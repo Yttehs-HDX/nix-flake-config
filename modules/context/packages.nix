@@ -1,6 +1,15 @@
 { lib, current }:
-let enabled = lib.filterAttrs (_: definition: definition.enable);
+let
+  packageCatalog = import ../internal/package-catalog.nix { inherit lib; };
+  enabled = scope: definitions:
+    lib.filterAttrs (packageId: definition:
+      definition.enable && packageCatalog.supportedFor scope current packageId)
+    definitions;
 in {
-  home = if current.scopes.home then enabled current.user.packages else { };
-  system = if current.scopes.system then enabled current.host.packages else { };
+  home =
+    if current.scopes.home then enabled "home" current.user.packages else { };
+  system = if current.scopes.system then
+    enabled "system" current.host.packages
+  else
+    { };
 }

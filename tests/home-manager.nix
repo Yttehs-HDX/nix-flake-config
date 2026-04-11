@@ -53,4 +53,5 @@ assert homeConfig.config.programs.home-manager.enable;
 assert builtins.elem homeConfig.pkgs.hello homeConfig.config.home.packages;
 assert darwinProjectionInput.identity.homeDirectory == "/Users/alice";
 assert darwinHomeConfig.config.home.homeDirectory == "/Users/alice";
+assert darwinProjectionInput.theme == null;
 true

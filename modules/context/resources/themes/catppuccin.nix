@@ -1,4 +1,4 @@
-{ theme }:
+{ theme, desktopEnabled ? false, platformSystem ? null, lib }:
 let
   palettes = {
     latte = {
@@ -118,13 +118,163 @@ let
   flavor = theme.flavor or "mocha";
   accentName = theme.accent or "lavender";
   palette = palettes.${flavor} or palettes.mocha;
+  isLinuxDesktop = desktopEnabled && platformSystem != null
+    && builtins.match ".*-linux" platformSystem != null;
+  capitalize = value:
+    if value == "" then
+      value
+    else
+      let
+        first = builtins.substring 0 1 value;
+        rest = builtins.substring 1 ((builtins.stringLength value) - 1) value;
+      in "${lib.toUpper first}${rest}";
+  fontValue = value:
+    if value == null then
+      null
+    else if builtins.isAttrs value then
+      value.family or null
+    else
+      value;
+  firstNonNull = values:
+    let filtered = builtins.filter (value: value != null) values;
+    in if filtered == [ ] then null else builtins.head filtered;
+  sourceFonts = theme.fonts or { };
+  sansFamily = firstNonNull [
+    (fontValue (sourceFonts.sans or null))
+    (fontValue (sourceFonts.default or null))
+    "DejaVu Sans"
+  ];
+  monospaceFamily = firstNonNull [
+    (fontValue (sourceFonts.monospace or null))
+    (fontValue (sourceFonts.mono or null))
+    "JetBrainsMono Nerd Font"
+  ];
+  emojiFamily =
+    firstNonNull [ (fontValue (sourceFonts.emoji or null)) "Noto Color Emoji" ];
+  themeId = "catppuccin-${flavor}-${accentName}";
+  cursorVariant = "${flavor}${capitalize accentName}";
+  cursorName = "Catppuccin-${capitalize flavor}-${capitalize accentName}";
 in {
   name = "catppuccin";
   inherit flavor;
   accent = palette.${accentName} or palette.lavender;
   accentName = accentName;
+  fonts = {
+    sans = { family = sansFamily; };
+    monospace = { family = monospaceFamily; };
+    emoji = { family = emojiFamily; };
+  };
   palette = palette // {
     accent = palette.${accentName} or palette.lavender;
     accentName = accentName;
+  };
+  desktop = if !isLinuxDesktop then
+    null
+  else {
+    provider = "catppuccin";
+    desktopScoped = true;
+    linuxOnly = true;
+
+    resources = {
+      palette = palette // {
+        accent = palette.${accentName} or palette.lavender;
+        accentName = accentName;
+      };
+
+      fonts = {
+        sans = { family = sansFamily; };
+        monospace = { family = monospaceFamily; };
+        emoji = { family = emojiFamily; };
+      };
+
+      gtk = {
+        enable = true;
+        preferDark = flavor != "latte";
+        font = {
+          family = sansFamily;
+          size = 12;
+        };
+        iconTheme = {
+          provider = "papirus-icon-theme";
+          name = "Papirus-Dark";
+        };
+        cursorTheme = {
+          provider = "catppuccin-cursors";
+          variant = cursorVariant;
+          name = cursorName;
+          size = 24;
+        };
+        theme = {
+          provider = "catppuccin-gtk";
+          name = "${themeId}-compact";
+          variant = flavor;
+          accent = accentName;
+          size = "compact";
+        };
+      };
+
+      qt = {
+        enable = true;
+        platformTheme = "gtk";
+        style = "kvantum";
+        kvantum = {
+          provider = "catppuccin-kvantum";
+          name = themeId;
+          variant = flavor;
+          accent = accentName;
+        };
+      };
+    };
+
+    consumers = {
+      fcitx5 = { addonPackages = [ "catppuccin-fcitx5" ]; };
+
+      hyprland = {
+        activeBorder = [ palette.mauve palette.rosewater ];
+        inactiveBorder = [ palette.lavender palette.overlay0 ];
+      };
+
+      rofi = {
+        font = {
+          family = sansFamily;
+          size = 12;
+        };
+        window = {
+          width = 800;
+          height = "480px";
+        };
+        colors = {
+          border = palette.blue;
+          background = "${palette.base}bf";
+          backgroundLight = "${palette.surface0}b3";
+          foreground = palette.text;
+          highlight = palette.red;
+          accent = "${palette.${accentName} or palette.lavender}cc";
+          text = palette.overlay0;
+          blue = palette.blue;
+        };
+      };
+
+      waybar = {
+        font = {
+          family = sansFamily;
+          size = 17;
+        };
+        colors = palette // {
+          accent = palette.${accentName} or palette.lavender;
+          accentName = accentName;
+          surface0Alpha = "alpha(@surface0, 0.8)";
+          baseAlpha = "alpha(@base, 0.6)";
+          borderAlpha = "alpha(@accent, 0.7)";
+        };
+        calendar = {
+          months = palette.rosewater;
+          days = palette.pink;
+          weeks = palette.teal;
+          weekdays = palette.yellow;
+          today = palette.red;
+        };
+      };
+    };
   };
 }

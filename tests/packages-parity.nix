@@ -6,11 +6,15 @@ let
       users.Alice = {
         meta.displayName = "Alice Example";
         preferences.shell = "zsh";
-        capabilities.theme.enable = true;
+        capabilities = {
+          desktop.enable = true;
+          theme.enable = true;
+        };
         theme = {
           name = "catppuccin";
           accent = "lavender";
           flavor = "mocha";
+          fonts.sans = "SF Pro";
           fonts.monospace.family = "JetBrainsMono Nerd Font";
         };
         packages = {
@@ -19,10 +23,12 @@ let
           direnv = { };
           eza = { };
           fastfetch = { };
+          fcitx5 = { };
           fzf = { };
           gh = { };
           git = { };
           htop = { };
+          hyprland = { };
           jq = { };
           kitty.settings = {
             fontSize = 14.0;
@@ -34,9 +40,11 @@ let
           nix-index = { };
           nmap = { };
           ripgrep = { };
+          rofi = { };
           tgpt = { };
           tldr = { };
           tmux = { };
+          waybar = { };
           wget = { };
           yazi = { };
           zsh = { };
@@ -126,10 +134,30 @@ assert homeConfig.programs.direnv.enable;
 assert homeConfig.programs.direnv.silent;
 assert homeConfig.programs.direnv.nix-direnv.enable;
 assert homeConfig.programs.htop.enable;
+assert homeConfig.i18n.inputMethod.enable;
+assert homeConfig.i18n.inputMethod.type == "fcitx5";
+assert builtins.elem nixosConfig.pkgs.catppuccin-fcitx5
+  homeConfig.i18n.inputMethod.fcitx5.addons;
+assert homeConfig.home.sessionVariables.GLFW_IM_MODULE == "ibus";
+assert homeConfig.home.sessionVariables.XMODIFIERS == "@im=fcitx";
+assert homeConfig.wayland.windowManager.hyprland.enable;
+assert builtins.elem "fcitx5 -d"
+  homeConfig.wayland.windowManager.hyprland.settings.exec-once;
+assert homeConfig.home.sessionVariables.XDG_CURRENT_DESKTOP == "Hyprland";
+assert homeConfig.home.sessionVariables.QT_QPA_PLATFORM == "wayland;xcb";
 assert homeConfig.programs.nix-index.enable;
 assert homeConfig.programs.nix-index.enableZshIntegration;
 assert homeConfig.programs.ripgrep.enable;
+assert homeConfig.programs.rofi.enable;
+assert homeConfig.programs.rofi.terminal == "kitty";
+assert homeConfig.programs.rofi.font == "SF Pro 12";
 assert homeConfig.programs.tmux.enable;
+assert homeConfig.programs.waybar.enable;
+assert homeConfig.programs.waybar.systemd.enable;
+assert homeConfig.programs.waybar.settings.main.position == "top";
+assert homeConfig.programs.waybar.settings.main."hyprland/workspaces".persistent-workspaces."*"
+  == [ 1 2 3 4 5 6 ];
+assert lib.hasInfix "@define-color accent" homeConfig.programs.waybar.style;
 assert homeConfig.programs.yazi.enable;
 assert homeConfig.programs.yazi.enableZshIntegration;
 assert homeConfig.programs.zsh.enable;
@@ -160,10 +188,14 @@ assert builtins.elem nixosConfig.pkgs.tldr homeConfig.home.packages;
 assert builtins.elem nixosConfig.pkgs.wget homeConfig.home.packages;
 assert nixosConfig.config.virtualisation.docker.enable;
 assert nixosConfig.config.virtualisation.docker.storageDriver == "btrfs";
+assert nixosConfig.config.programs.hyprland.enable;
 assert nixosConfig.config.programs.nix-ld.enable;
 assert nixosConfig.config.programs.virt-manager.enable;
 assert nixosConfig.config.virtualisation.libvirtd.enable;
 assert nixosConfig.config.virtualisation.spiceUSBRedirection.enable;
+assert nixosConfig.config.xdg.portal.enable;
+assert builtins.elem nixosConfig.config.programs.hyprland.portalPackage
+  nixosConfig.config.xdg.portal.extraPortals;
 assert nixosConfig.config.programs.wireshark.enable;
 assert nixosConfig.config.programs.wireshark.package
   == nixosConfig.pkgs.wireshark-qt;

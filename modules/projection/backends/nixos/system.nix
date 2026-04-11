@@ -2,9 +2,11 @@
 { lib, config ? { users.mutableUsers = true; }, ... }:
 let
   packageModules = import ./packages/default.nix { inherit lib input; };
+  integrationModules =
+    import ./integrations/home-packages.nix { inherit lib input; };
   hasInitialHashedPassword = input.account.initialHashedPassword != null;
 in {
-  imports = packageModules;
+  imports = packageModules ++ integrationModules;
 
   networking.hostName = input.hostId;
   system.stateVersion = input.current.host.system.stateVersion;

@@ -9,5 +9,8 @@ lib.mapAttrs (_: instance:
       inherit lib;
       current = current;
     };
-    theme = import ./theme.nix { current = current; };
+    theme = import ./theme.nix {
+      inherit lib;
+      current = current;
+    };
   }) instances

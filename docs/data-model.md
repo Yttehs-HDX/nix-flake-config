@@ -774,12 +774,38 @@ profile.current = {
 
   capabilities = { ... };
   preferences = { ... };
-  theme = { ... };
+  theme = {
+    name = "catppuccin";
+    palette = { ... };
+
+    # 仅在 Linux + desktop.enable 时出现的桌面资源提供面
+    desktop = {
+      provider = "catppuccin";
+
+      resources = {
+        gtk = { ... };
+        qt = { ... };
+        fonts = { ... };
+      };
+
+      consumers = {
+        rofi = { ... };
+        waybar = { ... };
+        fcitx5 = { ... };
+      };
+    };
+  };
 };
 ```
 
 它的作用是给模块一个统一读取面，  
 避免模块到处手撕 `users / hosts / relations` 三层结构。
+
+其中：
+- `profile.current.theme` 仍是稳定的主题读取入口
+- `profile.current.theme.desktop` 表示桌面层主题资源提供者
+- app projector 应优先消费 `theme.desktop.resources` / `theme.desktop.consumers`
+- 若当前 relation 不是 Linux desktop relation，则 `theme.desktop = null`
 
 ---
 ## 公共接口与私有接口

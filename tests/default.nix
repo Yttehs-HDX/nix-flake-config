@@ -18,5 +18,6 @@ let
     (import ./nixos.nix { inherit lib inputs; })
     (import ./home-manager.nix { inherit lib inputs; })
     (import ./darwin.nix { inherit lib inputs; })
+    (import ./desktop.nix { inherit lib inputs; })
   ];
 in builtins.deepSeq results { inherit profile pipeline projection; }
