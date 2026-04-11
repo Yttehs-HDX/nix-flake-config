@@ -115,8 +115,8 @@
     yazi = { };
     zip = { };
     zsh = { };
-    # hexecute = { };
-    # mikusays = { };
+    hexecute = { };
+    mikusays = { };
     kitty.settings = {
       fontSize = 14.0;
       backgroundOpacity = 0.9;

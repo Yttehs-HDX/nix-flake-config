@@ -28,7 +28,7 @@ let
       homeManagerBridge = {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
-        home-manager.extraSpecialArgs = { inherit pipeline; };
+        home-manager.extraSpecialArgs = { inherit inputs pipeline; };
         home-manager.users =
           lib.mapAttrs (_: modules: { imports = modules; }) homeModules;
       };

@@ -174,12 +174,24 @@ let
   nixosConfig = evaluated.assembly.nixosConfigurations.Workstation;
   homeConfig = nixosConfig.config.home-manager.users.alice;
   userConfig = nixosConfig.config.users.users.alice;
+  projectionInput = evaluated.pipeline.projectionInputs."Alice@Workstation";
+  system = nixosConfig.pkgs.stdenv.hostPlatform.system;
+  unstablePkgs = import inputs.nixpkgs-unstable {
+    inherit system;
+    config.allowUnfree = true;
+  };
+  hexecutePackage = inputs.hexecute.packages.${system}.default;
+  mikusaysPackage = inputs.nur.legacyPackages.${system}.repos.zerozawa.mikusays;
 
   commandNotFoundConfig =
     commandNotFoundEvaluated.assembly.nixosConfigurations.TerminalHost.config.home-manager.users.terminal;
   wiresharkOnlyConfig =
     wiresharkOnlyEvaluated.assembly.nixosConfigurations.PacketLab;
 in assert homeConfig.programs.bat.enable;
+assert projectionInput.packages.home.hexecute.enable;
+assert projectionInput.packages.home.mikusays.enable;
+assert projectionInput.packages.home.neovim.enable;
+assert !(builtins.hasAttr "nixvim" projectionInput.packages.home);
 assert homeConfig.home.sessionVariables.PAGER
   == "${nixosConfig.pkgs.bat}/bin/bat";
 assert homeConfig.programs.eza.enable;
@@ -277,9 +289,37 @@ assert homeConfig.services.kdeconnect.enable;
 assert homeConfig.services.kdeconnect.indicator;
 assert homeConfig.services.network-manager-applet.enable;
 assert homeConfig.services.udiskie.enable;
-assert homeConfig.programs.neovim.enable;
-assert homeConfig.programs.neovim.defaultEditor;
+assert homeConfig.programs.nixvim.enable;
+assert homeConfig.programs.nixvim.defaultEditor;
+assert homeConfig.programs.nixvim.opts.number;
+assert homeConfig.programs.nixvim.opts.relativenumber;
+assert homeConfig.programs.nixvim.opts.shiftwidth == 2;
+assert homeConfig.programs.nixvim.plugins.lualine.enable;
+assert homeConfig.programs.nixvim.plugins.treesitter.enable;
+assert homeConfig.programs.nixvim.plugins.nvim-tree.openOnSetup;
+assert homeConfig.programs.nixvim.plugins.cmp.enable;
+assert builtins.any (source: source.name == "copilot")
+  homeConfig.programs.nixvim.plugins.cmp.settings.sources;
+assert homeConfig.programs.nixvim.plugins.cmp.settings.mapping."<Tab>".__raw
+  == "cmp.mapping.select_next_item()";
+assert homeConfig.programs.nixvim.plugins.cmp-conventionalcommits.enable;
+assert homeConfig.programs.nixvim.plugins.cmp-git.enable;
+assert homeConfig.programs.nixvim.plugins.cmp-zsh.enable;
+assert homeConfig.programs.nixvim.plugins.copilot-lua.enable;
+assert homeConfig.programs.nixvim.plugins.copilot-lua.settings.filetypes.markdown
+  == false;
+assert homeConfig.programs.nixvim.plugins.copilot-cmp.enable;
+assert homeConfig.programs.nixvim.plugins.copilot-chat.enable;
+assert homeConfig.programs.nixvim.plugins.render-markdown.enable;
+assert homeConfig.programs.nixvim.plugins.markdown-preview.enable;
+assert homeConfig.programs.nixvim.plugins.trouble.enable;
+assert homeConfig.programs.nixvim.plugins.nvim-lightbulb.enable;
+assert homeConfig.programs.nixvim.plugins.lsp.servers.sqls.enable;
+assert homeConfig.programs.nixvim.plugins.lsp.servers.texlab.enable;
+assert homeConfig.programs.nixvim.colorschemes.catppuccin.enable;
+assert !homeConfig.programs.neovim.enable;
 assert homeConfig.programs.vscode.enable;
+assert homeConfig.programs.vscode.package == unstablePkgs.vscode;
 assert homeConfig.xdg.configFile."btop/themes/catppuccin-mocha.theme".text
   != "";
 assert builtins.elem nixosConfig.pkgs.android-tools homeConfig.home.packages;
@@ -295,10 +335,12 @@ assert builtins.elem nixosConfig.pkgs.tgpt homeConfig.home.packages;
 assert builtins.elem nixosConfig.pkgs.tldr homeConfig.home.packages;
 assert builtins.elem nixosConfig.pkgs.wechat homeConfig.home.packages;
 assert builtins.elem nixosConfig.pkgs.wget homeConfig.home.packages;
-assert builtins.any
+assert builtins.elem hexecutePackage homeConfig.home.packages;
+assert builtins.elem mikusaysPackage homeConfig.home.packages;
+assert !builtins.any
   (warning: lib.hasInfix "Package `hexecute` is declared" warning)
   homeConfig.warnings;
-assert builtins.any
+assert !builtins.any
   (warning: lib.hasInfix "Package `mikusays` is declared" warning)
   homeConfig.warnings;
 assert nixosConfig.config.programs.adb.enable;
@@ -307,7 +349,7 @@ assert nixosConfig.config.virtualisation.docker.storageDriver == "btrfs";
 assert nixosConfig.config.programs.clash-verge.enable;
 assert nixosConfig.config.programs.hyprland.enable;
 assert nixosConfig.config.programs.nix-ld.enable;
-assert nixosConfig.config.programs.neovim.enable;
+assert !nixosConfig.config.programs.neovim.enable;
 assert nixosConfig.config.nixpkgs.config.nvidia.acceptLicense;
 assert nixosConfig.config.nixpkgs.config.cudaSupport;
 assert nixosConfig.config.hardware.nvidia.prime.offload.enable;

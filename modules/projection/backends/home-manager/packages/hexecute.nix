@@ -1,6 +1,4 @@
 { ... }:
-{ ... }: {
-  warnings = [
-    "Package `hexecute` is declared, but this repository no longer carries the external package input required to build it. Install it manually or restore the upstream flake input."
-  ];
-}
+{ pkgs, inputs, ... }:
+let packageSources = import ./package-sources.nix { inherit pkgs inputs; };
+in { home.packages = [ packageSources.homeCustomSources.hexecute ]; }

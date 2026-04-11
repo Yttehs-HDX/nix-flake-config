@@ -1,6 +1,4 @@
 { ... }:
-{ ... }: {
-  warnings = [
-    "Package `mikusays` is declared, but the old implementation depended on NUR and this repository does not currently expose that input. Install it manually or reintroduce the NUR dependency."
-  ];
-}
+{ pkgs, inputs, ... }:
+let packageSources = import ./package-sources.nix { inherit pkgs inputs; };
+in { home.packages = [ packageSources.homeCustomSources.mikusays ]; }

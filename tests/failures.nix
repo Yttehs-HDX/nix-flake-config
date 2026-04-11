@@ -229,6 +229,20 @@ let
     };
   }).pipeline.instances);
 
+  renamedEditorEntry = builtins.tryEval ((evalProfile {
+    users.Alice = { packages = { nixvim = { }; }; };
+    hosts.Workspace = {
+      backend.type = "home-manager";
+      platform.system = "x86_64-linux";
+      capabilities.home.enable = true;
+    };
+    relations."Alice@Workspace" = {
+      user = "Alice";
+      host = "Workspace";
+      state.home.stateVersion = "25.05";
+    };
+  }).pipeline.instances);
+
   unsupportedNiriProjection = builtins.tryEval ((evalProfile {
     users.Alice = {
       capabilities.desktop.enable = true;
@@ -280,6 +294,7 @@ assert !invalidNixosHomeCapabilityMismatch.success;
 assert !invalidDarwinPlatformMismatch.success;
 assert !invalidHomeManagerSystemPackages.success;
 assert !conflictingCommandDiscoveryPackages.success;
+assert !renamedEditorEntry.success;
 assert !unsupportedNiriProjection.success;
 assert invalidInitialHashedPasswordWithMutableUsersFalse.success;
 

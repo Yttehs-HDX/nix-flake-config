@@ -4,7 +4,6 @@ let
     android-tools = import ./android-tools.nix;
     clash-verge-rev = import ./clash-verge-rev.nix;
     embedded-dev = import ./embedded-dev.nix;
-    neovim = import ./neovim.nix;
     zsh = import ./zsh.nix;
   };
   packageIds =
