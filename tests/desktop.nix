@@ -117,6 +117,45 @@ let
   linuxNoDesktopInput =
     linuxNoDesktopEvaluated.pipeline.projectionInputs."Alice@ServerHome";
 
+  linuxUnthemedDesktopEvaluated = import ./eval-profile.nix {
+    inherit lib inputs;
+    declarations = {
+      users.Alice = {
+        preferences.terminal = "foot";
+        capabilities = {
+          desktop.enable = true;
+          theme.enable = false;
+        };
+        packages = {
+          hyprland = { };
+          swaylock-effects = { };
+        };
+      };
+
+      hosts.Unthemed = {
+        backend.type = "home-manager";
+        platform.system = "x86_64-linux";
+        capabilities = {
+          home.enable = true;
+          desktop.enable = true;
+        };
+      };
+
+      relations."Alice@Unthemed" = {
+        user = "Alice";
+        host = "Unthemed";
+        activation = {
+          desktop.enable = true;
+          theme.enable = false;
+        };
+        state.home.stateVersion = "25.05";
+      };
+    };
+  };
+
+  linuxUnthemedHome =
+    linuxUnthemedDesktopEvaluated.assembly.homeConfigurations."alice@Unthemed";
+
   darwinDesktopEvaluated = import ./eval-profile.nix {
     inherit lib inputs;
     declarations = {
@@ -245,6 +284,15 @@ assert !linuxNoDesktopHome.config.gtk.enable;
 assert !linuxNoDesktopHome.config.qt.enable;
 assert !linuxNoDesktopHome.config.programs.swaylock.enable;
 assert !linuxNoDesktopHome.config.services.swaync.enable;
+assert linuxUnthemedHome.config.wayland.windowManager.hyprland.enable;
+assert linuxUnthemedHome.config.wayland.windowManager.hyprland.settings.general."col.active_border"
+  == "rgba(cba6f7ff) rgba(f5e0dcff) 45deg";
+assert linuxUnthemedHome.config.wayland.windowManager.hyprland.settings.general."col.inactive_border"
+  == "rgba(b4befecc) rgba(6c7086cc) 45deg";
+assert linuxUnthemedHome.config.wayland.windowManager.hyprland.settings.plugin.hyprexpo.bg_col
+  == "rgba(1e1e2ecc)";
+assert linuxUnthemedHome.config.programs.swaylock.enable;
+assert linuxUnthemedHome.config.programs.swaylock.settings == { };
 assert darwinInput.theme.desktop == null;
 assert !darwinConfig.config.home-manager.users.alice.programs.rofi.enable;
 assert !darwinConfig.config.home-manager.users.alice.programs.waybar.enable;

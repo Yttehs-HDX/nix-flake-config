@@ -8,7 +8,7 @@ let
   else
     null;
   stripHash = color: lib.removePrefix "#" color;
-  swaylockSettings = {
+  swaylockSettings = if swaylockTheme != null then {
     screenshots = true;
     clock = true;
     font = swaylockTheme.font.family or null;
@@ -26,7 +26,8 @@ let
     "line-color" = swaylockTheme.colors.line or "00000000";
     "inside-color" = swaylockTheme.colors.inside or "00000088";
     "separator-color" = swaylockTheme.colors.separator or "00000000";
-  };
+  } else
+    { };
   swaylockThemed = pkgs.writeShellApplication {
     name = "swaylock-themed";
     runtimeInputs = [ config.programs.swaylock.package ];

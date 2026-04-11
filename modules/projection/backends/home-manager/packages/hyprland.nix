@@ -7,6 +7,22 @@ let
     desktopTheme.consumers.hyprland or null
   else
     null;
+  activeBorderColors = if hyprlandTheme != null then
+    hyprlandTheme.activeBorder or [ "#cba6f7" "#f5e0dc" ]
+  else [
+    "#cba6f7"
+    "#f5e0dc"
+  ];
+  inactiveBorderColors = if hyprlandTheme != null then
+    hyprlandTheme.inactiveBorder or [ "#b4befe" "#6c7086" ]
+  else [
+    "#b4befe"
+    "#6c7086"
+  ];
+  expoBackground = if hyprlandTheme != null then
+    hyprlandTheme.background or "#1e1e2e"
+  else
+    "#1e1e2e";
   sessionCommands =
     import ../integrations/session-commands.nix { inherit input; };
   stripHash = color: lib.removePrefix "#" color;
@@ -117,16 +133,11 @@ in {
         gaps_in = 2;
         gaps_out = 4.5;
         border_size = 2;
-        "col.active_border" = rgba (builtins.elemAt
-          (hyprlandTheme.activeBorder or [ "#cba6f7" "#f5e0dc" ]) 0) "ff" + " "
-          + rgba (builtins.elemAt
-            (hyprlandTheme.activeBorder or [ "#cba6f7" "#f5e0dc" ]) 1) "ff"
-          + " 45deg";
-        "col.inactive_border" = rgba (builtins.elemAt
-          (hyprlandTheme.inactiveBorder or [ "#b4befe" "#6c7086" ]) 0) "cc"
-          + " " + rgba (builtins.elemAt
-            (hyprlandTheme.inactiveBorder or [ "#b4befe" "#6c7086" ]) 1) "cc"
-          + " 45deg";
+        "col.active_border" = rgba (builtins.elemAt activeBorderColors 0) "ff"
+          + " " + rgba (builtins.elemAt activeBorderColors 1) "ff" + " 45deg";
+        "col.inactive_border" =
+          rgba (builtins.elemAt inactiveBorderColors 0) "cc" + " "
+          + rgba (builtins.elemAt inactiveBorderColors 1) "cc" + " 45deg";
         resize_on_border = true;
         layout = "dwindle";
       };
@@ -177,7 +188,7 @@ in {
         hyprexpo = {
           columns = 3;
           gap_size = 4;
-          bg_col = rgba (hyprlandTheme.background or "#1e1e2e") "cc";
+          bg_col = rgba expoBackground "cc";
           workspace_method = "center current";
           gesture_distance = 300;
         };
