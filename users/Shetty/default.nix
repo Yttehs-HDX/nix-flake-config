@@ -79,7 +79,6 @@
     obs-studio = { };
     onlyoffice = { };
     osu-lazer-bin = { };
-    pipewire = { };
     pipes-rs = { };
     poppler-utils = { };
     pulseaudio = { };
@@ -88,7 +87,6 @@
     rofi = { };
     scrcpy = { };
     seahorse = { };
-    # helper programs for hyprland keybindings
     wl-clipboard = { };
     rofimoji = { };
     grimblast = { };

@@ -66,7 +66,6 @@ let
     ocr = import ./ocr.nix;
     onlyoffice = import ./onlyoffice.nix;
     osu-lazer-bin = import ./osu-lazer-bin.nix;
-    pipewire = import ./pipewire.nix;
     pipes-rs = import ./pipes-rs.nix;
     playerctl = import ./playerctl.nix;
     poppler-utils = import ./poppler-utils.nix;

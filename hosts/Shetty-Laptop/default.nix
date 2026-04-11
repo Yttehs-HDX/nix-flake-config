@@ -38,6 +38,7 @@
     networking = { };
     nix-ld = { };
     nvidia = { };
+    pipewire = { };
     refind = { };
     rog-control-center = { };
     sddm = { };

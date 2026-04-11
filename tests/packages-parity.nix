@@ -55,7 +55,6 @@ let
           nix-index = { };
           nmap = { };
           onlyoffice = { };
-          pipewire = { };
           qq = { };
           ripgrep = { };
           rofi = { };
