@@ -1,1 +1,1 @@
-{ ... }: { pkgs, ... }: { home.packages = [ pkgs.lazydocker ]; }
+{ ... }: { pkgs, ... }: { programs.lazydocker.enable = true; }
