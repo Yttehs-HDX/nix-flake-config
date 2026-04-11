@@ -383,8 +383,8 @@ assert builtins.elem "docker" userConfig.extraGroups;
 assert builtins.elem "libvirtd" userConfig.extraGroups;
 assert builtins.elem "wireshark" userConfig.extraGroups;
 assert nixosConfig.config.zramSwap.enable;
-assert wiresharkOnlyConfig.config.virtualisation.libvirtd.enable;
-assert wiresharkOnlyConfig.config.virtualisation.spiceUSBRedirection.enable;
+assert !wiresharkOnlyConfig.config.virtualisation.libvirtd.enable;
+assert !wiresharkOnlyConfig.config.virtualisation.spiceUSBRedirection.enable;
 assert builtins.elem "wireshark"
   wiresharkOnlyConfig.config.users.users.alice.extraGroups;
 assert commandNotFoundConfig.programs."command-not-found".enable;

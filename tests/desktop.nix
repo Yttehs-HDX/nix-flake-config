@@ -156,6 +156,39 @@ let
   linuxUnthemedHome =
     linuxUnthemedDesktopEvaluated.assembly.homeConfigurations."alice@Unthemed";
 
+  nixosDesktopRelationOffEvaluated = import ./eval-profile.nix {
+    inherit lib inputs;
+    declarations = {
+      users.Alice.capabilities.desktop.enable = true;
+
+      hosts.Workstation = {
+        backend.type = "nixos";
+        platform.system = "x86_64-linux";
+        capabilities = {
+          system.enable = true;
+          home.enable = true;
+          desktop.enable = true;
+          userManagement.enable = true;
+        };
+        system.stateVersion = "25.11";
+        packages.sddm = { };
+      };
+
+      relations."Alice@Workstation" = {
+        user = "Alice";
+        host = "Workstation";
+        identity.name = "alice";
+        activation.desktop.enable = false;
+        state.home.stateVersion = "25.05";
+      };
+    };
+  };
+
+  nixosDesktopRelationOffInput =
+    nixosDesktopRelationOffEvaluated.pipeline.projectionInputs."Alice@Workstation";
+  nixosDesktopRelationOffConfig =
+    nixosDesktopRelationOffEvaluated.assembly.nixosConfigurations.Workstation;
+
   darwinDesktopEvaluated = import ./eval-profile.nix {
     inherit lib inputs;
     declarations = {
@@ -293,6 +326,9 @@ assert linuxUnthemedHome.config.wayland.windowManager.hyprland.settings.plugin.h
   == "rgba(1e1e2ecc)";
 assert linuxUnthemedHome.config.programs.swaylock.enable;
 assert linuxUnthemedHome.config.programs.swaylock.settings == { };
+assert nixosDesktopRelationOffInput.packages.system.sddm.enable;
+assert nixosDesktopRelationOffConfig.config.services.displayManager.sddm.enable;
+assert !nixosDesktopRelationOffConfig.config.home-manager.users.alice.wayland.windowManager.hyprland.enable;
 assert darwinInput.theme.desktop == null;
 assert !darwinConfig.config.home-manager.users.alice.programs.rofi.enable;
 assert !darwinConfig.config.home-manager.users.alice.programs.waybar.enable;

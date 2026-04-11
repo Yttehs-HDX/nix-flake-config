@@ -157,8 +157,10 @@ let
     else
       null;
 
-  desktopEnabled = current:
-    if current ? effectiveCapabilities then
+  desktopEnabledFor = scope: current:
+    if scope == "system" then
+      current.host.capabilities.desktop.enable
+    else if current ? effectiveCapabilities then
       current.effectiveCapabilities.desktop.enable
     else if current ? current then
       current.current.effectiveCapabilities.desktop.enable
@@ -194,7 +196,8 @@ let
       metadata = metadataFor scope packageId;
       platform = platformInfo current;
     in (!(metadata.linuxOnly or false) || platform.isLinuxPlatform)
-    && (!(metadata.requiresDesktop or false) || desktopEnabled current);
+    && (!(metadata.requiresDesktop or false)
+      || desktopEnabledFor scope current);
 
   unsupportedInfoFor = scope: current: packageId:
     let

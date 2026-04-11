@@ -8,9 +8,4 @@ in {
     enable = true;
     inherit package;
   };
-
-  virtualisation = {
-    libvirtd.enable = true;
-    spiceUSBRedirection.enable = true;
-  };
 }
