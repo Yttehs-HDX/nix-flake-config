@@ -57,11 +57,6 @@ in {
       };
     };
 
-    roles = lib.mkOption {
-      type = types.listOf types.str;
-      default = [ ];
-    };
-
     system = lib.mkOption {
       type = types.submodule {
         options.stateVersion = lib.mkOption {
@@ -82,28 +77,8 @@ in {
       default = { };
     };
 
-    networking = lib.mkOption {
-      type = types.attrs;
-      default = { };
-    };
-
-    security = lib.mkOption {
-      type = types.attrs;
-      default = { };
-    };
-
-    desktop = lib.mkOption {
-      type = types.attrs;
-      default = { };
-    };
-
     packages = lib.mkOption {
       type = types.attrsOf schema.packageItemType;
-      default = { };
-    };
-
-    policy = lib.mkOption {
-      type = types.attrs;
       default = { };
     };
   };

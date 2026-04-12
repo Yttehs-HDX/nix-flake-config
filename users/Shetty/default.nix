@@ -123,8 +123,6 @@
     };
   };
 
-  programs = { };
-  services = { };
   theme = {
     name = "catppuccin";
     accent = "lavender";
@@ -132,5 +130,4 @@
     fonts.sans = "SF Pro";
     fonts.monospace.family = "JetBrainsMono Nerd Font";
   };
-  policy = { };
 }

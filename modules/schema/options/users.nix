@@ -82,16 +82,6 @@ in {
       default = { };
     };
 
-    programs = lib.mkOption {
-      type = types.attrsOf schema.packageItemType;
-      default = { };
-    };
-
-    services = lib.mkOption {
-      type = types.attrsOf schema.packageItemType;
-      default = { };
-    };
-
     theme = lib.mkOption {
       type = types.submodule {
         options = {
@@ -136,9 +126,5 @@ in {
       default = { };
     };
 
-    policy = lib.mkOption {
-      type = types.attrs;
-      default = { };
-    };
   };
 }
