@@ -1,4 +1,9 @@
 { lib, normalized }:
+# Validation orchestration
+# - references.nix: User/Host reference integrity in relations
+# - capabilities.nix: Capability activation constraints (user allows, relation activates, host supports)
+# - This file: Package validation, host checks (backend/platform/stateVersion), relation checks (scope fields, state),
+#              uniqueness checks (user@host pairs, host@identity pairs), and index building
 let
   packageCatalog = import ../packages { inherit lib; };
   references = import ./references.nix { inherit lib normalized; };

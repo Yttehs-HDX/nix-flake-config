@@ -169,7 +169,7 @@ profile = {
 
 ---
 ## 输出
-这一阶段输出的仍然是 `Source Model`，  
+这一阶段输出的仍然是 `Source Model`，
 但它已经通过最基本的结构检查，可以进入归一化阶段。
 
 ---
@@ -285,6 +285,30 @@ indexes = {
 ```
 
 这些索引不是公共接口，主要用于系统内部解析提速与一致性保证。
+
+---
+## 输出
+验证阶段强制执行所有校验检查（通过 `builtins.deepSeq`），然后输出索引结构：
+```nix
+{
+  indexes = {
+    relationsByHost = {
+      <hostId> = [ relationId1 relationId2 ... ];
+      ...
+    };
+    relationsByUser = {
+      <userId> = [ relationId1 relationId2 ... ];
+      ...
+    };
+  };
+}
+```
+
+所有验证检查在索引返回前通过 `deepSeq` 强制求值。
+这确保验证失败会立即终止流程，而不是延迟到使用索引时才报错。
+
+索引结构对后续阶段可用（例如用于查询某主机或某用户的所有关系），
+但不应被视为公共 API——它是内部实现细节。
 
 ---
 ## 阶段五：实例生成（Instantiate）
