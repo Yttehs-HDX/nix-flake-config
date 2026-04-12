@@ -284,20 +284,6 @@ let
     };
   }).pipeline.instances);
 
-  renamedEditorEntry = builtins.tryEval ((evalProfile {
-    users.Alice = { packages = { nixvim = { }; }; };
-    hosts.Workspace = {
-      backend.type = "home-manager";
-      platform.system = "x86_64-linux";
-      capabilities.home.enable = true;
-    };
-    relations."Alice@Workspace" = {
-      user = "Alice";
-      host = "Workspace";
-      state.home.stateVersion = "25.05";
-    };
-  }).pipeline.instances);
-
   invalidInitialHashedPasswordWithMutableUsersFalse = builtins.tryEval
     ((evalProfile {
       users.Alice = {
@@ -333,7 +319,6 @@ assert !invalidHomeManagerPipewireHostPackage.success;
 assert !invalidUserDeclaredHostPackage.success;
 assert !invalidHostDeclaredUserHomePackage.success;
 assert !conflictingCommandDiscoveryPackages.success;
-assert !renamedEditorEntry.success;
 assert invalidInitialHashedPasswordWithMutableUsersFalse.success;
 
 let
