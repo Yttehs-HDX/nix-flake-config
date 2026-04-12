@@ -88,7 +88,6 @@ let
       ocr = desktopLinux "custom";
       onlyoffice = darwinManualGui "gui";
       osu-lazer-bin = darwinManualGui "gui";
-      pipewire = desktopLinux "service";
       pipes-rs = { kind = "package"; };
       playerctl = desktopLinux "desktop-component";
       poppler-utils = { kind = "package"; };
