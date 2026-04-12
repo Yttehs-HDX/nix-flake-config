@@ -1,7 +1,7 @@
 { lib, profile }:
 let
   # Stage 1: Normalize source declarations
-  # Produces: { users, hosts, relations, packages }
+  # Produces: { users, hosts, relations }
   # - Injects IDs (userId, hostId, relationId)
   # - Merges programs/services/packages into unified packages structure
   # - Normalizes package definitions to { packageId, enable, settings }
