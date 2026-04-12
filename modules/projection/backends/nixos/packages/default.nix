@@ -6,7 +6,6 @@ let
     docker = import ./docker.nix;
     firewall = import ./firewall.nix;
     hello = import ./hello.nix;
-    locale = import ./locale.nix;
     networking = import ./networking.nix;
     nix-ld = import ./nix-ld.nix;
     nvidia = import ./nvidia.nix;

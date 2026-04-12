@@ -3,7 +3,6 @@ let
   registry = {
     docker = import ./docker.nix;
     hello = import ./hello.nix;
-    locale = import ./locale.nix;
     networking = import ./networking.nix;
     wireshark = import ./wireshark.nix;
   };

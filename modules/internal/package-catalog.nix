@@ -152,7 +152,6 @@ let
       docker = { kind = "package"; };
       firewall = linuxSystem "service";
       hello = { kind = "package"; };
-      locale = { kind = "service"; };
       networking = { kind = "service"; };
       nix-ld = linuxSystem "package";
       nvidia = linuxSystem "service";
