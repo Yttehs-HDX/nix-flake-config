@@ -389,45 +389,63 @@ Backend 实现文件仍然放在原位置，definition 只存储引用：
 - `modules/projection/backends/nix-darwin/packages/<packageId>.nix`
 
 ---
-## Catalog 派生
+## Catalog 派生（Phase 1 Hybrid）
 
-`modules/packages/catalog/{home,system}.nix` 不再手工维护，改为从 package definitions 自动派生：
+`modules/packages/catalog/{home,system}.nix` 当前采用**混合模式**：
 
-### 派生逻辑
+### 当前实现
 
 ```nix
-# catalog/home.nix (generated)
+# catalog/home.nix (Phase 1 hybrid)
 let
-  definitions = import ../../package-definitions { inherit lib; };
-  homePackages = lib.filterAttrs (id: def:
-    # Filter packages that have home scope implementations
-    def.metadata.allowedTargets contains any home target
-  ) definitions;
+  # 从 definitions 提取元数据
+  homeDefinitionMetadata = builtins.mapAttrs (id: def: def.metadata) (
+    # 过滤出有 home target 的 packages
+    ...filtered definitions...
+  );
+
+  # 尚未迁移的 legacy entries
+  legacyEntries = {
+    bat = crossPlatformUserPackage "package";
+    # ... 其他未迁移 packages
+  };
 in
-  lib.mapAttrs (id: def: def.metadata) homePackages
+  # definitions 优先，legacy entries 补充
+  legacyEntries // homeDefinitionMetadata
 ```
 
-### 向后兼容
+### 警告行为
 
-当前实现中，catalog 仍然存在但内容由 definitions 驱动。未注册在 definitions 中的 package 会在评估时输出警告。
+- 当 package **不在任何 catalog** 中（既不在 definitions 也不在 legacy entries）时，触发警告
+- 已在 definitions 中的 package 会覆盖同 ID 的 legacy entry
+- Phase 1 中 definitions 和 legacy entries 共存
 
 ---
-## Projection Registry 派生
+## Projection Registry 派生（Phase 1 Hybrid）
 
-`modules/projection/backends/*/packages/default.nix` 也从 definitions 派生：
+`modules/projection/backends/*/packages/default.nix` 采用混合模式：
 
 ```nix
-# home-manager/packages/default.nix (refactored)
+# home-manager/packages/default.nix (Phase 1 hybrid)
 { lib, input }:
 let
-  definitions = import ../../../../package-definitions { inherit lib; };
-  registry = lib.mapAttrs (id: def:
-    if def.backends.home-manager.home != null
-    then import def.backends.home-manager.home
-    else null
-  ) definitions;
+  # 从 definitions 派生 registry
+  definitionRegistry = builtins.mapAttrs (id: def:
+    let backendPath = def.backends.home-manager.home or null;
+    in if backendPath == null then null else import backendPath
+  ) packageDefinitions;
+
+  # legacy hardcoded entries
+  legacyRegistry = {
+    bat = import ./bat.nix;
+    # ... 其他未迁移 packages
+  };
+
+  # definitions 优先，legacy 补充
+  registry = legacyRegistry // definitionRegistry;
 in
-  registry
+  # 使用 registry 解析 packages
+  ...
 ```
 
 ---
