@@ -106,6 +106,24 @@ let
   ];
   migratedCustomConstraintPackages =
     [ "embedded-dev" "gnome-keyring" "neovim" "pipewire" ];
+  migratedSystemPackages = [
+    "asusctl"
+    "bluetooth"
+    "docker"
+    "firewall"
+    "networking"
+    "nix-ld"
+    "nvidia"
+    "refind"
+    "rog-control-center"
+    "sddm"
+    "supergfxctl"
+    "tlp"
+    "virt-manager"
+    "waydroid"
+    "wireshark"
+    "zram"
+  ];
 
   # Test backend registry derivation
   # Simulate what home-manager projection registry does
@@ -130,6 +148,9 @@ let
     assert builtins.hasAttr "embedded-dev" packageDefinitions;
     assert builtins.hasAttr "gnome-keyring" packageDefinitions;
     assert builtins.hasAttr "pipewire" packageDefinitions;
+    assert builtins.hasAttr "docker" packageDefinitions;
+    assert builtins.hasAttr "sddm" packageDefinitions;
+    assert builtins.hasAttr "nvidia" packageDefinitions;
     assert builtins.hasAttr "zsh" packageDefinitions;
     assert builtins.hasAttr "hyprland" packageDefinitions;
     true;
@@ -185,6 +206,22 @@ let
     migratedCustomConstraintPackages;
   true;
 
+  # Test: Migrated system packages have system-target metadata and no home backend projector
+  assertMigratedSystemMetadata = assert builtins.all (packageId:
+    let definition = packageDefinitions.${packageId};
+    in definition.backends.home-manager.system == null
+    && definition.backends.nixos.system != null
+    && builtins.elem taxonomy.targets.nixosSystem
+    definition.metadata.allowedTargets) migratedSystemPackages;
+  # cross-platform system packages should also include darwin system target
+    assert builtins.elem taxonomy.targets.darwinSystem
+      packageDefinitions.docker.metadata.allowedTargets;
+    assert builtins.elem taxonomy.targets.darwinSystem
+      packageDefinitions.networking.metadata.allowedTargets;
+    assert builtins.elem taxonomy.targets.darwinSystem
+      packageDefinitions.wireshark.metadata.allowedTargets;
+    true;
+
   # Test: Package definition structure is correct
   assertGitStructure = let git = packageDefinitions.git;
   in assert git.packageId == "git";
@@ -216,7 +253,6 @@ let
   true;
 
   # Test: Home catalog includes definition-based packages
-  # Note: hello is still in home catalog but from legacy, not definition
   assertHomeCatalogDefinitions = assert builtins.hasAttr "git" homeCatalog;
     assert builtins.hasAttr "hello" homeCatalog;
     assert builtins.hasAttr "android-tools" homeCatalog;
@@ -232,10 +268,14 @@ let
     true;
 
   # Test: System catalog respects definition scope restrictions
-  # hello is home-only legacy support and no longer appears in system catalog
-  # git and hyprland should NOT be in system (user-only definitions)
+  # home-only packages should not leak into system catalog
   assertSystemCatalogDefinitions =
     assert !(builtins.hasAttr "hello" systemCatalog);
+    assert builtins.hasAttr "docker" systemCatalog;
+    assert builtins.hasAttr "nvidia" systemCatalog;
+    assert builtins.hasAttr "sddm" systemCatalog;
+    # udisks2 is now definition-only on home scope and no longer appears in system catalog
+    assert !(builtins.hasAttr "udisks2" systemCatalog);
     # git is user-only, should NOT be in system catalog
     assert !(builtins.hasAttr "git" systemCatalog);
     # hyprland is user-only, should NOT be in system catalog
@@ -270,6 +310,7 @@ let
     assertMigratedLinuxDesktopMetadata
     assertMigratedDarwinHintMetadata
     assertMigratedCustomConstraintMetadata
+    assertMigratedSystemMetadata
     assertGitStructure
     assertHyprlandMetadata
     assertGitCrossPlatform

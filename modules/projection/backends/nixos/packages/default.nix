@@ -1,28 +1,27 @@
 { lib, input }:
 let
-  registry = {
-    asusctl = import ./asusctl.nix;
-    bluetooth = import ./bluetooth.nix;
-    docker = import ./docker.nix;
-    firewall = import ./firewall.nix;
-    networking = import ./networking.nix;
-    nix-ld = import ./nix-ld.nix;
-    nvidia = import ./nvidia.nix;
-    refind = import ./refind.nix;
-    rog-control-center = import ./rog-control-center.nix;
-    sddm = import ./sddm.nix;
-    supergfxctl = import ./supergfxctl.nix;
-    tlp = import ./tlp.nix;
-    udisks2 = import ./udisks2.nix;
-    virt-manager = import ./virt-manager.nix;
-    waydroid = import ./waydroid.nix;
-    wireshark = import ./wireshark.nix;
-    zram = import ./zram.nix;
-  };
+  # Load package definitions
+  packageDefinitions = import ../../../../package-definitions { inherit lib; };
+
+  # Build registry from definitions + legacy entries
+  # Definitions take precedence over legacy hardcoded imports
+  definitionRegistry = builtins.mapAttrs (id: def:
+    let backendPath = def.backends.nixos.system or null;
+    in if backendPath == null then null else import backendPath)
+    packageDefinitions;
+
+  # Fully migrated for system scope: keep explicit empty legacy set.
+  legacyRegistry = { };
+
+  # Merge definitions (preferred) with legacy entries (fallback)
+  registry = legacyRegistry // definitionRegistry;
 
   resolve = packageId: definition:
     if builtins.hasAttr packageId registry then
-      registry.${packageId} { inherit input definition; }
+      if registry.${packageId} == null then
+        ({ ... }: { })
+      else
+        registry.${packageId} { inherit input definition; }
     else
       throw
       "Unsupported NixOS package `${packageId}` on host `${input.hostId}`.";

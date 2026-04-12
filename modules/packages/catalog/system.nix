@@ -32,31 +32,8 @@ let
       } else
         null) (builtins.attrNames packageDefinitions))));
 
-  # Legacy inline entries (to be migrated to package definitions)
-  legacyEntries = {
-    # ── Linux system packages ─────────────────────────────────────────────
-    asusctl = linuxSystemHost "service";
-    bluetooth = linuxSystemHost "service";
-    firewall = linuxSystemHost "service";
-    nix-ld = linuxSystemHost "package";
-    nvidia = linuxSystemHost "service";
-    refind = linuxSystemHost "package";
-    rog-control-center = linuxSystemHost "service";
-    supergfxctl = linuxSystemHost "service";
-    tlp = linuxSystemHost "service";
-    udisks2 = linuxSystemHost "service";
-    virt-manager = linuxSystemHost "package";
-    waydroid = linuxSystemHost "service";
-    zram = linuxSystemHost "service";
-
-    # ── Cross-platform system packages ────────────────────────────────────
-    docker = crossPlatformSystemHost "package";
-    networking = crossPlatformSystemHost "service";
-    wireshark = crossPlatformSystemHost "package";
-
-    # ── Linux desktop system packages ─────────────────────────────────────
-    sddm = linuxDesktopSystemHost "desktop-component";
-  };
+  # Fully migrated in Phase 1 for system scope: keep explicit empty legacy set.
+  legacyEntries = { };
   # Merge definitions (preferred) with legacy entries (fallback)
   # Definitions override legacy entries for the same package ID
 in legacyEntries // systemDefinitionMetadata
