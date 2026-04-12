@@ -69,6 +69,33 @@ let
     hostControlledEvaluated.pipeline.projectionInputs."Alice@DesktopWorkspace";
   hostControlledHomeConfig =
     hostControlledEvaluated.assembly.homeConfigurations."alice@DesktopWorkspace";
+
+  unsupportedPackageEvaluated = import ./eval-profile.nix {
+    inherit lib inputs;
+    declarations = {
+      users.Alice = {
+        packages = {
+          embedded-dev = { };
+          brightnessctl = { };
+        };
+      };
+      hosts.StandaloneWorkspace = {
+        backend.type = "home-manager";
+        platform.system = "x86_64-linux";
+        capabilities.home.enable = true;
+      };
+      relations."Alice@StandaloneWorkspace" = {
+        user = "Alice";
+        host = "StandaloneWorkspace";
+        state.home.stateVersion = "25.05";
+      };
+    };
+  };
+
+  unsupportedProjectionInput =
+    unsupportedPackageEvaluated.pipeline.projectionInputs."Alice@StandaloneWorkspace";
+  unsupportedHomeConfig =
+    unsupportedPackageEvaluated.assembly.homeConfigurations."alice@StandaloneWorkspace";
 in assert relation.backend.type == "home-manager";
 assert builtins.length relation.systemModules == 0;
 assert relation.homeModule != null;
@@ -83,4 +110,9 @@ assert darwinHomeConfig.config.home.homeDirectory == "/Users/alice";
 assert darwinProjectionInput.theme == null;
 assert hostControlledInput.packages.home.blueman.enable;
 assert hostControlledHomeConfig.config.services.blueman-applet.enable;
+assert builtins.hasAttr "embedded-dev" unsupportedProjectionInput.unsupportedPackages.home;
+assert builtins.hasAttr "brightnessctl" unsupportedProjectionInput.unsupportedPackages.home;
+assert (unsupportedProjectionInput.unsupportedPackages.home.brightnessctl.strategy
+  == "skip");
+assert builtins.length unsupportedHomeConfig.config.warnings > 0;
 true

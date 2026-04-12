@@ -284,6 +284,23 @@ let
     };
   }).pipeline.instances);
 
+  deprecatedNixvimPackageName = builtins.tryEval ((evalProfile {
+    users.Alice = { };
+    hosts.Workstation = {
+      backend.type = "nixos";
+      platform.system = "x86_64-linux";
+      capabilities.system.enable = true;
+      capabilities.home.enable = true;
+      system.stateVersion = "25.11";
+    };
+    relations."Alice@Workstation" = {
+      user = "Alice";
+      host = "Workstation";
+      state.home.stateVersion = "25.05";
+      packages.nixvim.enable = true;
+    };
+  }).pipeline.instances);
+
   invalidInitialHashedPasswordWithMutableUsersFalse = builtins.tryEval
     ((evalProfile {
       users.Alice = {
@@ -319,6 +336,7 @@ assert !invalidHomeManagerPipewireHostPackage.success;
 assert !invalidUserDeclaredHostPackage.success;
 assert !invalidHostDeclaredUserHomePackage.success;
 assert !conflictingCommandDiscoveryPackages.success;
+assert !deprecatedNixvimPackageName.success;
 assert invalidInitialHashedPasswordWithMutableUsersFalse.success;
 
 let

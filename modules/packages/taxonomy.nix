@@ -46,12 +46,12 @@
     host = "host";
   };
 
-  # --- Missing-package strategies ---
-  # Controls how the system handles a package that is declared but
-  # not supported on the current target.
+  # Classifies how consumers should treat a package that is declared
+  # but not supported on the current target. This taxonomy is metadata
+  # only; actual reporting/enforcement is implemented by backend modules.
   missingStrategies = {
     notApplicable = "notApplicable"; # package is always available
-    error = "error"; # hard error
+    error = "error"; # unsupported package is reported by consumers; does not itself force evaluation failure
     skip = "skip"; # silently excluded
     hintManual = "hintManual"; # excluded with manual-install hint
   };
@@ -80,7 +80,8 @@
           system = "standaloneHomeManagerSystem";
         };
       };
-    in if mapping ? ${backend} && mapping.${backend} ? ${scope} then
+    in if builtins.hasAttr backend mapping
+      && builtins.hasAttr scope mapping.${backend} then
       mapping.${backend}.${scope}
     else
       throw "Unknown backend/scope combination: ${backend}/${scope}";

@@ -25,7 +25,9 @@ let
         && !(builtins.elem hostKind (metadata.allowedHostKinds or [ ]));
       unsupportedTarget = target != null
         && !(builtins.elem target (metadata.allowedTargets or [ ]));
-    in if !(unsupportedHostKind || unsupportedTarget) then
+      unmetDesktop = (metadata.requiresDesktop or false)
+        && !(rules.resolveDesktopEnabled scope current);
+    in if !(unsupportedHostKind || unsupportedTarget || unmetDesktop) then
       null
     else {
       name = packageId;
@@ -35,14 +37,19 @@ let
       strategy = metadata.missingStrategy or taxonomy.missingStrategies.skip;
       reason = metadata.unsupportedReason or (if unsupportedTarget then
         "This package is not implemented on this backend."
+      else if unmetDesktop then
+        "This package requires desktop capabilities to be enabled."
       else
         "This package is only supported on ${
           builtins.concatStringsSep ", " (metadata.allowedHostKinds or [ ])
         } hosts.");
-      suggestion = metadata.unsupportedSuggestion or (if unsupportedTarget then
-        "Use a supported backend for automatic installation, or install it manually if available."
-      else
-        "Use a supported host type for automatic installation, or install it manually on this platform.");
+      suggestion = metadata.unsupportedSuggestion
+        or (if unsupportedTarget then
+          "Use a supported backend for automatic installation, or install it manually if available."
+        else if unmetDesktop then
+          "Enable desktop capabilities for this relation, or install it manually."
+        else
+          "Use a supported host type for automatic installation, or install it manually on this platform.");
     };
 
 in { inherit unsupportedInfoFor; }
