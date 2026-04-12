@@ -1,20 +1,20 @@
 { lib, instances }:
-lib.mapAttrs (_: instance:
+lib.mapAttrs (_: current:
   let
     effectiveCapabilities =
-      import ./effective-capabilities.nix { current = instance; };
-    current = instance // { inherit effectiveCapabilities; };
+      import ./effective-capabilities.nix { inherit current; };
   in current // {
+    inherit effectiveCapabilities;
     packages = import ./packages.nix {
       inherit lib;
-      current = current;
+      inherit current;
     };
     unsupportedPackages = import ./unsupported-packages.nix {
       inherit lib;
-      current = current;
+      inherit current;
     };
     theme = import ./theme.nix {
       inherit lib;
-      current = current;
+      inherit current;
     };
   }) instances
