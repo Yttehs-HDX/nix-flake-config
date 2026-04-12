@@ -18,7 +18,8 @@ let
     dig = import ./dig.nix;
     direnv = import ./direnv.nix;
     duf = import ./duf.nix;
-    embedded-dev = import ./embedded-dev.nix;
+    embedded-dev =
+      if input.backend.type == "nixos" then null else import ./embedded-dev.nix;
     eza = import ./eza.nix;
     fastfetch = import ./fastfetch.nix;
     feishu = import ./feishu.nix;
@@ -29,7 +30,10 @@ let
     gh = import ./gh.nix;
     git = import ./git.nix;
     github-copilot-cli = import ./github-copilot-cli.nix;
-    gnome-keyring = import ./gnome-keyring.nix;
+    gnome-keyring = if input.backend.type == "nixos" then
+      null
+    else
+      import ./gnome-keyring.nix;
     google-chrome = import ./google-chrome.nix;
     grimblast = import ./grimblast.nix;
     hexecute = import ./hexecute.nix;
@@ -66,6 +70,8 @@ let
     ocr = import ./ocr.nix;
     onlyoffice = import ./onlyoffice.nix;
     osu-lazer-bin = import ./osu-lazer-bin.nix;
+    pipewire =
+      if input.backend.type == "nixos" then null else import ./pipewire.nix;
     pipes-rs = import ./pipes-rs.nix;
     playerctl = import ./playerctl.nix;
     poppler-utils = import ./poppler-utils.nix;

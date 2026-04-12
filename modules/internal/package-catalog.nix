@@ -27,7 +27,7 @@ let
       asciiquarium = { kind = "package"; };
       bat = { kind = "package"; };
       btop = { kind = "package"; };
-      blueman = desktopLinux "desktop-component";
+      blueman = (desktopLinux "desktop-component") // { declaredBy = "host"; };
       brightnessctl = desktopLinux "desktop-component";
       cava = { kind = "theme-consumer"; };
       cbonsai = { kind = "package"; };
@@ -41,7 +41,14 @@ let
       dig = { kind = "package"; };
       direnv = { kind = "package"; };
       duf = { kind = "package"; };
-      embedded-dev = { kind = "integration-heavy"; };
+      embedded-dev = {
+        kind = "integration-heavy";
+        supportedBackends = [ "nixos" ];
+        unsupportedReason =
+          "This package currently relies on NixOS-side integration and is not implemented on this backend.";
+        unsupportedSuggestion =
+          "Use a NixOS backend for automatic setup, or configure the toolchain manually.";
+      };
       eza = { kind = "package"; };
       feishu = darwinManualGui "gui";
       fastfetch = { kind = "package"; };
@@ -51,7 +58,13 @@ let
       fzf = { kind = "package"; };
       gh = { kind = "package"; };
       git = { kind = "package"; };
-      gnome-keyring = desktopLinux "service";
+      gnome-keyring = (desktopLinux "service") // {
+        supportedBackends = [ "nixos" ];
+        unsupportedReason =
+          "This package currently relies on NixOS-side integration and is not implemented on this backend.";
+        unsupportedSuggestion =
+          "Use a NixOS backend for automatic setup, or configure gnome-keyring manually in your session.";
+      };
       google-chrome = darwinManualGui "gui";
       grimblast = desktopLinux "desktop-component";
       hexecute = { kind = "custom"; };
@@ -88,6 +101,16 @@ let
       ocr = desktopLinux "custom";
       onlyoffice = darwinManualGui "gui";
       osu-lazer-bin = darwinManualGui "gui";
+      pipewire = {
+        kind = "service";
+        declaredBy = "host";
+        linuxOnly = true;
+        supportedBackends = [ "nixos" ];
+        unsupportedReason =
+          "This package currently relies on NixOS system integration and is not implemented on this backend.";
+        unsupportedSuggestion =
+          "Use a NixOS backend for automatic setup, or configure PipeWire manually on this host.";
+      };
       pipes-rs = { kind = "package"; };
       playerctl = desktopLinux "desktop-component";
       poppler-utils = { kind = "package"; };
@@ -134,7 +157,6 @@ let
       networking = { kind = "service"; };
       nix-ld = linuxSystem "package";
       nvidia = linuxSystem "service";
-      pipewire = linuxSystem "service";
       refind = linuxSystem "package";
       rog-control-center = linuxSystem "service";
       sddm = desktopLinux "desktop-component";
@@ -156,6 +178,14 @@ let
     else
       null;
 
+  backendType = current:
+    if current ? backend then
+      current.backend.type
+    else if current ? current then
+      current.current.backend.type
+    else
+      null;
+
   desktopEnabledFor = scope: current:
     if scope == "system" then
       current.host.capabilities.desktop.enable
@@ -170,6 +200,29 @@ let
     catalog.${scope}.${packageId} or {
       kind = "package";
     };
+
+  hasEntryFor = scope: packageId: builtins.hasAttr packageId catalog.${scope};
+
+  declaredByFor = scope: packageId:
+    let metadata = metadataFor scope packageId;
+    in metadata.declaredBy or (if scope == "system" then "host" else "user");
+
+  visibleForSource = scope: declaredBy: packageId:
+    if declaredByFor scope packageId != declaredBy then
+      false
+    else if scope == "home" then
+      if declaredBy == "host" then hasEntryFor "home" packageId else true
+    else if scope == "system" then
+      hasEntryFor "system" packageId || !hasEntryFor "home" packageId
+    else
+      false;
+
+  backendSupports = scope: backend: packageId:
+    let metadata = metadataFor scope packageId;
+    in if metadata ? supportedBackends then
+      builtins.elem backend metadata.supportedBackends
+    else
+      true;
 
   platformInfo = current:
     let
@@ -194,7 +247,14 @@ let
     let
       metadata = metadataFor scope packageId;
       platform = platformInfo current;
-    in (!(metadata.linuxOnly or false) || platform.isLinuxPlatform)
+      currentBackend = backendType current;
+      backendSupported = if metadata ? supportedBackends then
+        currentBackend != null
+        && builtins.elem currentBackend metadata.supportedBackends
+      else
+        true;
+    in backendSupported
+    && (!(metadata.linuxOnly or false) || platform.isLinuxPlatform)
     && (!(metadata.requiresDesktop or false)
       || desktopEnabledFor scope current);
 
@@ -202,21 +262,28 @@ let
     let
       metadata = metadataFor scope packageId;
       platform = platformInfo current;
+      currentBackend = backendType current;
       unsupportedPlatform = (metadata.linuxOnly or false)
         && !platform.isLinuxPlatform;
-    in if !unsupportedPlatform then
+      unsupportedBackend = (metadata ? supportedBackends) && !(currentBackend
+        != null && builtins.elem currentBackend metadata.supportedBackends);
+    in if !(unsupportedPlatform || unsupportedBackend) then
       null
     else {
       name = packageId;
       inherit scope;
-      backend = if current ? backend then
-        current.backend.type
-      else
-        current.current.backend.type;
+      backend = currentBackend;
       platform = platform.platform;
-      reason =
+      reason = if unsupportedBackend then
+        metadata.unsupportedReason or "This package is not implemented on this backend."
+      else
         metadata.unsupportedReason or "This package is only implemented on Linux backends.";
-      suggestion =
+      suggestion = if unsupportedBackend then
+        metadata.unsupportedSuggestion or "Use a supported backend for automatic installation, or install it manually if available."
+      else
         metadata.unsupportedSuggestion or "Use a Linux backend for automatic installation, or install it manually on this platform.";
     };
-in { inherit catalog metadataFor supportedFor unsupportedInfoFor; }
+in {
+  inherit catalog metadataFor hasEntryFor declaredByFor supportedFor
+    visibleForSource backendSupports unsupportedInfoFor;
+}

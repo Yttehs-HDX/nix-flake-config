@@ -1014,9 +1014,16 @@ attrset
 - `environment.systemPackages`
 - `programs.*`
 - `services.*`
-- 其他系统级软件能力
+- 其他主机级软件能力
 
-如果 host 不具备 `system` scope，则不应声明该字段；当前实现会在 validation 阶段直接报错。
+其中既包括需要投影到 system scope 的能力，
+也包括少量由主机控制、但最终投影到 home scope 的机器本地集成能力。
+
+当前实现会在 validation 阶段校验 package 归属：
+- system package 仍要求目标 host 具备 system scope
+- host-controlled home package 可以出现在仅具备 home scope 的 host 上
+- host-controlled home package 仍然必须兼容目标 host 的 backend
+- 本应由 `User.packages` 声明的 package 不能反向塞进 `Host.packages`
 
 ---
 ## `profile.hosts.<hostId>.policy`

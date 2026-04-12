@@ -156,6 +156,35 @@ let
   linuxUnthemedHome =
     linuxUnthemedDesktopEvaluated.assembly.homeConfigurations."alice@Unthemed";
 
+  linuxCustomMenuEvaluated = import ./eval-profile.nix {
+    inherit lib inputs;
+    declarations = {
+      users.Alice = {
+        capabilities.desktop.enable = true;
+        packages.waybar.settings.menuCommand = "show-menu";
+      };
+
+      hosts.MenuHome = {
+        backend.type = "home-manager";
+        platform.system = "x86_64-linux";
+        capabilities = {
+          home.enable = true;
+          desktop.enable = true;
+        };
+      };
+
+      relations."Alice@MenuHome" = {
+        user = "Alice";
+        host = "MenuHome";
+        activation.desktop.enable = true;
+        state.home.stateVersion = "25.05";
+      };
+    };
+  };
+
+  linuxCustomMenuHome =
+    linuxCustomMenuEvaluated.assembly.homeConfigurations."alice@MenuHome";
+
   nixosDesktopRelationOffEvaluated = import ./eval-profile.nix {
     inherit lib inputs;
     declarations = {
@@ -253,8 +282,12 @@ assert linuxHome.config.programs.waybar.settings.main.modules-left
   == [ "group/hyprland" "cava" ];
 assert linuxHome.config.programs.waybar.settings.main.modules-center
   == [ "group/misc" ];
-assert linuxHome.config.programs.waybar.settings.main."custom/hexecute".tooltip-format
-  == "魔法使い";
+assert linuxHome.config.programs.waybar.settings.main."group/menu".modules
+  == [ "battery" "tray" ];
+assert !(builtins.hasAttr "custom/hexecute"
+  linuxHome.config.programs.waybar.settings.main);
+assert linuxHome.config.programs.waybar.settings.main.battery.on-click
+  == "swaync-client -t";
 assert linuxHome.config.i18n.inputMethod.type == "fcitx5";
 assert linuxHome.config.wayland.windowManager.hyprland.enable;
 assert builtins.elem "$mod, TAB, hyprexpo:expo, toggle"
@@ -326,6 +359,12 @@ assert linuxUnthemedHome.config.wayland.windowManager.hyprland.settings.plugin.h
   == "rgba(1e1e2ecc)";
 assert linuxUnthemedHome.config.programs.swaylock.enable;
 assert linuxUnthemedHome.config.programs.swaylock.settings == { };
+assert linuxCustomMenuHome.config.programs.waybar.settings.main."group/menu".modules
+  == [ "battery" "tray" "custom/hexecute" ];
+assert linuxCustomMenuHome.config.programs.waybar.settings.main."custom/hexecute".on-click
+  == "show-menu";
+assert !(builtins.hasAttr "on-click"
+  linuxCustomMenuHome.config.programs.waybar.settings.main.battery);
 assert nixosDesktopRelationOffInput.packages.system.sddm.enable;
 assert nixosDesktopRelationOffConfig.config.services.displayManager.sddm.enable;
 assert !nixosDesktopRelationOffConfig.config.home-manager.users.alice.wayland.windowManager.hyprland.enable;

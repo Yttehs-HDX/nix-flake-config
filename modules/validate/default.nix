@@ -1,5 +1,6 @@
 { lib, normalized }:
 let
+  packageCatalog = import ../internal/package-catalog.nix { inherit lib; };
   references = import ./references.nix { inherit lib normalized; };
   capabilities = import ./capabilities.nix { inherit lib normalized; };
   hasSystemScope = backendType:
@@ -37,6 +38,8 @@ let
       relation.identity.name
     else
       lib.toLower relation.user;
+  enabledPackageIds = definitions:
+    builtins.attrNames (lib.filterAttrs (_: pkg: pkg.enable) definitions);
 
   enabledRelations =
     lib.filterAttrs (_: relation: relation.enable) normalized.relations;
@@ -54,13 +57,34 @@ let
       "Relation `${relationId}` must match `${relation.user}@${relation.host}`.")
     normalized.relations;
 
+  userPackageChecks = lib.mapAttrsToList (userId: user:
+    let
+      invalidPackages = lib.filter
+        (packageId: !packageCatalog.visibleForSource "home" "user" packageId)
+        (enabledPackageIds user.packages);
+    in if invalidPackages == [ ] then
+      true
+    else
+      throw ''
+        User `${userId}` must not declare `${
+          lib.concatStringsSep "`, `"
+          (map (packageId: "packages.${packageId}") invalidPackages)
+        }`.
+        These packages are host-controlled and must be declared under `profile.hosts.<hostId>.packages`.
+      '') normalized.users;
+
   hostChecks = lib.mapAttrsToList (hostId: host:
     let
       backendType = host.backend.type;
       platformSystem = host.platform.system;
       stateVersion = host.system.stateVersion;
-      hasEnabledPackages =
-        lib.any (pkg: pkg.enable) (lib.attrValues host.packages);
+      invalidPackages = lib.filter (packageId:
+        !(host.capabilities.home.enable
+          && packageCatalog.visibleForSource "home" "host" packageId
+          && packageCatalog.backendSupports "home" backendType packageId)
+        && !(host.capabilities.system.enable
+          && packageCatalog.visibleForSource "system" "host" packageId))
+        (enabledPackageIds host.packages);
       expectedSystemScope = hasSystemScope backendType;
       expectedHomeScope = hasHomeScope backendType;
     in if !host.enable then
@@ -76,8 +100,14 @@ let
     else if host.capabilities.home.enable != expectedHomeScope then
       throw
       "Host `${hostId}` must keep `capabilities.home.enable` consistent with backend `${backendType}`."
-    else if !host.capabilities.system.enable && hasEnabledPackages then
-      throw "Host `${hostId}` must not declare `packages` without system scope."
+    else if invalidPackages != [ ] then
+      throw ''
+        Host `${hostId}` must not declare `${
+          lib.concatStringsSep "`, `"
+          (map (packageId: "packages.${packageId}") invalidPackages)
+        }`.
+        Host packages may only contain system packages or host-controlled home packages.
+      ''
     else if backendType == "nixos" && stateVersion == null then
       throw "NixOS host `${hostId}` must declare `system.stateVersion`."
     else if backendType == "nixos" && !(builtins.isString stateVersion) then
@@ -170,6 +200,7 @@ in builtins.deepSeq [
   references
   capabilities
   relationIdChecks
+  userPackageChecks
   hostChecks
   relationStateChecks
   relationScopeChecks

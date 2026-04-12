@@ -31,6 +31,7 @@
   packages = {
     asusctl = { };
     bluetooth = { };
+    blueman = { };
     docker.settings.storageDriver = "btrfs";
     firewall = { };
     grub = { };

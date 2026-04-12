@@ -454,10 +454,15 @@ Host = {
 - 系统级全局工具
 - 主机级程序开关
 - 主机级服务启用意图
+- 主机控制的机器本地 home 侧集成能力
 
 与 `User.packages` 的区别在于：
 - `User.packages` 表达个人长期偏好
-- `Host.packages` 表达机器自身需要承载的系统级软件能力
+- `Host.packages` 表达机器自身需要承载的本机软件能力
+
+也就是说，`Host.packages` 不再局限于 system scope。  
+当某些 package 的语义本质上属于“这台机器是否承载该能力”，
+即使它最终投影到 home backend，也应由 `Host` 控制，而不是由 `User` 的长期偏好控制。
 
 #### `policy`
 表达主机级策略，例如默认约束、安全策略、环境规则。

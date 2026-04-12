@@ -26,7 +26,6 @@
     android-tools = { };
     asciiquarium = { };
     bat = { };
-    blueman = { };
     btop = { };
     cava = { };
     cbonsai = { };

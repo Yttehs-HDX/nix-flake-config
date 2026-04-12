@@ -18,8 +18,14 @@ let
   playerTitleCmd = "playerctl metadata --format='{{ title }}' --follow";
   playPauseCmd = "playerctl play-pause";
   toggleMuteCmd = "pactl set-sink-mute @DEFAULT_SINK@ toggle";
-  toggleNotificationCmd = "swaync-client -t";
-  menuCmd = definition.settings.menuCommand or "hexecute";
+  toggleNotificationCmd =
+    if input.packages.home ? swaync then "swaync-client -t" else null;
+  menuCmd = if definition.settings ? menuCommand then
+    definition.settings.menuCommand
+  else if input.packages.home ? hexecute then
+    "hexecute"
+  else
+    null;
   menuTooltip = definition.settings.menuTooltip or "魔法使い";
 in {
   home.packages = [ pkgs.playerctl ];
@@ -187,7 +193,8 @@ in {
           transition-duration = 300;
           transition-left-to-right = false;
         };
-        modules = [ "battery" "tray" "custom/hexecute" ];
+        modules = [ "battery" "tray" ]
+          ++ lib.optionals (menuCmd != null) [ "custom/hexecute" ];
       };
 
       tray = {
@@ -203,13 +210,8 @@ in {
         };
         format = "{icon}  {capacity}";
         format-icons = [ "󰁺" "󰁻" "󰁼" "󰁾" "󰁿" "󰂀" "󰂁" "󰂁" "󰂂" "󰁹" ];
+      } // lib.optionalAttrs (toggleNotificationCmd != null) {
         on-click = toggleNotificationCmd;
-      };
-
-      "custom/hexecute" = {
-        format = " ";
-        tooltip-format = menuTooltip;
-        on-click = menuCmd;
       };
 
       cava = {
@@ -221,6 +223,12 @@ in {
         sleep_timer = 5;
         bar_delimiter = 0;
         on-click = playPauseCmd;
+      };
+    } // lib.optionalAttrs (menuCmd != null) {
+      "custom/hexecute" = {
+        format = " ";
+        tooltip-format = menuTooltip;
+        on-click = menuCmd;
       };
     });
   } // lib.optionalAttrs (waybarTheme != null) {

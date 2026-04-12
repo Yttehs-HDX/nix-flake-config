@@ -21,7 +21,6 @@ let
           android-tools = { };
           bat = { };
           btop = { };
-          blueman = { };
           cava = { };
           clash-verge-rev = { };
           github-copilot-cli = { };
@@ -84,6 +83,7 @@ let
         packages = {
           asusctl = { };
           bluetooth = { };
+          blueman = { };
           docker.settings.storageDriver = "btrfs";
           locale = { };
           nix-ld = { };
@@ -188,8 +188,10 @@ let
     wiresharkOnlyEvaluated.assembly.nixosConfigurations.PacketLab;
 in assert homeConfig.programs.bat.enable;
 assert projectionInput.packages.home.hexecute.enable;
+assert projectionInput.packages.home.blueman.enable;
 assert projectionInput.packages.home.mikusays.enable;
 assert projectionInput.packages.home.neovim.enable;
+assert projectionInput.packages.home.pipewire.enable;
 assert !(builtins.hasAttr "nixvim" projectionInput.packages.home);
 assert homeConfig.home.sessionVariables.PAGER
   == "${nixosConfig.pkgs.bat}/bin/bat";
@@ -255,6 +257,8 @@ assert homeConfig.programs.waybar.settings.main.cava.on-click
   == "playerctl play-pause";
 assert homeConfig.programs.waybar.settings.main."custom/hexecute".tooltip-format
   == "魔法使い";
+assert homeConfig.programs.waybar.settings.main."custom/hexecute".on-click
+  == "hexecute";
 assert lib.hasInfix "@define-color accent" homeConfig.programs.waybar.style;
 assert lib.hasInfix "#cava" homeConfig.programs.waybar.style;
 assert lib.hasInfix "#custom-hexecute" homeConfig.programs.waybar.style;

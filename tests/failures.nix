@@ -209,6 +209,61 @@ let
     };
   }).pipeline.instances);
 
+  invalidHomeManagerPipewireHostPackage = builtins.tryEval ((evalProfile {
+    users.Alice = { capabilities.desktop.enable = true; };
+    hosts.Workspace = {
+      backend.type = "home-manager";
+      platform.system = "x86_64-linux";
+      capabilities.home.enable = true;
+      capabilities.desktop.enable = true;
+      packages.pipewire = { };
+    };
+    relations."Alice@Workspace" = {
+      user = "Alice";
+      host = "Workspace";
+      activation.desktop.enable = true;
+      state.home.stateVersion = "25.05";
+    };
+  }).pipeline.instances);
+
+  invalidUserDeclaredHostPackage = builtins.tryEval ((evalProfile {
+    users.Alice = {
+      capabilities.desktop.enable = true;
+      packages.blueman = { };
+    };
+    hosts.Workspace = {
+      backend.type = "home-manager";
+      platform.system = "x86_64-linux";
+      capabilities.home.enable = true;
+      capabilities.desktop.enable = true;
+    };
+    relations."Alice@Workspace" = {
+      user = "Alice";
+      host = "Workspace";
+      activation.desktop.enable = true;
+      state.home.stateVersion = "25.05";
+    };
+  }).pipeline.instances);
+
+  invalidHostDeclaredUserHomePackage = builtins.tryEval ((evalProfile {
+    users.Alice = { capabilities.desktop.enable = true; };
+    hosts.Workstation = {
+      backend.type = "nixos";
+      platform.system = "x86_64-linux";
+      capabilities.system.enable = true;
+      capabilities.home.enable = true;
+      capabilities.desktop.enable = true;
+      system.stateVersion = "25.11";
+      packages.rofi = { };
+    };
+    relations."Alice@Workstation" = {
+      user = "Alice";
+      host = "Workstation";
+      activation.desktop.enable = true;
+      state.home.stateVersion = "25.05";
+    };
+  }).pipeline.instances);
+
   conflictingCommandDiscoveryPackages = builtins.tryEval ((evalProfile {
     users.Alice = {
       preferences.shell = "zsh";
@@ -293,6 +348,9 @@ assert !invalidDarwinRelationMembershipFields.success;
 assert !invalidNixosHomeCapabilityMismatch.success;
 assert !invalidDarwinPlatformMismatch.success;
 assert !invalidHomeManagerSystemPackages.success;
+assert !invalidHomeManagerPipewireHostPackage.success;
+assert !invalidUserDeclaredHostPackage.success;
+assert !invalidHostDeclaredUserHomePackage.success;
 assert !conflictingCommandDiscoveryPackages.success;
 assert !renamedEditorEntry.success;
 assert !unsupportedNiriProjection.success;
