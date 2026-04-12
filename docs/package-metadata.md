@@ -22,14 +22,13 @@
 - catalog 和 projection registry 开始从 definitions 派生
 - loader 支持自动发现 `modules/package-definitions/*/default.nix`
 - home scope 的 package metadata 已全部由 definitions 驱动
-- system scope 仍处于 definitions + legacy 的混合阶段
+- system scope 的 package metadata 也已由 definitions 驱动
 
 **Phase 1 限制**：
 - catalog 文件暂时使用 `lib = builtins` 传递给 definitions（后续将改为真实 nixpkgs lib）
 - definition 当前不应依赖 lib helper 函数
 - defaultSettings 运行时合成流程未实现
 - 完整的 definition 校验与错误报告未实现
-- system scope 仍有部分 package 尚未迁移
 - **单一 metadata 结构无法表达"同一 package 在不同 scope 拥有不同 owner/targets"的情况**
   * 当前 Phase 1 schema 只支持"owner/targets 在所有 scope 下保持一致"的 package
   * 对于此类 package，当前阶段通过在 definition 中手写完整 metadata 保持语义一致
@@ -395,9 +394,9 @@ Backend 实现文件仍然放在原位置，definition 只存储引用：
 ---
 ## Catalog 派生（Phase 1）
 
-当前按 scope 分两种形态：
-- `home`：definition-only（`legacyEntries = { }`）
-- `system`：hybrid（definitions + legacy）
+当前 `catalog/home.nix` 与 `catalog/system.nix` 都采用 definition-only：
+- `home`：`legacyEntries = { }`
+- `system`：`legacyEntries = { }`
 
 ### 当前实现
 
@@ -417,15 +416,15 @@ in
 ### 警告行为
 
 - 当 package **不在任何 catalog** 中（既不在 definitions 也不在 legacy entries）时，触发警告
-- 已在 definitions 中的 package 会覆盖同 ID 的 legacy entry
-- system scope 仍为 definitions 和 legacy entries 共存
+- definitions 中的 metadata 是 catalog 的唯一来源
 
 ---
 ## Projection Registry 派生（Phase 1）
 
 `modules/projection/backends/*/packages/default.nix` 当前按 backend 处于不同阶段：
 - `home-manager/packages/default.nix`：definition-only（`legacyRegistry = { }`）
-- system backends：仍为 hybrid（definitions + legacy）
+- `nixos/packages/default.nix`：definition-driven（`legacyRegistry = { }`）
+- `nix-darwin/packages/default.nix`：definition-driven（`legacyRegistry = { }`）
 
 ```nix
 # home-manager/packages/default.nix (Phase 1 definition-only)
@@ -474,11 +473,11 @@ in
 - `pipewire`：需手写 owner/target 约束（`owner = host` + `nixosHome`），不适合直接使用通用 preset
 
 **已迁移但 projector 暂为 null 的例子**：
-- `neovim`、`embedded-dev`、`gnome-keyring`、`pipewire`：definition 已迁移，保留 legacy 等价行为（不生成 projector 输出）
+- `neovim`、`embedded-dev`、`gnome-keyring`、`pipewire`：definition 已迁移，当前仍保留 projector-null 行为（不生成 projector 输出）
 
 **适合 Phase 1 的例子**：
 - `git`：所有 scope 都是 `owner = user`，所有平台都适用
 - `bat` / `fzf` / `zsh`：同样是跨平台 home-only 用户包，可直接复用单一 metadata 模式
 - `hyprland`：所有支持的 scope 都是 `owner = user`，所有支持的 platform 都相同
 
-不符合上述条件的 package 应暂时保留在 legacy catalog 中。
+不符合上述条件的 package 应在 definition 中手写完整 metadata，并在必要时显式保留 projector-null 行为。
