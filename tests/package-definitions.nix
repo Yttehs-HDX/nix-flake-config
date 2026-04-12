@@ -3,9 +3,107 @@
 let
   packageDefinitions = import ../modules/package-definitions { inherit lib; };
   taxonomy = import ../modules/packages/taxonomy.nix;
-  presets = import ../modules/packages/presets.nix;
   homeCatalog = import ../modules/packages/catalog/home.nix;
   systemCatalog = import ../modules/packages/catalog/system.nix;
+  migratedCrossPlatformUserPackages = [
+    "android-tools"
+    "asciiquarium"
+    "bat"
+    "btop"
+    "cava"
+    "cbonsai"
+    "cmatrix"
+    "codex"
+    "cryptsetup"
+    "dig"
+    "direnv"
+    "duf"
+    "eza"
+    "fastfetch"
+    "figlet"
+    "file"
+    "fzf"
+    "gh"
+    "git"
+    "github-copilot-cli"
+    "hexecute"
+    "htop"
+    "huggingface-hub"
+    "jq"
+    "kitty"
+    "lazydocker"
+    "lazygit"
+    "lolcat"
+    "mikusays"
+    "net-tools"
+    "nerd-fonts-jetbrains-mono"
+    "nix-index"
+    "nixfmt-classic"
+    "nixvim"
+    "nmap"
+    "noto-fonts"
+    "noto-fonts-cjk-sans"
+    "noto-fonts-cjk-serif"
+    "noto-fonts-emoji-blob-bin"
+    "pipes-rs"
+    "poppler-utils"
+    "ripgrep"
+    "scrcpy"
+    "tesseract"
+    "tgpt"
+    "tldr"
+    "tmux"
+    "translate-shell"
+    "unrar"
+    "unzip"
+    "vlc"
+    "vscode"
+    "wget"
+    "xdg"
+    "yazi"
+    "zip"
+    "zsh"
+  ];
+  migratedLinuxDesktopUserPackages = [
+    "brightnessctl"
+    "cliphist"
+    "fcitx5"
+    "grimblast"
+    "hypridle"
+    "hyprland"
+    "hyprpicker"
+    "hyprpolkitagent"
+    "kdeconnect"
+    "libnotify"
+    "network-manager"
+    "ocr"
+    "playerctl"
+    "pulseaudio"
+    "rofi"
+    "rofimoji"
+    "seahorse"
+    "swappy"
+    "swaylock-effects"
+    "swaync"
+    "swww"
+    "udisks2"
+    "waybar"
+    "wl-clipboard"
+  ];
+  migratedDarwinHintPackages = [
+    "clash-verge-rev"
+    "feishu"
+    "google-chrome"
+    "hmcl"
+    "jetbrains-toolbox"
+    "krita"
+    "obs-studio"
+    "onlyoffice"
+    "osu-lazer-bin"
+    "qq"
+    "universal-android-debloater"
+    "wechat"
+  ];
 
   # Test backend registry derivation
   # Simulate what home-manager projection registry does
@@ -16,9 +114,46 @@ let
 
   # Test: Package definitions are loaded correctly
   assertDefinitionsExist = assert builtins.hasAttr "git" packageDefinitions;
+    assert builtins.hasAttr "android-tools" packageDefinitions;
+    assert builtins.hasAttr "asciiquarium" packageDefinitions;
+    assert builtins.hasAttr "bat" packageDefinitions;
+    assert builtins.hasAttr "codex" packageDefinitions;
+    assert builtins.hasAttr "lazygit" packageDefinitions;
+    assert builtins.hasAttr "vscode" packageDefinitions;
+    assert builtins.hasAttr "blueman" packageDefinitions;
+    assert builtins.hasAttr "waybar" packageDefinitions;
+    assert builtins.hasAttr "qq" packageDefinitions;
+    assert builtins.hasAttr "zsh" packageDefinitions;
     assert builtins.hasAttr "hyprland" packageDefinitions;
     # hello is intentionally NOT migrated in Phase 1
     assert !(builtins.hasAttr "hello" packageDefinitions);
+    true;
+
+  # Test: Migrated cross-platform user packages share consistent metadata
+  assertMigratedCrossPlatformMetadata = assert builtins.all (packageId:
+    let definition = packageDefinitions.${packageId};
+    in definition.metadata.owner == taxonomy.owners.user
+    && definition.metadata.allowedTargets == taxonomy.allHomeTargets
+    && definition.metadata.missingStrategy
+    == taxonomy.missingStrategies.notApplicable)
+    migratedCrossPlatformUserPackages;
+    true;
+
+  # Test: Migrated linux desktop user packages share linux-desktop metadata
+  assertMigratedLinuxDesktopMetadata = assert builtins.all (packageId:
+    let definition = packageDefinitions.${packageId};
+    in definition.metadata.owner == taxonomy.owners.user
+    && definition.metadata.requiresDesktop == true
+    && definition.metadata.missingStrategy == taxonomy.missingStrategies.skip)
+    migratedLinuxDesktopUserPackages;
+    true;
+
+  # Test: Migrated darwin hint packages share hint-manual metadata
+  assertMigratedDarwinHintMetadata = assert builtins.all (packageId:
+    let definition = packageDefinitions.${packageId};
+    in definition.metadata.owner == taxonomy.owners.user
+    && definition.metadata.missingStrategy
+    == taxonomy.missingStrategies.hintManual) migratedDarwinHintPackages;
     true;
 
   # Test: Package definition structure is correct
@@ -54,9 +189,15 @@ let
   # Test: Home catalog includes definition-based packages
   # Note: hello is still in home catalog but from legacy, not definition
   assertHomeCatalogDefinitions = assert builtins.hasAttr "git" homeCatalog;
+    assert builtins.hasAttr "android-tools" homeCatalog;
+    assert builtins.hasAttr "lazygit" homeCatalog;
+    assert builtins.hasAttr "bat" homeCatalog;
+    assert builtins.hasAttr "zsh" homeCatalog;
     assert builtins.hasAttr "hyprland" homeCatalog;
     # Verify metadata is correct for definition-based packages
     assert homeCatalog.git.kind == "package";
+    assert homeCatalog.bat.kind == "package";
+    assert homeCatalog.zsh.kind == "environment";
     assert homeCatalog.hyprland.kind == "desktop-session";
     true;
 
@@ -80,10 +221,14 @@ let
 
   # Test: Registry derivation includes definition-based packages
   assertRegistryDerivation =
+    assert builtins.hasAttr "bat" testRegistryDerivation;
     assert builtins.hasAttr "git" testRegistryDerivation;
+    assert builtins.hasAttr "zsh" testRegistryDerivation;
     assert builtins.hasAttr "hyprland" testRegistryDerivation;
     # Projectors should be callable
+    assert builtins.isFunction testRegistryDerivation.bat;
     assert builtins.isFunction testRegistryDerivation.git;
+    assert builtins.isFunction testRegistryDerivation.zsh;
     # Verify hyprland projector is a function
     assert builtins.isFunction testRegistryDerivation.hyprland;
     true;
@@ -91,6 +236,9 @@ let
   # Run all tests
   allTests = [
     assertDefinitionsExist
+    assertMigratedCrossPlatformMetadata
+    assertMigratedLinuxDesktopMetadata
+    assertMigratedDarwinHintMetadata
     assertGitStructure
     assertHyprlandMetadata
     assertGitCrossPlatform

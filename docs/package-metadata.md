@@ -21,7 +21,9 @@
 - definition 包含：元数据、backend 实现引用
 - catalog 和 projection registry 开始从 definitions 派生
 - loader 支持自动发现 `modules/package-definitions/*/default.nix`
-- 两个示例 package 已迁移：git（跨平台用户级）、hyprland（Linux 桌面用户级）
+- 当前已迁移一批适合单一 metadata schema 的 package：
+  * 跨平台用户级：`bat`、`btop`、`direnv`、`eza`、`fastfetch`、`fzf`、`gh`、`git`、`jq`、`ripgrep`、`tmux`、`wget`、`zsh`
+  * Linux 桌面用户级：`hyprland`
 
 **Phase 1 限制**：
 - catalog 文件暂时使用 `lib = builtins` 传递给 definitions（后续将改为真实 nixpkgs lib）
@@ -482,6 +484,7 @@ in
 
 **适合 Phase 1 的例子**：
 - `git`：所有 scope 都是 `owner = user`，所有平台都适用
+- `bat` / `fzf` / `zsh`：同样是跨平台 home-only 用户包，可直接复用单一 metadata 模式
 - `hyprland`：所有支持的 scope 都是 `owner = user`，所有支持的 platform 都相同
 
 不符合上述条件的 package 应暂时保留在 legacy catalog 中。
