@@ -151,7 +151,6 @@ let
       bluetooth = linuxSystem "service";
       docker = { kind = "package"; };
       firewall = linuxSystem "service";
-      grub = linuxSystem "service";
       hello = { kind = "package"; };
       locale = { kind = "service"; };
       networking = { kind = "service"; };
