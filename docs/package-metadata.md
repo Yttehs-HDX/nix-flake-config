@@ -21,11 +21,14 @@
 - definition 包含：元数据、backend 实现引用
 - catalog 和 projection registry 开始从 definitions 派生
 - loader 支持自动发现 `modules/package-definitions/*/default.nix`
+- 三个示例 package 已迁移：git（用户级）、hyprland（桌面级）、hello（跨scope）
 
-**尚未实现的能力**：
-- defaultSettings 运行时合成流程（未接入 normalize/context/projectionInputs）
-- 完整的 definition 校验与错误报告
-- 所有 package 的迁移（当前仅 git/hello/hyprland 作为示例）
+**Phase 1 限制**：
+- catalog 文件暂时使用 `lib = builtins` 传递给 definitions（后续将改为真实 nixpkgs lib）
+- definition 当前不应依赖 lib helper 函数
+- defaultSettings 运行时合成流程未实现
+- 完整的 definition 校验与错误报告未实现
+- 仅部分 package 迁移到 definition 系统
 
 ### 不改变 Source Model
 

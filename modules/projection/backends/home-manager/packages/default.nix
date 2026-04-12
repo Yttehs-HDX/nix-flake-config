@@ -1,7 +1,7 @@
 { lib, input }:
 let
   # Load package definitions
-  packageDefinitions = import ../../../package-definitions { inherit lib; };
+  packageDefinitions = import ../../../../package-definitions { inherit lib; };
 
   # Build registry from definitions + legacy entries
   # Definitions take precedence over legacy hardcoded imports

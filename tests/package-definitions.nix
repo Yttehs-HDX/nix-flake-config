@@ -56,6 +56,19 @@ let
     assert hello.backends.nix-darwin.home != null;
     true;
 
+  # Test: Hello is cross-scope (both home and system)
+  assertHelloCrossScope =
+    let hello = packageDefinitions.hello;
+    in
+    assert hello.packageId == "hello";
+    assert hello.metadata.owner == taxonomy.owners.host;
+    # Should support all targets (both home and system)
+    assert builtins.elem taxonomy.targets.nixosHome hello.metadata.allowedTargets;
+    assert builtins.elem taxonomy.targets.nixosSystem hello.metadata.allowedTargets;
+    assert builtins.elem taxonomy.targets.darwinHome hello.metadata.allowedTargets;
+    assert builtins.elem taxonomy.targets.darwinSystem hello.metadata.allowedTargets;
+    true;
+
   # Test: Git definition is cross-platform
   assertGitCrossPlatform =
     let git = packageDefinitions.git;
@@ -73,14 +86,18 @@ let
     # Verify metadata is correct (from definition, not legacy)
     assert homeCatalog.git.kind == "package";
     assert homeCatalog.hyprland.kind == "desktop-session";
+    assert homeCatalog.hello.kind == "package";
     true;
 
-  # Test: System catalog correctly excludes user-only packages
-  assertSystemCatalogExclusions =
-    # hello is a user package (crossPlatformUserPackage), should NOT be in system catalog
-    assert !(builtins.hasAttr "hello" systemCatalog);
-    # git is also a user package, should NOT be in system catalog
+  # Test: System catalog correctly includes cross-scope packages
+  assertSystemCatalogInclusions =
+    # hello is cross-scope (used in both user and host packages in tests)
+    assert builtins.hasAttr "hello" systemCatalog;
+    assert systemCatalog.hello.kind == "package";
+    # git is user-only, should NOT be in system catalog
     assert !(builtins.hasAttr "git" systemCatalog);
+    # hyprland is user-only, should NOT be in system catalog
+    assert !(builtins.hasAttr "hyprland" systemCatalog);
     true;
 
   # Test: Backend path references are correct
@@ -112,9 +129,10 @@ let
     assertGitStructure
     assertHyprlandMetadata
     assertHelloBackends
+    assertHelloCrossScope
     assertGitCrossPlatform
     assertHomeCatalogDerivation
-    assertSystemCatalogExclusions
+    assertSystemCatalogInclusions
     assertBackendPaths
     assertRegistryDerivation
   ];

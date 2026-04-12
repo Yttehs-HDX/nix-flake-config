@@ -184,15 +184,15 @@ let
 
     pipewire = {
       kind = "service";
-      owner = owners.user;
+      owner = owners.host;
       allowedHostKinds = [ "nixos" ];
       allowedTargets = [ targets.nixosHome ];
-      requiresDesktop = true;
+      requiresDesktop = false;
       missingStrategy = missingStrategies.hintManual;
       unsupportedReason =
-        "pipewire currently requires system-level PipeWire support configured on the host.";
+        "This package currently relies on NixOS system integration and is not implemented on this backend.";
       unsupportedSuggestion =
-        "Configure PipeWire in the host's system configuration, or use this package on a NixOS backend with PipeWire enabled.";
+        "Use a NixOS backend for automatic setup, or configure PipeWire manually on this host.";
     };
   };
 in
