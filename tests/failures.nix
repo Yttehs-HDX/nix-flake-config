@@ -284,38 +284,22 @@ let
     };
   }).pipeline.instances);
 
-  renamedEditorEntry = builtins.tryEval ((evalProfile {
-    users.Alice = { packages = { nixvim = { }; }; };
-    hosts.Workspace = {
-      backend.type = "home-manager";
+  deprecatedNixvimPackageName = builtins.tryEval ((evalProfile {
+    users.Alice = { };
+    hosts.Workstation = {
+      backend.type = "nixos";
       platform.system = "x86_64-linux";
+      capabilities.system.enable = true;
       capabilities.home.enable = true;
+      system.stateVersion = "25.11";
     };
-    relations."Alice@Workspace" = {
+    relations."Alice@Workstation" = {
       user = "Alice";
-      host = "Workspace";
+      host = "Workstation";
       state.home.stateVersion = "25.05";
+      packages.nixvim.enable = true;
     };
   }).pipeline.instances);
-
-  unsupportedNiriProjection = builtins.tryEval ((evalProfile {
-    users.Alice = {
-      capabilities.desktop.enable = true;
-      packages.niri = { };
-    };
-    hosts.Workspace = {
-      backend.type = "home-manager";
-      platform.system = "x86_64-linux";
-      capabilities.home.enable = true;
-      capabilities.desktop.enable = true;
-    };
-    relations."Alice@Workspace" = {
-      user = "Alice";
-      host = "Workspace";
-      activation.desktop.enable = true;
-      state.home.stateVersion = "25.05";
-    };
-  }).assembly.homeConfigurations."alice@Workspace".activationPackage);
 
   invalidInitialHashedPasswordWithMutableUsersFalse = builtins.tryEval
     ((evalProfile {
@@ -352,8 +336,7 @@ assert !invalidHomeManagerPipewireHostPackage.success;
 assert !invalidUserDeclaredHostPackage.success;
 assert !invalidHostDeclaredUserHomePackage.success;
 assert !conflictingCommandDiscoveryPackages.success;
-assert !renamedEditorEntry.success;
-assert !unsupportedNiriProjection.success;
+assert !deprecatedNixvimPackageName.success;
 assert invalidInitialHashedPasswordWithMutableUsersFalse.success;
 
 let

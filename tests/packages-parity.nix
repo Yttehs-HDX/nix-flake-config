@@ -80,12 +80,15 @@ let
         capabilities.desktop.enable = true;
         capabilities.userManagement.enable = true;
         system.stateVersion = "25.11";
+        hardware.modules = [{
+          time.timeZone = "Asia/Taipei";
+          i18n.defaultLocale = "en_US.UTF-8";
+        }];
         packages = {
           asusctl = { };
           bluetooth = { };
           blueman = { };
           docker.settings.storageDriver = "btrfs";
-          locale = { };
           nix-ld = { };
           networking = { };
           nvidia.settings = {

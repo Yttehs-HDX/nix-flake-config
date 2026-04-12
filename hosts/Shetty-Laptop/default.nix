@@ -34,8 +34,6 @@
     blueman = { };
     docker.settings.storageDriver = "btrfs";
     firewall = { };
-    grub = { };
-    locale = { };
     networking = { };
     nix-ld = { };
     nvidia.settings = {

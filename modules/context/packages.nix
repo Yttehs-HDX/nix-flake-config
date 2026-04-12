@@ -1,10 +1,10 @@
 { lib, current }:
 let
-  packageCatalog = import ../internal/package-catalog.nix { inherit lib; };
+  packageCatalog = import ../packages { inherit lib; };
   enabled = scope: declaredBy: definitions:
     lib.filterAttrs (packageId: definition:
       definition.enable
-      && packageCatalog.visibleForSource scope declaredBy packageId
+      && packageCatalog.isReachableFromSource scope declaredBy packageId
       && packageCatalog.supportedFor scope current packageId) definitions;
 in {
   home = if current.scopes.home then

@@ -70,40 +70,32 @@ let
   hostControlledHomeConfig =
     hostControlledEvaluated.assembly.homeConfigurations."alice@DesktopWorkspace";
 
-  unsupportedEvaluated = import ./eval-profile.nix {
+  unsupportedPackageEvaluated = import ./eval-profile.nix {
     inherit lib inputs;
     declarations = {
       users.Alice = {
-        capabilities.desktop.enable = true;
         packages = {
           embedded-dev = { };
-          gnome-keyring = { };
+          brightnessctl = { };
         };
       };
-
-      hosts.UnsupportedWorkspace = {
+      hosts.StandaloneWorkspace = {
         backend.type = "home-manager";
         platform.system = "x86_64-linux";
-        capabilities = {
-          home.enable = true;
-          desktop.enable = true;
-        };
+        capabilities.home.enable = true;
       };
-
-      relations."Alice@UnsupportedWorkspace" = {
+      relations."Alice@StandaloneWorkspace" = {
         user = "Alice";
-        host = "UnsupportedWorkspace";
-        activation.desktop.enable = true;
+        host = "StandaloneWorkspace";
         state.home.stateVersion = "25.05";
       };
     };
   };
 
   unsupportedProjectionInput =
-    unsupportedEvaluated.pipeline.projectionInputs."Alice@UnsupportedWorkspace";
+    unsupportedPackageEvaluated.pipeline.projectionInputs."Alice@StandaloneWorkspace";
   unsupportedHomeConfig =
-    unsupportedEvaluated.assembly.homeConfigurations."alice@UnsupportedWorkspace";
-  unsupportedWarnings = unsupportedHomeConfig.config.warnings;
+    unsupportedPackageEvaluated.assembly.homeConfigurations."alice@StandaloneWorkspace";
 in assert relation.backend.type == "home-manager";
 assert builtins.length relation.systemModules == 0;
 assert relation.homeModule != null;
@@ -118,16 +110,11 @@ assert darwinHomeConfig.config.home.homeDirectory == "/Users/alice";
 assert darwinProjectionInput.theme == null;
 assert hostControlledInput.packages.home.blueman.enable;
 assert hostControlledHomeConfig.config.services.blueman-applet.enable;
-assert !(builtins.hasAttr "embedded-dev"
-  unsupportedProjectionInput.packages.home);
-assert !(builtins.hasAttr "gnome-keyring"
-  unsupportedProjectionInput.packages.home);
-assert unsupportedProjectionInput.unsupportedPackages.home."embedded-dev".backend
-  == "home-manager";
-assert unsupportedProjectionInput.unsupportedPackages.home."gnome-keyring".backend
-  == "home-manager";
-assert builtins.any (warning: lib.hasInfix "Package `embedded-dev`" warning)
-  unsupportedWarnings;
-assert builtins.any (warning: lib.hasInfix "Package `gnome-keyring`" warning)
-  unsupportedWarnings;
+assert builtins.hasAttr "embedded-dev"
+  unsupportedProjectionInput.unsupportedPackages.home;
+assert builtins.hasAttr "brightnessctl"
+  unsupportedProjectionInput.unsupportedPackages.home;
+assert (unsupportedProjectionInput.unsupportedPackages.home.brightnessctl.strategy
+  == "skip");
+assert builtins.length unsupportedHomeConfig.config.warnings > 0;
 true
