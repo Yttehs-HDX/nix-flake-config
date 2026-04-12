@@ -17,7 +17,7 @@
     theme.enable = true;
   };
 
-  state.home.stateVersion = "25.05";
+  state.home.stateVersion = "25.11";
 
   policy = { };
   overrides = { };
