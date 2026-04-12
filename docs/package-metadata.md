@@ -14,13 +14,18 @@
 ---
 ## 架构原则
 
-### Package Definition as Single Source of Truth
+### Package Definition as Single Source of Truth (Phase 1)
 
-从本版本开始，package 定义采用**单点工程真源**架构：
+**当前阶段实现**：package 定义开始成为**工程层单点真源**雏形：
 - 每个 package 拥有独立的 definition 文件
-- definition 包含：元数据、默认设置、backend 实现引用
-- catalog 和 projection registry 由 definitions 派生，不再手工维护
-- 新增 package 只需创建一个 definition 文件
+- definition 包含：元数据、backend 实现引用
+- catalog 和 projection registry 开始从 definitions 派生
+- loader 支持自动发现 `modules/package-definitions/*/default.nix`
+
+**尚未实现的能力**：
+- defaultSettings 运行时合成流程（未接入 normalize/context/projectionInputs）
+- 完整的 definition 校验与错误报告
+- 所有 package 的迁移（当前仅 git/hello/hyprland 作为示例）
 
 ### 不改变 Source Model
 
@@ -319,9 +324,9 @@ taxonomy.nix  ← presets.nix ← catalog/{home,system}.nix
 modules/package-definitions/<packageId>/default.nix
 ```
 
-### Definition Schema
+### Definition Schema (Phase 1)
 
-一个完整的 package definition 至少包含：
+一个 package definition 当前包含：
 
 ```nix
 {
@@ -340,9 +345,6 @@ modules/package-definitions/<packageId>/default.nix
     unsupportedSuggestion = null or string;
   };
 
-  # 默认设置（可被 user/host 声明层覆盖）
-  defaultSettings = { };
-
   # Backend 实现引用
   backends = {
     home-manager = {
@@ -360,6 +362,8 @@ modules/package-definitions/<packageId>/default.nix
   };
 }
 ```
+
+**注意**：Phase 1 不包含 `defaultSettings` 字段。该字段的运行时合成流程将在后续阶段接入。
 
 ### Metadata 预设
 
@@ -424,7 +428,7 @@ in
 ```
 
 ---
-## 新增包的流程（简化）
+## 新增包的流程（Phase 1 简化）
 
 从现在开始，新增一个 package 只需：
 
@@ -436,4 +440,6 @@ in
 
 **对比旧流程**：
 - 旧：需同时修改 catalog、registry、projector 三处
-- 新：只需 definition + projector 两处，catalog/registry 自动派生
+- 新（Phase 1）：只需 definition + projector 两处，catalog/registry 自动派生
+
+**注意**：loader 使用 `builtins.readDir` 自动发现所有子目录，新增 definition 无需手工注册。

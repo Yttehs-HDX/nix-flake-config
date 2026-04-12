@@ -1,27 +1,30 @@
 # Package Definitions Loader
 #
-# This module loads all package definitions from subdirectories and provides
-# them as an attrset indexed by packageId.
+# Automatically discovers and loads all package definitions from subdirectories.
+# Each package definition must be in modules/package-definitions/<packageId>/default.nix
 #
-# Each package definition must export:
-# - packageId: string
-# - metadata: attrset (kind, owner, allowedHostKinds, allowedTargets, etc.)
-# - defaultSettings: attrset
-# - backends: attrset { home-manager, nixos, nix-darwin }
+# To add a new package:
+# 1. Create modules/package-definitions/<packageId>/default.nix
+# 2. Export { packageId, metadata, defaultSettings, backends }
+# 3. No changes needed to this file - auto-discovery handles it
 { lib }:
 let
-  # Import individual package definitions
-  # Each package definition is in its own directory
-  git = import ./git { inherit lib; };
-  hello = import ./hello { inherit lib; };
-  hyprland = import ./hyprland { inherit lib; };
+  # Get the path to this directory
+  defPath = ./.;
 
-  # Collect all definitions into an attrset indexed by packageId
-  allDefinitions = [
-    git
-    hello
-    hyprland
-  ];
+  # Read all entries in the package-definitions directory
+  allEntries = builtins.readDir defPath;
+
+  # Filter to only directories (excluding this default.nix file's directory entry)
+  packageDirs = builtins.filter (name:
+    allEntries.${name} == "directory"
+  ) (builtins.attrNames allEntries);
+
+  # Import each package definition
+  # Each must have a default.nix that exports the definition structure
+  allDefinitions = map (dirName:
+    import (defPath + "/${dirName}") { inherit lib; }
+  ) packageDirs;
 
   # Convert list to attrset keyed by packageId
   definitionsById = builtins.listToAttrs (map (def: {

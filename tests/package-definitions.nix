@@ -7,6 +7,15 @@ let
   homeCatalog = import ../modules/packages/catalog/home.nix;
   systemCatalog = import ../modules/packages/catalog/system.nix;
 
+  # Test backend registry derivation
+  # Simulate what home-manager projection registry does
+  testRegistryDerivation = builtins.mapAttrs (id: def:
+    let
+      backendPath = def.backends.home-manager.home or null;
+    in
+    if backendPath == null then null else import backendPath
+  ) packageDefinitions;
+
   # Test: Package definitions are loaded correctly
   assertDefinitionsExist =
     assert builtins.hasAttr "git" packageDefinitions;
@@ -20,7 +29,6 @@ let
     in
     assert git.packageId == "git";
     assert builtins.hasAttr "metadata" git;
-    assert builtins.hasAttr "defaultSettings" git;
     assert builtins.hasAttr "backends" git;
     assert builtins.hasAttr "home-manager" git.backends;
     assert builtins.hasAttr "nixos" git.backends;
@@ -37,14 +45,6 @@ let
     assert builtins.elem taxonomy.targets.nixosHome hyprland.metadata.allowedTargets;
     assert hyprland.metadata.requiresDesktop == true;
     assert hyprland.backends.nix-darwin.home == null;  # Not supported on Darwin
-    true;
-
-  # Test: Hyprland definition has default settings
-  assertHyprlandSettings =
-    let hyprland = packageDefinitions.hyprland;
-    in
-    assert hyprland.defaultSettings.xwaylandEnable == true;
-    assert hyprland.defaultSettings.launcherCommand == "rofi -show drun";
     true;
 
   # Test: Hello definition supports all backends
@@ -75,11 +75,12 @@ let
     assert homeCatalog.hyprland.kind == "desktop-session";
     true;
 
-  # Test: System catalog derives from definitions
-  assertSystemCatalogDerivation =
-    assert builtins.hasAttr "hello" systemCatalog;
-    # hello should be in system catalog since it has system targets
-    assert systemCatalog.hello.kind == "package";
+  # Test: System catalog correctly excludes user-only packages
+  assertSystemCatalogExclusions =
+    # hello is a user package (crossPlatformUserPackage), should NOT be in system catalog
+    assert !(builtins.hasAttr "hello" systemCatalog);
+    # git is also a user package, should NOT be in system catalog
+    assert !(builtins.hasAttr "git" systemCatalog);
     true;
 
   # Test: Backend path references are correct
@@ -91,17 +92,31 @@ let
     assert builtins.isPath git.backends.nix-darwin.home;
     true;
 
+  # Test: Registry derivation produces callable projectors
+  assertRegistryDerivation =
+    # Verify that derived registry contains projectors for migrated packages
+    assert builtins.hasAttr "git" testRegistryDerivation;
+    assert builtins.hasAttr "hello" testRegistryDerivation;
+    assert builtins.hasAttr "hyprland" testRegistryDerivation;
+    # Verify git projector is a function (returns a function when called)
+    assert builtins.isFunction testRegistryDerivation.git;
+    # Verify hello projector is a function
+    assert builtins.isFunction testRegistryDerivation.hello;
+    # Verify hyprland projector is a function
+    assert builtins.isFunction testRegistryDerivation.hyprland;
+    true;
+
   # Run all tests
   allTests = [
     assertDefinitionsExist
     assertGitStructure
     assertHyprlandMetadata
-    assertHyprlandSettings
     assertHelloBackends
     assertGitCrossPlatform
     assertHomeCatalogDerivation
-    assertSystemCatalogDerivation
+    assertSystemCatalogExclusions
     assertBackendPaths
+    assertRegistryDerivation
   ];
 in
 builtins.deepSeq allTests true

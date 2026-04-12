@@ -6,11 +6,8 @@ in
 {
   packageId = "hello";
 
-  # Metadata
+  # Metadata for catalog derivation
   metadata = presets.crossPlatformUserPackage "package";
-
-  # Default settings
-  defaultSettings = { };
 
   # Backend implementation references
   backends = {

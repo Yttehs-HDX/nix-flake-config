@@ -9,12 +9,6 @@ in
   # Metadata - Linux desktop user package
   metadata = presets.linuxDesktopUser "desktop-session";
 
-  # Default settings
-  defaultSettings = {
-    xwaylandEnable = true;
-    launcherCommand = "rofi -show drun";
-  };
-
   # Backend implementation references
   backends = {
     home-manager = {

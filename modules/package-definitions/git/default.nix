@@ -9,9 +9,6 @@ in
   # Metadata - determines catalog entries and visibility/support rules
   metadata = presets.crossPlatformUserPackage "package";
 
-  # Default settings (can be overridden by user/host declarations)
-  defaultSettings = { };
-
   # Backend implementation references
   backends = {
     home-manager = {
