@@ -2,6 +2,18 @@
 let
   schema = import ../default.nix { inherit lib; };
   types = lib.types;
+  fontSpecType = types.oneOf [
+    types.str
+    (types.submodule {
+      options = {
+        family = lib.mkOption { type = types.str; };
+        size = lib.mkOption {
+          type = types.nullOr types.int;
+          default = null;
+        };
+      };
+    })
+  ];
 in {
   options = {
     enable = lib.mkOption {
@@ -81,7 +93,46 @@ in {
     };
 
     theme = lib.mkOption {
-      type = types.attrs;
+      type = types.submodule {
+        options = {
+          name = lib.mkOption {
+            type = types.nullOr types.str;
+            default = null;
+          };
+
+          accent = lib.mkOption {
+            type = types.nullOr types.str;
+            default = null;
+          };
+
+          flavor = lib.mkOption {
+            type = types.nullOr types.str;
+            default = null;
+          };
+
+          fonts = {
+            sans = lib.mkOption {
+              type = types.nullOr fontSpecType;
+              default = null;
+            };
+
+            monospace = lib.mkOption {
+              type = types.nullOr fontSpecType;
+              default = null;
+            };
+
+            emoji = lib.mkOption {
+              type = types.nullOr fontSpecType;
+              default = null;
+            };
+
+            default = lib.mkOption {
+              type = types.nullOr fontSpecType;
+              default = null;
+            };
+          };
+        };
+      };
       default = { };
     };
 

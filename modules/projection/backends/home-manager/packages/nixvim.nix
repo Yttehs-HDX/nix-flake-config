@@ -12,7 +12,7 @@ let
       builtins.getAttr packageName pkgs
     else
       throw
-      "Unsupported neovim extra package `${packageName}` on `${input.relationId}`.";
+      "Unsupported nixvim extra package `${packageName}` on `${input.relationId}`.";
 in {
   imports = [ inputs.nixvim.homeModules.nixvim ];
 

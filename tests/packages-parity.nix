@@ -49,6 +49,7 @@ let
             shellIntegrationMode = "no_cursor";
           };
           mikusays = { };
+          nixvim = { };
           neovim = { };
           network-manager = { };
           nix-index = { };
@@ -118,40 +119,6 @@ let
     };
   };
 
-  commandNotFoundEvaluated = import ./eval-profile.nix {
-    inherit lib inputs;
-    declarations = {
-      users.TerminalUser = {
-        meta.displayName = "Terminal User";
-        preferences.shell = "zsh";
-        packages = {
-          command-not-found = { };
-          xdg = { };
-          zsh = { };
-        };
-      };
-
-      hosts.TerminalHost = {
-        backend.type = "nixos";
-        platform.system = "x86_64-linux";
-        capabilities.system.enable = true;
-        capabilities.home.enable = true;
-        capabilities.userManagement.enable = true;
-        system.stateVersion = "25.11";
-      };
-
-      relations."TerminalUser@TerminalHost" = {
-        user = "TerminalUser";
-        host = "TerminalHost";
-        identity = {
-          name = "terminal";
-          homeDirectory = "/home/terminal";
-        };
-        state.home.stateVersion = "25.05";
-      };
-    };
-  };
-
   wiresharkOnlyEvaluated = import ./eval-profile.nix {
     inherit lib inputs;
     declarations = {
@@ -188,17 +155,15 @@ let
   hexecutePackage = inputs.hexecute.packages.${system}.default;
   mikusaysPackage = inputs.nur.legacyPackages.${system}.repos.zerozawa.mikusays;
 
-  commandNotFoundConfig =
-    commandNotFoundEvaluated.assembly.nixosConfigurations.TerminalHost.config.home-manager.users.terminal;
   wiresharkOnlyConfig =
     wiresharkOnlyEvaluated.assembly.nixosConfigurations.PacketLab;
 in assert homeConfig.programs.bat.enable;
 assert projectionInput.packages.home.hexecute.enable;
 assert projectionInput.packages.home.blueman.enable;
 assert projectionInput.packages.home.mikusays.enable;
+assert projectionInput.packages.home.nixvim.enable;
 assert projectionInput.packages.home.neovim.enable;
 assert projectionInput.packages.home.pipewire.enable;
-assert !(builtins.hasAttr "nixvim" projectionInput.packages.home);
 assert homeConfig.home.sessionVariables.PAGER
   == "${nixosConfig.pkgs.bat}/bin/bat";
 assert homeConfig.programs.eza.enable;
@@ -280,7 +245,6 @@ assert homeConfig.programs.zsh.shellAliases.ai == "tgpt -i";
 assert builtins.elem "tmux" homeConfig.programs.zsh.oh-my-zsh.plugins;
 assert homeConfig.programs.zsh.zplug.enable;
 assert lib.hasInfix "source ~/.p10k.zsh" homeConfig.programs.zsh.initContent;
-assert lib.hasInfix "command-not-found.sh" homeConfig.programs.zsh.initContent;
 assert homeConfig.programs.kitty.enable;
 assert homeConfig.programs.kitty.themeFile == "Catppuccin-Mocha";
 assert homeConfig.programs.kitty.font.name == "JetBrainsMono Nerd Font";
@@ -358,7 +322,7 @@ assert nixosConfig.config.virtualisation.docker.storageDriver == "btrfs";
 assert nixosConfig.config.programs.clash-verge.enable;
 assert nixosConfig.config.programs.hyprland.enable;
 assert nixosConfig.config.programs.nix-ld.enable;
-assert !nixosConfig.config.programs.neovim.enable;
+assert nixosConfig.config.programs.neovim.enable;
 assert nixosConfig.config.nixpkgs.config.nvidia.acceptLicense;
 assert nixosConfig.config.nixpkgs.config.cudaSupport;
 assert nixosConfig.config.hardware.nvidia.prime.offload.enable;
@@ -396,11 +360,4 @@ assert !wiresharkOnlyConfig.config.virtualisation.libvirtd.enable;
 assert !wiresharkOnlyConfig.config.virtualisation.spiceUSBRedirection.enable;
 assert builtins.elem "wireshark"
   wiresharkOnlyConfig.config.users.users.alice.extraGroups;
-assert commandNotFoundConfig.programs."command-not-found".enable;
-assert lib.hasInfix "command_not_found_handler"
-  commandNotFoundConfig.programs.zsh.initContent;
-assert commandNotFoundConfig.xdg.userDirs.enable;
-assert commandNotFoundConfig.xdg.configFile."user-dirs.dirs".text != "";
-assert commandNotFoundConfig.home.sessionVariables.XDG_DOWNLOAD_DIR
-  == "/home/terminal/Downloads";
 true

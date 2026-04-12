@@ -1,8 +1,16 @@
-{ inputs, lib, pipeline, projection }:
+{ inputs, lib, projection }:
 let
-  nixosHosts =
-    lib.filterAttrs (_: host: host.enable && host.backend.type == "nixos")
-    pipeline.normalized.hosts;
+  nixosProjections =
+    lib.filterAttrs (_: realization: realization.backend.type == "nixos")
+    projection;
+
+  nixosHosts = lib.foldl' (acc: realization:
+    acc // {
+      ${realization.hostId} = {
+        system = realization.platformSystem;
+        hardwareModules = realization.hostHardwareModules;
+      };
+    }) { } (lib.attrValues nixosProjections);
 
   foldHomeModules = projections:
     lib.foldl' (acc: projection:
@@ -15,7 +23,7 @@ let
 
   buildHost = hostId: host:
     let
-      system = host.platform.system;
+      system = host.system;
       projections = lib.filterAttrs (_: realization:
         realization.backend.type == "nixos" && realization.hostId == hostId)
         projection;
@@ -28,15 +36,15 @@ let
       homeManagerBridge = {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
-        home-manager.extraSpecialArgs = { inherit inputs pipeline; };
+        home-manager.extraSpecialArgs = { inherit inputs; };
         home-manager.users =
           lib.mapAttrs (_: modules: { imports = modules; }) homeModules;
       };
     in inputs.nixpkgs.lib.nixosSystem {
       inherit system;
-      specialArgs = { inherit inputs pipeline hostId; };
-      modules = [{ nixpkgs.config.allowUnfree = true; }]
-        ++ (host.hardware.modules or [ ]) ++ systemModules
+      specialArgs = { inherit inputs hostId; };
+      modules = [{ nixpkgs.config.allowUnfree = true; }] ++ host.hardwareModules
+        ++ systemModules
         ++ [ inputs.home-manager.nixosModules.home-manager homeManagerBridge ];
     };
-in lib.mapAttrs buildHost nixosHosts
+in lib.mapAttrs (hostId: host: buildHost hostId host) nixosHosts

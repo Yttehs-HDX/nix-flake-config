@@ -1,2 +1,2 @@
-{ inputs, lib, pipeline, projection }:
-import ../assembly/nixos.nix { inherit inputs lib pipeline projection; }
+{ inputs, lib, projection }:
+import ../assembly/nixos.nix { inherit inputs lib projection; }

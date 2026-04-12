@@ -42,6 +42,4 @@ assert builtins.elem homeConfig.pkgs.tldr homeConfig.config.home.packages;
 assert builtins.elem homeConfig.pkgs.wget homeConfig.config.home.packages;
 assert homeConfig.config.xdg.configFile."btop/themes/catppuccin-mocha.theme".text
   != "";
-assert homeConfig.pkgs.lib.hasInfix "command-not-found.sh"
-  homeConfig.config.programs.zsh.initContent;
 true

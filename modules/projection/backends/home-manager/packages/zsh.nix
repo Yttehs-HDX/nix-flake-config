@@ -27,7 +27,6 @@
         "tldr"
         "history"
         "sudo"
-        "command-not-found"
         "vscode"
         "rust"
         "uv"

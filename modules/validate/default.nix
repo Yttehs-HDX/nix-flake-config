@@ -1,4 +1,9 @@
 { lib, normalized }:
+# Validation orchestration
+# - references.nix: User/Host reference integrity in relations
+# - capabilities.nix: Capability activation constraints (user allows, relation activates, host supports)
+# - This file: Package validation, host checks (backend/platform/stateVersion), relation checks (scope fields, state),
+#              uniqueness checks (user@host pairs, host@identity pairs), and index building
 let
   packageCatalog = import ../packages { inherit lib; };
   references = import ./references.nix { inherit lib normalized; };
@@ -144,33 +149,6 @@ let
     else
       true) enabledRelations;
 
-  relationPackageConflictChecks = lib.mapAttrsToList (relationId: relation:
-    let
-      host = normalized.hosts.${relation.host};
-      user = normalized.users.${relation.user};
-      usesZsh = user.preferences.shell == "zsh";
-      hasNixIndex = builtins.hasAttr "nix-index" user.packages
-        && user.packages."nix-index".enable;
-      hasCommandNotFound = builtins.hasAttr "command-not-found" user.packages
-        && user.packages."command-not-found".enable;
-      hasNixvim = builtins.hasAttr "nixvim" user.packages
-        && user.packages.nixvim.enable;
-    in if relation.enable && host.capabilities.home.enable && usesZsh
-    && hasNixIndex && hasCommandNotFound then
-      throw ''
-        Relation `${relationId}` enables both `packages.nix-index` and `packages.command-not-found` for a zsh home environment.
-        These packages both provide command-not-found handling and must not be enabled together.
-        Choose exactly one of `packages.nix-index` or `packages.command-not-found`.
-      ''
-    else if relation.enable && host.capabilities.home.enable && hasNixvim then
-      throw ''
-        Relation `${relationId}` declares `packages.nixvim`.
-        The public package entry has been renamed to `packages.neovim`.
-        Keep the existing nixvim-backed implementation, but declare it through `packages.neovim`.
-      ''
-    else
-      true) enabledRelations;
-
   uniquenessCheck =
     if lib.length relationPairs == lib.length (lib.unique relationPairs) then
       true
@@ -204,7 +182,6 @@ in builtins.deepSeq [
   hostChecks
   relationStateChecks
   relationScopeChecks
-  relationPackageConflictChecks
   uniquenessCheck
   hostIdentityUniquenessCheck
 ] { inherit indexes; }

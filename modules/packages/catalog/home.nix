@@ -19,7 +19,6 @@ in {
   cbonsai = crossPlatformUserPackage "package";
   cmatrix = crossPlatformUserPackage "package";
   codex = crossPlatformUserPackage "integration-heavy";
-  command-not-found = crossPlatformUserPackage "environment";
   cryptsetup = crossPlatformUserPackage "package";
   dig = crossPlatformUserPackage "package";
   direnv = crossPlatformUserPackage "package";
@@ -42,7 +41,7 @@ in {
   lazygit = crossPlatformUserPackage "package";
   lolcat = crossPlatformUserPackage "package";
   mikusays = crossPlatformUserPackage "custom";
-  neovim = crossPlatformUserPackage "integration-heavy";
+  nixvim = crossPlatformUserPackage "integration-heavy";
   net-tools = crossPlatformUserPackage "package";
   nerd-fonts-jetbrains-mono = crossPlatformUserPackage "theme-consumer";
   nix-index = crossPlatformUserPackage "environment";
@@ -115,6 +114,19 @@ in {
   wechat = darwinHintManual "gui";
 
   # ── Packages with custom constraints ──────────────────────────────────
+  neovim = {
+    kind = "integration-heavy";
+    owner = owners.user;
+    allowedHostKinds = [ "nixos" ];
+    allowedTargets = [ targets.nixosHome ];
+    requiresDesktop = false;
+    missingStrategy = missingStrategies.hintManual;
+    unsupportedReason =
+      "Neovim default-editor integration is currently implemented only for NixOS backends.";
+    unsupportedSuggestion =
+      "Use a NixOS backend for automatic neovim default-editor setup, or use `packages.nixvim` for Home Manager-level editor configuration.";
+  };
+
   embedded-dev = {
     kind = "integration-heavy";
     owner = owners.user;

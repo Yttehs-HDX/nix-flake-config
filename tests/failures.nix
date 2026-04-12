@@ -264,28 +264,11 @@ let
     };
   }).pipeline.instances);
 
-  conflictingCommandDiscoveryPackages = builtins.tryEval ((evalProfile {
+  nixvimStaysNixvim = evalProfile {
     users.Alice = {
-      preferences.shell = "zsh";
-      packages = {
-        command-not-found = { };
-        nix-index = { };
-      };
+      packages.nixvim.enable = true;
+      packages.neovim.enable = true;
     };
-    hosts.Workspace = {
-      backend.type = "home-manager";
-      platform.system = "x86_64-linux";
-      capabilities.home.enable = true;
-    };
-    relations."Alice@Workspace" = {
-      user = "Alice";
-      host = "Workspace";
-      state.home.stateVersion = "25.05";
-    };
-  }).pipeline.instances);
-
-  deprecatedNixvimPackageName = builtins.tryEval ((evalProfile {
-    users.Alice = { };
     hosts.Workstation = {
       backend.type = "nixos";
       platform.system = "x86_64-linux";
@@ -297,9 +280,8 @@ let
       user = "Alice";
       host = "Workstation";
       state.home.stateVersion = "25.05";
-      packages.nixvim.enable = true;
     };
-  }).pipeline.instances);
+  };
 
   invalidInitialHashedPasswordWithMutableUsersFalse = builtins.tryEval
     ((evalProfile {
@@ -335,8 +317,9 @@ assert !invalidHomeManagerSystemPackages.success;
 assert !invalidHomeManagerPipewireHostPackage.success;
 assert !invalidUserDeclaredHostPackage.success;
 assert !invalidHostDeclaredUserHomePackage.success;
-assert !conflictingCommandDiscoveryPackages.success;
-assert !deprecatedNixvimPackageName.success;
+assert nixvimStaysNixvim.pipeline.normalized.users.Alice.packages.nixvim.enable;
+assert nixvimStaysNixvim.pipeline.normalized.users.Alice.packages.neovim.enable;
+assert (builtins.tryEval nixvimStaysNixvim.pipeline.instances).success;
 assert invalidInitialHashedPasswordWithMutableUsersFalse.success;
 
 let
