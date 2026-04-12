@@ -1,8 +1,16 @@
-{ inputs, lib, pipeline, projection }:
+{ inputs, lib, projection }:
 let
-  darwinHosts =
-    lib.filterAttrs (_: host: host.enable && host.backend.type == "nix-darwin")
-    pipeline.normalized.hosts;
+  darwinProjections =
+    lib.filterAttrs (_: realization: realization.backend.type == "nix-darwin")
+    projection;
+
+  darwinHosts = lib.foldl' (acc: realization:
+    acc // {
+      ${realization.hostId} = {
+        system = realization.platformSystem;
+        hardwareModules = realization.hostHardwareModules;
+      };
+    }) { } (lib.attrValues darwinProjections);
 
   foldHomeModules = projections:
     lib.foldl' (acc: realization:
@@ -15,7 +23,7 @@ let
 
   buildHost = hostId: host:
     let
-      system = host.platform.system;
+      system = host.system;
       pkgs = import inputs.nixpkgs {
         inherit system;
         config.allowUnfree = true;
@@ -32,15 +40,15 @@ let
       homeManagerBridge = {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
-        home-manager.extraSpecialArgs = { inherit inputs pipeline; };
+        home-manager.extraSpecialArgs = { inherit inputs; };
         home-manager.users =
           lib.mapAttrs (_: modules: { imports = modules; }) homeModules;
       };
     in inputs.nix-darwin.lib.darwinSystem {
       inherit pkgs;
       inherit system;
-      specialArgs = { inherit inputs pipeline hostId; };
-      modules = (host.hardware.modules or [ ]) ++ systemModules
+      specialArgs = { inherit inputs hostId; };
+      modules = host.hardwareModules ++ systemModules
         ++ [ inputs.home-manager.darwinModules.home-manager homeManagerBridge ];
     };
 in lib.mapAttrs buildHost darwinHosts

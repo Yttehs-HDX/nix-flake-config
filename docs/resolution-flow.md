@@ -46,8 +46,8 @@
 可以简写为：
 ```
 source
--> validate
 -> normalize
+-> validate
 -> index
 -> instantiate
 -> derive backend/scope

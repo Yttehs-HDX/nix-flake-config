@@ -1,4 +1,4 @@
-{ inputs, lib, pipeline, projection }:
+{ inputs, lib, projection }:
 let
   homeScopeRelations =
     lib.filterAttrs (_: realization: realization.homeModule != null) projection;
@@ -12,7 +12,7 @@ let
       };
     in inputs.home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
-      extraSpecialArgs = { inherit inputs pipeline relationId; };
+      extraSpecialArgs = { inherit inputs relationId; };
       modules = [ realization.homeModule ];
     };
 in lib.mapAttrs' (relationId: realization:

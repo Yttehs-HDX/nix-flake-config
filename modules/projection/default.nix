@@ -26,4 +26,5 @@ lib.mapAttrs (relationId: input:
     backend = input.backend;
     scopes = input.scopes;
     platformSystem = input.current.host.platform.system;
+    hostHardwareModules = input.current.host.hardware.modules or [ ];
   }) pipeline.projectionInputs
