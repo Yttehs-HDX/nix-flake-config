@@ -3,18 +3,20 @@ lib.mapAttrs (_: current:
   let
     effectiveCapabilities =
       import ./effective-capabilities.nix { inherit current; };
-  in current // {
-    inherit effectiveCapabilities;
+    current' = current // {
+      inherit effectiveCapabilities;
+    };
+  in current' // {
     packages = import ./packages.nix {
       inherit lib;
-      inherit current;
+      current = current';
     };
     unsupportedPackages = import ./unsupported-packages.nix {
       inherit lib;
-      inherit current;
+      current = current';
     };
     theme = import ./theme.nix {
       inherit lib;
-      inherit current;
+      current = current';
     };
   }) instances
