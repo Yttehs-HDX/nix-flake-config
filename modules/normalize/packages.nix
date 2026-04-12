@@ -18,9 +18,7 @@ let
   mergeDefinitions = definitions:
     lib.foldl' lib.recursiveUpdate { } definitions;
 in {
-  user = user:
-    lib.mapAttrs normalizeEntry
-    (mergeDefinitions [ user.programs user.services user.packages ]);
+  user = user: lib.mapAttrs normalizeEntry user.packages;
 
   host = host: lib.mapAttrs normalizeEntry host.packages;
 }

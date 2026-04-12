@@ -61,15 +61,5 @@ in {
       type = types.nullOr types.str;
       default = null;
     };
-
-    policy = lib.mkOption {
-      type = types.attrs;
-      default = { };
-    };
-
-    overrides = lib.mkOption {
-      type = types.attrs;
-      default = { };
-    };
   };
 }

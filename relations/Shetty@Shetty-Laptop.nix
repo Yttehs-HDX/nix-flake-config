@@ -18,7 +18,4 @@
   };
 
   state.home.stateVersion = "25.11";
-
-  policy = { };
-  overrides = { };
 }

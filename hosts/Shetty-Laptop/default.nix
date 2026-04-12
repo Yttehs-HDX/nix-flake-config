@@ -18,15 +18,9 @@
     userManagement.enable = true;
   };
 
-  roles = [ "laptop" "desktop" ];
-
   system = { stateVersion = "25.11"; };
 
   hardware = { modules = [ ./hardware-configuration.nix ]; };
-
-  networking = { };
-  security = { };
-  desktop = { };
 
   packages = {
     asusctl = { };
@@ -51,6 +45,4 @@
     wireshark.settings.package = "qt";
     zram = { };
   };
-
-  policy = { };
 }
