@@ -1,6 +1,19 @@
 { lib, input }:
 let
-  registry = {
+  # Load package definitions
+  packageDefinitions = import ../../../package-definitions { inherit lib; };
+
+  # Build registry from definitions + legacy entries
+  # Definitions take precedence over legacy hardcoded imports
+  definitionRegistry = builtins.mapAttrs (id: def:
+    let
+      backendPath = def.backends.home-manager.home or null;
+    in
+    if backendPath == null then null else import backendPath
+  ) packageDefinitions;
+
+  # Legacy inline entries (to be migrated to package definitions)
+  legacyRegistry = {
     android-tools = import ./android-tools.nix;
     asciiquarium = import ./asciiquarium.nix;
     bat = import ./bat.nix;
@@ -27,7 +40,7 @@ let
     file = import ./file.nix;
     fzf = import ./fzf.nix;
     gh = import ./gh.nix;
-    git = import ./git.nix;
+    # git = import ./git.nix;  # Now in definitions
     github-copilot-cli = import ./github-copilot-cli.nix;
     gnome-keyring = if input.backend.type == "nixos" then
       null
@@ -36,13 +49,13 @@ let
     google-chrome = import ./google-chrome.nix;
     grimblast = import ./grimblast.nix;
     hexecute = import ./hexecute.nix;
-    hello = import ./hello.nix;
+    # hello = import ./hello.nix;  # Now in definitions
     hmcl = import ./hmcl.nix;
     htop = import ./htop.nix;
     huggingface-hub = import ./huggingface-hub.nix;
     hypridle = import ./hypridle.nix;
     hyprpicker = import ./hyprpicker.nix;
-    hyprland = import ./hyprland.nix;
+    # hyprland = import ./hyprland.nix;  # Now in definitions
     hyprpolkitagent = import ./hyprpolkitagent.nix;
     jq = import ./jq.nix;
     jetbrains-toolbox = import ./jetbrains-toolbox.nix;
@@ -106,6 +119,9 @@ let
     zip = import ./zip.nix;
     zsh = import ./zsh.nix;
   };
+
+  # Merge definitions (preferred) with legacy entries (fallback)
+  registry = legacyRegistry // definitionRegistry;
 
   resolve = packageId: definition:
     if builtins.hasAttr packageId registry then

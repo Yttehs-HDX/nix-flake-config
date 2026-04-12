@@ -1,13 +1,43 @@
 # System-scope package metadata registry.
 #
-# Every system-scope package must have an explicit entry here.
-# Entries are grouped by classification and sorted alphabetically within
-# each group.
+# This registry now merges two sources:
+# 1. Package definitions from modules/package-definitions (preferred)
+# 2. Legacy inline entries (to be migrated)
+#
+# Packages with definitions take precedence. Legacy entries remain for
+# packages not yet migrated to the definition system.
 let
   presets = import ../presets.nix;
+  taxonomy = import ../taxonomy.nix;
   inherit (presets)
     linuxSystemHost crossPlatformSystemHost linuxDesktopSystemHost;
-in {
+  inherit (taxonomy) targets;
+
+  # Load package definitions
+  lib = builtins;  # Minimal lib for filtering
+  packageDefinitions = import ../../package-definitions { inherit lib; };
+
+  # Extract metadata from definitions for system-scope packages
+  # Filter to only packages that have system targets in their allowedTargets
+  systemDefinitionMetadata = builtins.mapAttrs (id: def: def.metadata) (
+    builtins.listToAttrs (
+      builtins.filter (item: item != null) (
+        map (id:
+          let
+            def = packageDefinitions.${id};
+            hasSystemTarget = builtins.any (target:
+              target == taxonomy.targets.nixosSystem ||
+              target == taxonomy.targets.darwinSystem
+            ) def.metadata.allowedTargets;
+          in
+          if hasSystemTarget then { name = id; value = def; } else null
+        ) (builtins.attrNames packageDefinitions)
+      )
+    )
+  );
+
+  # Legacy inline entries (to be migrated to package definitions)
+  legacyEntries = {
   # ── Linux system packages ─────────────────────────────────────────────
   asusctl = linuxSystemHost "service";
   bluetooth = linuxSystemHost "service";
@@ -25,10 +55,14 @@ in {
 
   # ── Cross-platform system packages ────────────────────────────────────
   docker = crossPlatformSystemHost "package";
-  hello = crossPlatformSystemHost "package";
+  # hello = crossPlatformSystemHost "package";  # Now in definitions
   networking = crossPlatformSystemHost "service";
   wireshark = crossPlatformSystemHost "package";
 
   # ── Linux desktop system packages ─────────────────────────────────────
   sddm = linuxDesktopSystemHost "desktop-component";
-}
+  };
+in
+# Merge definitions (preferred) with legacy entries (fallback)
+# Definitions override legacy entries for the same package ID
+legacyEntries // systemDefinitionMetadata

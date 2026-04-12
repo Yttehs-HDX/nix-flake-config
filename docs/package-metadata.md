@@ -1,14 +1,34 @@
 # Package Metadata
 ## 目标
-本文档定义 `nix-flake-config` 中的**软件包元数据注册表**。
+本文档定义 `nix-flake-config` 中的**软件包定义与元数据系统**。
 
 它回答以下问题：
 - 一个软件包需要哪些元数据
 - 这些元数据按什么分类体系组织
 - 元数据如何决定包的可见性、支持性、落地方式
-- 注册表按什么职责拆分成文件
+- package definitions 如何成为工程单点真源
+- 注册表如何从 package definitions 派生
 
 本文档是从 `1.md`（原始设计草案）与重构实现中提炼出的正式规范。
+
+---
+## 架构原则
+
+### Package Definition as Single Source of Truth
+
+从本版本开始，package 定义采用**单点工程真源**架构：
+- 每个 package 拥有独立的 definition 文件
+- definition 包含：元数据、默认设置、backend 实现引用
+- catalog 和 projection registry 由 definitions 派生，不再手工维护
+- 新增 package 只需创建一个 definition 文件
+
+### 不改变 Source Model
+
+Package definitions 是**工程层抽象**，不暴露到 source model：
+- `profile.users.*.packages` / `profile.hosts.*.packages` 保持不变
+- `programs` / `services` 仍作为兼容输入，normalize 到统一 packages
+- Projector 通过统一中间接口消费 package definitions
+- User/Host/Relation 边界不受影响
 
 ---
 ## 坐标系：taxonomy
@@ -290,13 +310,130 @@ taxonomy.nix  ← presets.nix ← catalog/{home,system}.nix
 | `declaredByFor` | `ownerFor` |
 
 ---
-## 新增包的流程
+## Package Definition 结构
 
-当需要在 catalog 中注册一个新包时：
+### 目录布局
 
-1. **确定 scope**：包落地到 home 还是 system？
-2. **确定 owner**：包由 user 还是 host 声明？
-3. **确定平台约束**：全平台、仅 Linux、需要桌面？
-4. **选择预设**：从预设模板中选择最匹配的，或手写完整记录
-5. **写入 catalog**：在 `catalog/home.nix` 或 `catalog/system.nix` 的对应分组下添加条目
-6. **验证**：运行 `nix flake check` 确认无警告和错误
+每个 package 定义存放在独立文件中：
+```
+modules/package-definitions/<packageId>/default.nix
+```
+
+### Definition Schema
+
+一个完整的 package definition 至少包含：
+
+```nix
+{
+  # 唯一标识符
+  packageId = "<packageId>";
+
+  # 元数据（影响 catalog 派生）
+  metadata = {
+    kind = "package" | "gui" | "service" | ...;
+    owner = "user" | "host";
+    allowedHostKinds = [ ... ];
+    allowedTargets = [ ... ];
+    requiresDesktop = bool;
+    missingStrategy = ...;
+    unsupportedReason = null or string;
+    unsupportedSuggestion = null or string;
+  };
+
+  # 默认设置（可被 user/host 声明层覆盖）
+  defaultSettings = { };
+
+  # Backend 实现引用
+  backends = {
+    home-manager = {
+      home = <path to home projector>;
+      system = null;  # if not applicable
+    };
+    nixos = {
+      home = <path to home projector>;
+      system = <path to system projector>;
+    };
+    nix-darwin = {
+      home = <path to home projector>;
+      system = <path to system projector>;
+    };
+  };
+}
+```
+
+### Metadata 预设
+
+Definition 可以直接使用 presets 简化元数据声明：
+
+```nix
+{ presets, ... }:
+{
+  packageId = "git";
+  metadata = presets.crossPlatformUserPackage "package";
+  # ...
+}
+```
+
+### Implementation Reference
+
+Backend 实现文件仍然放在原位置，definition 只存储引用：
+- `modules/projection/backends/home-manager/packages/<packageId>.nix`
+- `modules/projection/backends/nixos/packages/<packageId>.nix`
+- `modules/projection/backends/nix-darwin/packages/<packageId>.nix`
+
+---
+## Catalog 派生
+
+`modules/packages/catalog/{home,system}.nix` 不再手工维护，改为从 package definitions 自动派生：
+
+### 派生逻辑
+
+```nix
+# catalog/home.nix (generated)
+let
+  definitions = import ../../package-definitions { inherit lib; };
+  homePackages = lib.filterAttrs (id: def:
+    # Filter packages that have home scope implementations
+    def.metadata.allowedTargets contains any home target
+  ) definitions;
+in
+  lib.mapAttrs (id: def: def.metadata) homePackages
+```
+
+### 向后兼容
+
+当前实现中，catalog 仍然存在但内容由 definitions 驱动。未注册在 definitions 中的 package 会在评估时输出警告。
+
+---
+## Projection Registry 派生
+
+`modules/projection/backends/*/packages/default.nix` 也从 definitions 派生：
+
+```nix
+# home-manager/packages/default.nix (refactored)
+{ lib, input }:
+let
+  definitions = import ../../../../package-definitions { inherit lib; };
+  registry = lib.mapAttrs (id: def:
+    if def.backends.home-manager.home != null
+    then import def.backends.home-manager.home
+    else null
+  ) definitions;
+in
+  registry
+```
+
+---
+## 新增包的流程（简化）
+
+从现在开始，新增一个 package 只需：
+
+1. **创建 package definition**：在 `modules/package-definitions/<packageId>/default.nix` 创建定义文件
+2. **填写 metadata**：使用 presets 或手写完整元数据
+3. **实现 backend projector**：在 `modules/projection/backends/<backend>/packages/<packageId>.nix` 实现投影逻辑
+4. **Definition 中引用实现**：在 `backends.<backend>.<scope>` 字段填入 projector 路径
+5. **验证**：运行 `nix flake check` 确认无警告和错误
+
+**对比旧流程**：
+- 旧：需同时修改 catalog、registry、projector 三处
+- 新：只需 definition + projector 两处，catalog/registry 自动派生
