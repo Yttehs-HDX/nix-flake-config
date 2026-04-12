@@ -121,7 +121,8 @@ helper 应存在，但不能成为架构主轴。
 │   ├── resolution-flow.md
 │   ├── module-boundaries.md
 │   ├── directory-layout.md
-│   └── option-schema.md
+│   ├── option-schema.md
+│   └── package-metadata.md
 ├── modules
 │   ├── source
 │   │   ├── default.nix
@@ -213,6 +214,15 @@ helper 应存在，但不能成为架构主轴。
 │   │   ├── instances.nix
 │   │   ├── current.nix
 │   │   └── projection-inputs.nix
+│   ├── packages
+│   │   ├── default.nix
+│   │   ├── taxonomy.nix
+│   │   ├── presets.nix
+│   │   ├── rules.nix
+│   │   ├── diagnostics.nix
+│   │   └── catalog
+│   │       ├── home.nix
+│   │       └── system.nix
 │   ├── internal
 │   │   ├── default.nix
 │   │   ├── helpers
@@ -501,6 +511,29 @@ helper 应存在，但不能成为架构主轴。
 `interfaces/` 偏“对外暴露哪些读取面”。
 
 前者是契约材料，后者是契约出口。
+
+---
+## `modules/packages/`
+### 作用
+集中承载软件包元数据注册表与判定规则。
+
+### 推荐包含
+- `taxonomy.nix`：host kind / target / owner / missing strategy 与映射关系
+- `presets.nix`：metadata 模板构造器
+- `catalog/home.nix`：home scope 包元数据
+- `catalog/system.nix`：system scope 包元数据
+- `rules.nix`：可见性、支持性、元数据读取规则
+- `diagnostics.nix`：unsupported reason / suggestion 诊断输出
+- `default.nix`：统一对外 API 入口
+
+### 目录设计意图
+这层目录把“坐标系、模板、包表、运行时解释器”解耦，
+避免把 taxonomy/presets/catalog/rules/diagnostics 混在一个文件里。
+
+### 边界要求
+- `projection` 与 `assembly` 不应内嵌 package taxonomy 解释逻辑
+- `validate` / `context` 通过 `modules/packages/default.nix` 访问统一接口
+- 未注册包必须走收敛策略，不能因 fallback 获得全平台默认支持
 
 ---
 ## `modules/internal/`

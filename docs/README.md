@@ -23,6 +23,7 @@
 6. [`module-boundaries.md`](./module-boundaries.md)
 7. [`directory-layout.md`](./directory-layout.md)
 8. [`option-schema.md`](./option-schema.md)
+9. [`package-metadata.md`](./package-metadata.md)
 
 这个顺序对应的是从“为什么”逐步走到“怎么落地”的过程。
 
@@ -152,6 +153,18 @@
 这份文档已经非常接近实际 Nix `mkOption` / `submodule` 的实现形状。
 
 ---
+### `package-metadata.md`
+定义软件包元数据注册表规范。
+
+它主要回答：
+- package metadata 的字段契约是什么
+- host kind / target / owner / missing strategy 坐标系如何命名
+- catalog、presets、rules、diagnostics 应如何分层
+- 未注册 package 的收敛策略是什么
+
+这份文档对应当前 `modules/packages/` 的实现边界与命名规范。
+
+---
 ## 文档之间的关系
 可以把这些文档理解为一条逐步收敛的链：
 - `vision.md`：为什么做
@@ -162,6 +175,7 @@
 - `module-boundaries.md`：模块怎么分责
 - `directory-layout.md`：仓库怎么组织
 - `option-schema.md`：声明层怎么落成 options
+- `package-metadata.md`：软件包注册表如何建模与判定
 
 也可以简单理解为：
 > 从理念，走到结构；  
@@ -181,6 +195,7 @@
 - 模块边界
 - 目录结构
 - 声明层 schema
+- 软件包元数据注册表规范
 
 也就是说，项目的“设计骨架”已经基本成型。
 
@@ -194,6 +209,9 @@
 - projector 的具体拆分方式
 - backend adapter 的实现细节
 - `current` / `projectionInputs` 的最终公共接口形状
+
+其中软件包注册表规范已在 `package-metadata.md` 落地，
+包括 taxonomy / presets / catalog / rules / diagnostics 的职责拆分与命名升级。
 
 这些内容更适合在代码开始落地后，再继续补充新的文档。
 

@@ -1,12 +1,12 @@
 { lib, current }:
 let
-  packageCatalog = import ../internal/package-catalog.nix { inherit lib; };
+  packageCatalog = import ../packages { inherit lib; };
 
   collect = scope: declaredBy: definitions:
     lib.filterAttrs (_: value: value != null) (lib.mapAttrs
       (packageId: definition:
         if definition.enable
-        && packageCatalog.visibleForSource scope declaredBy packageId then
+        && packageCatalog.isReachableFromSource scope declaredBy packageId then
           packageCatalog.unsupportedInfoFor scope current packageId
         else
           null) definitions);

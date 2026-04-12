@@ -1,6 +1,6 @@
 { lib, normalized }:
 let
-  packageCatalog = import ../internal/package-catalog.nix { inherit lib; };
+  packageCatalog = import ../packages { inherit lib; };
   references = import ./references.nix { inherit lib normalized; };
   capabilities = import ./capabilities.nix { inherit lib normalized; };
   hasSystemScope = backendType:
@@ -59,8 +59,8 @@ let
 
   userPackageChecks = lib.mapAttrsToList (userId: user:
     let
-      invalidPackages = lib.filter
-        (packageId: !packageCatalog.visibleForSource "home" "user" packageId)
+      invalidPackages = lib.filter (packageId:
+        !packageCatalog.isReachableFromSource "home" "user" packageId)
         (enabledPackageIds user.packages);
     in if invalidPackages == [ ] then
       true
@@ -80,10 +80,10 @@ let
       stateVersion = host.system.stateVersion;
       invalidPackages = lib.filter (packageId:
         !(host.capabilities.home.enable
-          && packageCatalog.visibleForSource "home" "host" packageId
-          && packageCatalog.backendSupports "home" backendType packageId)
+          && packageCatalog.isReachableFromSource "home" "host" packageId
+          && packageCatalog.supportsBackend "home" backendType packageId)
         && !(host.capabilities.system.enable
-          && packageCatalog.visibleForSource "system" "host" packageId))
+          && packageCatalog.isReachableFromSource "system" "host" packageId))
         (enabledPackageIds host.packages);
       expectedSystemScope = hasSystemScope backendType;
       expectedHomeScope = hasHomeScope backendType;
