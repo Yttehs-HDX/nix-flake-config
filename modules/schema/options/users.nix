@@ -71,12 +71,12 @@ in {
     };
 
     programs = lib.mkOption {
-      type = types.attrs;
+      type = types.attrsOf schema.packageItemType;
       default = { };
     };
 
     services = lib.mkOption {
-      type = types.attrs;
+      type = types.attrsOf schema.packageItemType;
       default = { };
     };
 

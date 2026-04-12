@@ -1,5 +1,10 @@
-{ ... }:
-{ lib, pkgs, ... }: {
+{ input, definition }:
+{ lib, pkgs, ... }:
+let
+  nvidiaBusId = definition.settings.nvidiaBusId or null;
+  intelBusId = definition.settings.intelBusId or null;
+  enablePrime = nvidiaBusId != null && intelBusId != null;
+in {
   nixpkgs.config = {
     nvidia.acceptLicense = true;
     cudaSupport = true;
@@ -17,17 +22,17 @@
 
     powerManagement = {
       enable = true;
-      finegrained = true;
+      finegrained = enablePrime;
     };
-
+  } // lib.optionalAttrs enablePrime {
     prime = {
       offload = {
         enable = true;
         enableOffloadCmd = true;
         offloadCmdMainProgram = "prime-run";
       };
-      nvidiaBusId = "PCI:1:0:0";
-      intelBusId = "PCI:0:2:0";
+      nvidiaBusId = nvidiaBusId;
+      intelBusId = intelBusId;
     };
   };
 
