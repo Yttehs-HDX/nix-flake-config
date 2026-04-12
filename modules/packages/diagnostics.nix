@@ -43,13 +43,12 @@ let
         "This package is only supported on ${
           builtins.concatStringsSep ", " (metadata.allowedHostKinds or [ ])
         } hosts.");
-      suggestion = metadata.unsupportedSuggestion
-        or (if unsupportedTarget then
-          "Use a supported backend for automatic installation, or install it manually if available."
-        else if unmetDesktop then
-          "Enable desktop capabilities for this relation, or install it manually."
-        else
-          "Use a supported host type for automatic installation, or install it manually on this platform.");
+      suggestion = metadata.unsupportedSuggestion or (if unsupportedTarget then
+        "Use a supported backend for automatic installation, or install it manually if available."
+      else if unmetDesktop then
+        "Enable desktop capabilities for this relation, or install it manually."
+      else
+        "Use a supported host type for automatic installation, or install it manually on this platform.");
     };
 
 in { inherit unsupportedInfoFor; }

@@ -51,7 +51,8 @@
   # only; actual reporting/enforcement is implemented by backend modules.
   missingStrategies = {
     notApplicable = "notApplicable"; # package is always available
-    error = "error"; # unsupported package is reported by consumers; does not itself force evaluation failure
+    error =
+      "error"; # unsupported package is reported by consumers; does not itself force evaluation failure
     skip = "skip"; # silently excluded
     hintManual = "hintManual"; # excluded with manual-install hint
   };
@@ -81,7 +82,7 @@
         };
       };
     in if builtins.hasAttr backend mapping
-      && builtins.hasAttr scope mapping.${backend} then
+    && builtins.hasAttr scope mapping.${backend} then
       mapping.${backend}.${scope}
     else
       throw "Unknown backend/scope combination: ${backend}/${scope}";

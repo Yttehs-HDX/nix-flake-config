@@ -110,8 +110,10 @@ assert darwinHomeConfig.config.home.homeDirectory == "/Users/alice";
 assert darwinProjectionInput.theme == null;
 assert hostControlledInput.packages.home.blueman.enable;
 assert hostControlledHomeConfig.config.services.blueman-applet.enable;
-assert builtins.hasAttr "embedded-dev" unsupportedProjectionInput.unsupportedPackages.home;
-assert builtins.hasAttr "brightnessctl" unsupportedProjectionInput.unsupportedPackages.home;
+assert builtins.hasAttr "embedded-dev"
+  unsupportedProjectionInput.unsupportedPackages.home;
+assert builtins.hasAttr "brightnessctl"
+  unsupportedProjectionInput.unsupportedPackages.home;
 assert (unsupportedProjectionInput.unsupportedPackages.home.brightnessctl.strategy
   == "skip");
 assert builtins.length unsupportedHomeConfig.config.warnings > 0;
