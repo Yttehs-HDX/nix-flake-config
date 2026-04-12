@@ -14,7 +14,7 @@
   activation = {
     desktop.enable = true;
     development.enable = false;
-    theme.enable = false;
+    theme.enable = true;
   };
 
   state.home.stateVersion = "25.05";

@@ -1,5 +1,6 @@
 { lib, normalized }:
 let
+  packageCatalog = import ../internal/package-catalog.nix { inherit lib; };
   references = import ./references.nix { inherit lib normalized; };
   capabilities = import ./capabilities.nix { inherit lib normalized; };
   hasSystemScope = backendType:
@@ -37,6 +38,8 @@ let
       relation.identity.name
     else
       lib.toLower relation.user;
+  enabledPackageIds = definitions:
+    builtins.attrNames (lib.filterAttrs (_: pkg: pkg.enable) definitions);
 
   enabledRelations =
     lib.filterAttrs (_: relation: relation.enable) normalized.relations;
@@ -54,11 +57,34 @@ let
       "Relation `${relationId}` must match `${relation.user}@${relation.host}`.")
     normalized.relations;
 
+  userPackageChecks = lib.mapAttrsToList (userId: user:
+    let
+      invalidPackages = lib.filter
+        (packageId: !packageCatalog.visibleForSource "home" "user" packageId)
+        (enabledPackageIds user.packages);
+    in if invalidPackages == [ ] then
+      true
+    else
+      throw ''
+        User `${userId}` must not declare `${
+          lib.concatStringsSep "`, `"
+          (map (packageId: "packages.${packageId}") invalidPackages)
+        }`.
+        These packages are host-controlled and must be declared under `profile.hosts.<hostId>.packages`.
+      '') normalized.users;
+
   hostChecks = lib.mapAttrsToList (hostId: host:
     let
       backendType = host.backend.type;
       platformSystem = host.platform.system;
       stateVersion = host.system.stateVersion;
+      invalidPackages = lib.filter (packageId:
+        !(host.capabilities.home.enable
+          && packageCatalog.visibleForSource "home" "host" packageId
+          && packageCatalog.backendSupports "home" backendType packageId)
+        && !(host.capabilities.system.enable
+          && packageCatalog.visibleForSource "system" "host" packageId))
+        (enabledPackageIds host.packages);
       expectedSystemScope = hasSystemScope backendType;
       expectedHomeScope = hasHomeScope backendType;
     in if !host.enable then
@@ -74,9 +100,14 @@ let
     else if host.capabilities.home.enable != expectedHomeScope then
       throw
       "Host `${hostId}` must keep `capabilities.home.enable` consistent with backend `${backendType}`."
-    else if !host.capabilities.system.enable && host.packages.system != [ ] then
-      throw
-      "Host `${hostId}` must not declare `packages.system` without system scope."
+    else if invalidPackages != [ ] then
+      throw ''
+        Host `${hostId}` must not declare `${
+          lib.concatStringsSep "`, `"
+          (map (packageId: "packages.${packageId}") invalidPackages)
+        }`.
+        Host packages may only contain system packages or host-controlled home packages.
+      ''
     else if backendType == "nixos" && stateVersion == null then
       throw "NixOS host `${hostId}` must declare `system.stateVersion`."
     else if backendType == "nixos" && !(builtins.isString stateVersion) then
@@ -113,6 +144,33 @@ let
     else
       true) enabledRelations;
 
+  relationPackageConflictChecks = lib.mapAttrsToList (relationId: relation:
+    let
+      host = normalized.hosts.${relation.host};
+      user = normalized.users.${relation.user};
+      usesZsh = user.preferences.shell == "zsh";
+      hasNixIndex = builtins.hasAttr "nix-index" user.packages
+        && user.packages."nix-index".enable;
+      hasCommandNotFound = builtins.hasAttr "command-not-found" user.packages
+        && user.packages."command-not-found".enable;
+      hasNixvim = builtins.hasAttr "nixvim" user.packages
+        && user.packages.nixvim.enable;
+    in if relation.enable && host.capabilities.home.enable && usesZsh
+    && hasNixIndex && hasCommandNotFound then
+      throw ''
+        Relation `${relationId}` enables both `packages.nix-index` and `packages.command-not-found` for a zsh home environment.
+        These packages both provide command-not-found handling and must not be enabled together.
+        Choose exactly one of `packages.nix-index` or `packages.command-not-found`.
+      ''
+    else if relation.enable && host.capabilities.home.enable && hasNixvim then
+      throw ''
+        Relation `${relationId}` declares `packages.nixvim`.
+        The public package entry has been renamed to `packages.neovim`.
+        Keep the existing nixvim-backed implementation, but declare it through `packages.neovim`.
+      ''
+    else
+      true) enabledRelations;
+
   uniquenessCheck =
     if lib.length relationPairs == lib.length (lib.unique relationPairs) then
       true
@@ -142,9 +200,11 @@ in builtins.deepSeq [
   references
   capabilities
   relationIdChecks
+  userPackageChecks
   hostChecks
   relationStateChecks
   relationScopeChecks
+  relationPackageConflictChecks
   uniquenessCheck
   hostIdentityUniquenessCheck
 ] { inherit indexes; }

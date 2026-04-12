@@ -41,5 +41,16 @@ lib.mapAttrs (relationId: instance:
       home = { stateVersion = instance.relation.state.home.stateVersion; };
     };
 
-    packages = import ./packages.nix { current = instance; };
+    packages = import ./packages.nix {
+      inherit lib;
+      current = instance;
+    };
+    unsupportedPackages = import ./unsupported-packages.nix {
+      inherit lib;
+      current = instance;
+    };
+    theme = import ./theme.nix {
+      inherit lib;
+      current = instance;
+    };
   }) current

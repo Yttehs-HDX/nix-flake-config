@@ -28,7 +28,31 @@
   security = { };
   desktop = { };
 
-  packages.system = [ "hello" ];
+  packages = {
+    asusctl = { };
+    bluetooth = { };
+    blueman = { };
+    docker.settings.storageDriver = "btrfs";
+    firewall = { };
+    grub = { };
+    locale = { };
+    networking = { };
+    nix-ld = { };
+    nvidia.settings = {
+      nvidiaBusId = "PCI:1:0:0";
+      intelBusId = "PCI:0:2:0";
+    };
+    pipewire = { };
+    refind = { };
+    rog-control-center = { };
+    sddm = { };
+    supergfxctl = { };
+    tlp = { };
+    waydroid = { };
+    virt-manager = { };
+    wireshark.settings.package = "qt";
+    zram = { };
+  };
 
   policy = { };
 }

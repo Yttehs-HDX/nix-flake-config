@@ -16,6 +16,10 @@ let
   buildHost = hostId: host:
     let
       system = host.platform.system;
+      pkgs = import inputs.nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
       projections = lib.filterAttrs (_: realization:
         realization.backend.type == "nix-darwin" && realization.hostId
         == hostId) projection;
@@ -28,11 +32,12 @@ let
       homeManagerBridge = {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
-        home-manager.extraSpecialArgs = { inherit pipeline; };
+        home-manager.extraSpecialArgs = { inherit inputs pipeline; };
         home-manager.users =
           lib.mapAttrs (_: modules: { imports = modules; }) homeModules;
       };
     in inputs.nix-darwin.lib.darwinSystem {
+      inherit pkgs;
       inherit system;
       specialArgs = { inherit inputs pipeline hostId; };
       modules = (host.hardware.modules or [ ]) ++ systemModules

@@ -1,5 +1,7 @@
 { lib, ... }:
-let types = lib.types;
+let
+  schema = import ../default.nix { inherit lib; };
+  types = lib.types;
 in {
   options = {
     enable = lib.mkOption {
@@ -95,9 +97,9 @@ in {
       default = { };
     };
 
-    packages.system = lib.mkOption {
-      type = types.listOf types.str;
-      default = [ ];
+    packages = lib.mkOption {
+      type = types.attrsOf schema.packageItemType;
+      default = { };
     };
 
     policy = lib.mkOption {

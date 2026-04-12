@@ -215,9 +215,7 @@ User = {
     theme.enable = false;
   };
 
-  packages = {
-    common = [ ];
-  };
+  packages = { };
 
   programs = { };
 
@@ -445,44 +443,35 @@ bool
 ---
 ## `profile.users.<userId>.packages`
 ### 类型
-submodule
+`attrsOf PackageDeclaration`
 
 ### 默认值
-空结构
+空 attrset
 
 ### 说明
-表达用户长期持有的软件需求。
+这是当前推荐的统一软件声明入口。  
+它用于统一表达：
+- package 注入
+- program 启用
+- service 启用
+- 其他“启用某个软件能力”的声明
 
-推荐按语义类别组织，而不是一开始完全平铺。
+它不要求声明层先区分自己最终会落到哪一种 backend 节点。  
+这类差异由 projection 阶段吸收。
 
----
-## `profile.users.<userId>.packages.common`
-### 类型
-list of package-like value
-
-### 默认值
-空列表
-
-### 含义
-所有主机上都可能参与投影的公共软件集合。
-
-### 说明
-这里的 `package-like value` 在实现层可具体定义为：
-- package
-- derivation
-- package reference
-
-本文档只冻结语义，不强行绑定底层实现表示。
+当两个 package 在当前 backend / shell 场景下语义互斥时，
+框架会在 validation 阶段显式报错，而不是在叶子模块里自动降级。  
+例如当前 `packages.nix-index` 与 `packages.command-not-found` 在 zsh home 环境中属于二选一关系。
 
 ---
-## 是否允许更多 package 分组
-推荐允许扩展以下字段，但不要过早固定太多：
-- `development`
-- `desktop`
-- `cli`
+## `PackageDeclaration` 推荐结构
+```nix
+PackageDeclaration = {
+  enable = true;
+  settings = { };
+};
 
-若项目当前阶段还不想复杂化，可以暂时只实现 `common`，  
-其余保留为未来扩展空间。
+```
 
 ---
 ## `profile.users.<userId>.programs`
@@ -493,14 +482,8 @@ attrsOf ProgramDeclaration
 空 attrset
 
 ### 说明
-表达用户级程序意图。
-
-推荐 key 为程序语义名，例如：
-- `git`
-- `zsh`
-- `neovim`
-
-而 value 为统一的小型 declaration submodule。
+兼容旧声明形态保留的入口。  
+推荐仅用于过渡迁移，不应再作为 projector 的主消费接口。
 
 ---
 ## `ProgramDeclaration` 推荐结构
@@ -562,9 +545,8 @@ attrsOf ServiceDeclaration
 空 attrset
 
 ### 说明
-表达用户级服务意图。
-
-和 `programs` 类似，建议采用统一 declaration 形态。
+兼容旧声明形态保留的入口。  
+和 `programs` 一样，它最终会被 normalize 到统一 `packages` 模型。
 
 ---
 ## `ServiceDeclaration` 推荐结构
@@ -734,9 +716,7 @@ Host = {
 
   desktop = { };
 
-  packages = {
-    system = [ ];
-  };
+  packages = { };
 
   policy = { };
 };
@@ -1021,28 +1001,29 @@ attrset
 ---
 ## `profile.hosts.<hostId>.packages`
 ### 类型
-submodule
+`attrsOf PackageDeclaration`
 
 ### 默认值
-空结构
+空 attrset
 
 ### 含义
-主机级软件需求。
+主机级统一软件声明。
 
----
-## `profile.hosts.<hostId>.packages.system`
-### 类型
-list of package-like value
+### 说明
+它用于统一表达主机侧的：
+- `environment.systemPackages`
+- `programs.*`
+- `services.*`
+- 其他主机级软件能力
 
-### 默认值
-空列表
+其中既包括需要投影到 system scope 的能力，
+也包括少量由主机控制、但最终投影到 home scope 的机器本地集成能力。
 
-### 含义
-系统级软件集合。
-
-### 当前实现约束
-当前实现仅在具备 system scope 的 backend 上消费该字段。  
-因此 `home-manager` host 若声明 `packages.system`，会在 validation 阶段直接报错，而不是静默忽略。
+当前实现会在 validation 阶段校验 package 归属：
+- system package 仍要求目标 host 具备 system scope
+- host-controlled home package 可以出现在仅具备 home scope 的 host 上
+- host-controlled home package 仍然必须兼容目标 host 的 backend
+- 本应由 `User.packages` 声明的 package 不能反向塞进 `Host.packages`
 
 ---
 ## `profile.hosts.<hostId>.policy`
@@ -1660,9 +1641,7 @@ User = {
     development.enable = false;
     theme.enable = false;
   };
-  packages = {
-    common = [ ];
-  };
+  packages = { };
   programs = { };
   theme = { };
 };
@@ -1754,7 +1733,8 @@ profile = {
       };
 
       packages = {
-        common = [ git ripgrep ];
+        git = { };
+        ripgrep = { };
       };
 
       programs = {
