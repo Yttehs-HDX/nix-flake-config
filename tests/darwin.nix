@@ -14,7 +14,6 @@ let
         capabilities.home.enable = true;
         capabilities.desktop.enable = true;
         system.stateVersion = 6;
-        packages.hello = { };
       };
       relations."Alice@Mac" = {
         user = "Alice";
@@ -135,8 +134,6 @@ assert projectionInput.identity.homeDirectory == "/Users/alice";
 assert darwinConfig.config.users.users.alice.home == "/Users/alice";
 assert darwinConfig.config.home-manager.users.alice.home.homeDirectory
   == "/Users/alice";
-assert builtins.elem darwinConfig.pkgs.hello
-  darwinConfig.config.environment.systemPackages;
 assert builtins.elem darwinConfig.pkgs.hello
   darwinConfig.config.home-manager.users.alice.home.packages;
 assert !(builtins.hasAttr "qq" unsupportedInput.packages.home);

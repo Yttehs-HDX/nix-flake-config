@@ -15,7 +15,6 @@ let
         capabilities.system.enable = true;
         capabilities.home.enable = true;
         system.stateVersion = "25.11";
-        packages.hello = { };
       };
       relations."Alice@Workstation" = {
         user = "Alice";
@@ -36,7 +35,6 @@ assert builtins.hasAttr "alice" relation.homeModules;
 assert projectionInput.identity.homeDirectory == "/home/alice";
 assert projectionInput.account.initialHashedPassword
   == "$6$testonlysalt$9OipY8KrPmahUAlTv.LIW2rPsfo4zOwwKACKyaX0j9K3YOgF1.phJdokYGk/Bmoe3dctJoCj1bNPW4UZQcG9e0";
-assert projectionInput.packages.system.hello.enable;
 assert projectionInput.packages.home.hello.enable;
 assert nixosConfig.config.networking.hostName == "Workstation";
 assert nixosConfig.config.users.mutableUsers;
@@ -48,8 +46,6 @@ assert builtins.elem "wheel" nixosConfig.config.users.users.alice.extraGroups;
 assert nixosConfig.config.home-manager.users.alice.home.homeDirectory
   == "/home/alice";
 assert nixosConfig.pkgs.config.allowUnfree;
-assert builtins.elem nixosConfig.pkgs.hello
-  nixosConfig.config.environment.systemPackages;
 assert builtins.elem nixosConfig.pkgs.hello
   nixosConfig.config.home-manager.users.alice.home.packages;
 true

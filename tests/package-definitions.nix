@@ -61,10 +61,10 @@ let
     true;
 
   # Test: System catalog respects definition scope restrictions
-  # hello remains in system catalog (from legacy cataloging)
+  # hello is home-only legacy support and no longer appears in system catalog
   # git and hyprland should NOT be in system (user-only definitions)
   assertSystemCatalogDefinitions =
-    assert builtins.hasAttr "hello" systemCatalog;
+    assert !(builtins.hasAttr "hello" systemCatalog);
     # git is user-only, should NOT be in system catalog
     assert !(builtins.hasAttr "git" systemCatalog);
     # hyprland is user-only, should NOT be in system catalog

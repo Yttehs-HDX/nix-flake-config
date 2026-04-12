@@ -51,7 +51,6 @@ let
 
     # ── Cross-platform system packages ────────────────────────────────────
     docker = crossPlatformSystemHost "package";
-    hello = crossPlatformSystemHost "package";
     networking = crossPlatformSystemHost "service";
     wireshark = crossPlatformSystemHost "package";
 
