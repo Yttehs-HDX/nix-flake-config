@@ -1,9 +1,7 @@
 # Hyprland package definition
 { lib }:
-let
-  presets = import ../../packages/presets.nix;
-in
-{
+let presets = import ../../packages/presets.nix;
+in {
   packageId = "hyprland";
 
   # Metadata - Linux desktop user package
@@ -17,10 +15,10 @@ in
     };
     nixos = {
       home = ../../projection/backends/home-manager/packages/hyprland.nix;
-      system = null;  # Could add system-level hyprland setup here
+      system = null; # Could add system-level hyprland setup here
     };
     nix-darwin = {
-      home = null;  # Not supported on Darwin
+      home = null; # Not supported on Darwin
       system = null;
     };
   };

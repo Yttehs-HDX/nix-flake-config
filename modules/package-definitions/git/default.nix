@@ -1,9 +1,7 @@
 # Git package definition
 { lib }:
-let
-  presets = import ../../packages/presets.nix;
-in
-{
+let presets = import ../../packages/presets.nix;
+in {
   packageId = "git";
 
   # Metadata - determines catalog entries and visibility/support rules

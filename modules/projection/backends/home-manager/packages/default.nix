@@ -6,11 +6,9 @@ let
   # Build registry from definitions + legacy entries
   # Definitions take precedence over legacy hardcoded imports
   definitionRegistry = builtins.mapAttrs (id: def:
-    let
-      backendPath = def.backends.home-manager.home or null;
-    in
-    if backendPath == null then null else import backendPath
-  ) packageDefinitions;
+    let backendPath = def.backends.home-manager.home or null;
+    in if backendPath == null then null else import backendPath)
+    packageDefinitions;
 
   # Legacy inline entries (to be migrated to package definitions)
   legacyRegistry = {
@@ -49,13 +47,13 @@ let
     google-chrome = import ./google-chrome.nix;
     grimblast = import ./grimblast.nix;
     hexecute = import ./hexecute.nix;
-    # hello = import ./hello.nix;  # Now in definitions
+    hello = import ./hello.nix;
     hmcl = import ./hmcl.nix;
     htop = import ./htop.nix;
     huggingface-hub = import ./huggingface-hub.nix;
     hypridle = import ./hypridle.nix;
     hyprpicker = import ./hyprpicker.nix;
-    # hyprland = import ./hyprland.nix;  # Now in definitions
+    hyprland = import ./hyprland.nix; # Temporarily kept as safety fallback
     hyprpolkitagent = import ./hyprpolkitagent.nix;
     jq = import ./jq.nix;
     jetbrains-toolbox = import ./jetbrains-toolbox.nix;

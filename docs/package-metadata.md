@@ -21,7 +21,7 @@
 - definition 包含：元数据、backend 实现引用
 - catalog 和 projection registry 开始从 definitions 派生
 - loader 支持自动发现 `modules/package-definitions/*/default.nix`
-- 三个示例 package 已迁移：git（用户级）、hyprland（桌面级）、hello（跨scope）
+- 两个示例 package 已迁移：git（跨平台用户级）、hyprland（Linux 桌面用户级）
 
 **Phase 1 限制**：
 - catalog 文件暂时使用 `lib = builtins` 传递给 definitions（后续将改为真实 nixpkgs lib）
@@ -29,6 +29,10 @@
 - defaultSettings 运行时合成流程未实现
 - 完整的 definition 校验与错误报告未实现
 - 仅部分 package 迁移到 definition 系统
+- **单一 metadata 结构无法表达"同一 package 在不同 scope 拥有不同 owner/targets"的情况**
+  * 示例：`hello` 在原设计中是 home scope 的用户级包，但在系统 scope 中是系统级包
+  * 当前 Phase 1 schema 只支持"owner/targets 在所有 scope 下保持一致"的 package
+  * 此类 package 暂时保留 legacy catalog/registry 表达，待后续扩展 schema 时再迁移
 
 ### 不改变 Source Model
 
@@ -464,3 +468,22 @@ in
 - 新（Phase 1）：只需 definition + projector 两处，catalog/registry 自动派生
 
 **注意**：loader 使用 `builtins.readDir` 自动发现所有子目录，新增 definition 无需手工注册。
+
+## Phase 1 迁移资格检查清单
+
+在将一个现有的 legacy package 迁移到 definition 系统时，请确认：
+
+- [ ] 这个 package 在所有支持的 host kind 上拥有相同的 `owner`
+- [ ] 这个 package 的 `allowedTargets` 在所有 scope 下保持一致
+  * 例如：不能说"在 home scope 中仅限用户声明，在系统 scope 中仅限主机声明"
+| - [ ] 这个 package 的 `requiresDesktop`、`missingStrategy` 等约束在所有支持的 scope 中相同
+
+**不适合 Phase 1 的例子**：
+- `hello`：home scope 中为 `owner = user`，系统 scope 中为 `owner = host`（跨 scope 异构）
+- `pipewire`：需要 system scope 声明，home scope 只能作为 host-controlled（范围不一致）
+
+**适合 Phase 1 的例子**：
+- `git`：所有 scope 都是 `owner = user`，所有平台都适用
+- `hyprland`：所有支持的 scope 都是 `owner = user`，所有支持的 platform 都相同
+
+不符合上述条件的 package 应暂时保留在 legacy catalog 中。

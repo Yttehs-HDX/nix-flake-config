@@ -16,20 +16,18 @@ let
   allEntries = builtins.readDir defPath;
 
   # Filter to only directories (excluding this default.nix file's directory entry)
-  packageDirs = builtins.filter (name:
-    allEntries.${name} == "directory"
-  ) (builtins.attrNames allEntries);
+  packageDirs = builtins.filter (name: allEntries.${name} == "directory")
+    (builtins.attrNames allEntries);
 
   # Import each package definition
   # Each must have a default.nix that exports the definition structure
-  allDefinitions = map (dirName:
-    import (defPath + "/${dirName}") { inherit lib; }
-  ) packageDirs;
+  allDefinitions =
+    map (dirName: import (defPath + "/${dirName}") { inherit lib; })
+    packageDirs;
 
   # Convert list to attrset keyed by packageId
   definitionsById = builtins.listToAttrs (map (def: {
     name = def.packageId;
     value = def;
   }) allDefinitions);
-in
-definitionsById
+in definitionsById

@@ -14,28 +14,25 @@ let
   inherit (taxonomy) targets missingStrategies owners;
 
   # Load package definitions
-  lib = builtins;  # Minimal lib for filtering
+  lib = builtins; # Minimal lib for filtering
   packageDefinitions = import ../../package-definitions { inherit lib; };
 
   # Extract metadata from definitions for home-scope packages
   # Filter to only packages that have home targets in their allowedTargets
-  homeDefinitionMetadata = builtins.mapAttrs (id: def: def.metadata) (
-    builtins.listToAttrs (
-      builtins.filter (item: item != null) (
-        map (id:
-          let
-            def = packageDefinitions.${id};
-            hasHomeTarget = builtins.any (target:
-              target == taxonomy.targets.nixosHome ||
-              target == taxonomy.targets.darwinHome ||
-              target == taxonomy.targets.standaloneHomeManagerHome
-            ) def.metadata.allowedTargets;
-          in
-          if hasHomeTarget then { name = id; value = def; } else null
-        ) (builtins.attrNames packageDefinitions)
-      )
-    )
-  );
+  homeDefinitionMetadata = builtins.mapAttrs (id: def: def.metadata)
+    (builtins.listToAttrs (builtins.filter (item: item != null) (map (id:
+      let
+        def = packageDefinitions.${id};
+        hasHomeTarget = builtins.any (target:
+          target == taxonomy.targets.nixosHome || target
+          == taxonomy.targets.darwinHome || target
+          == taxonomy.targets.standaloneHomeManagerHome)
+          def.metadata.allowedTargets;
+      in if hasHomeTarget then {
+        name = id;
+        value = def;
+      } else
+        null) (builtins.attrNames packageDefinitions))));
 
   # Legacy inline entries (to be migrated to package definitions)
   legacyEntries = {
@@ -60,7 +57,7 @@ let
     gh = crossPlatformUserPackage "package";
     # git = crossPlatformUserPackage "package";  # Now in definitions
     github-copilot-cli = crossPlatformUserPackage "integration-heavy";
-    # hello = crossPlatformUserPackage "package";  # Now in definitions
+    hello = crossPlatformUserPackage "package";
     hexecute = crossPlatformUserPackage "custom";
     htop = crossPlatformUserPackage "package";
     huggingface-hub = crossPlatformUserPackage "package";
@@ -105,7 +102,8 @@ let
     fcitx5 = linuxDesktopUser "desktop-input-method";
     grimblast = linuxDesktopUser "desktop-component";
     hypridle = linuxDesktopUser "service";
-    # hyprland = linuxDesktopUser "desktop-session";  # Now in definitions
+    hyprland =
+      linuxDesktopUser "desktop-session"; # Temporarily kept as safety fallback
     hyprpicker = linuxDesktopUser "desktop-component";
     hyprpolkitagent = linuxDesktopUser "service";
     kdeconnect = linuxDesktopUser "service";
@@ -195,7 +193,6 @@ let
         "Use a NixOS backend for automatic setup, or configure PipeWire manually on this host.";
     };
   };
-in
-# Merge definitions (preferred) with legacy entries (fallback)
-# Definitions override legacy entries for the same package ID
-legacyEntries // homeDefinitionMetadata
+  # Merge definitions (preferred) with legacy entries (fallback)
+  # Definitions override legacy entries for the same package ID
+in legacyEntries // homeDefinitionMetadata
