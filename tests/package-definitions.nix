@@ -104,6 +104,8 @@ let
     "universal-android-debloater"
     "wechat"
   ];
+  migratedCustomConstraintPackages =
+    [ "embedded-dev" "gnome-keyring" "neovim" "pipewire" ];
 
   # Test backend registry derivation
   # Simulate what home-manager projection registry does
@@ -123,10 +125,13 @@ let
     assert builtins.hasAttr "blueman" packageDefinitions;
     assert builtins.hasAttr "waybar" packageDefinitions;
     assert builtins.hasAttr "qq" packageDefinitions;
+    assert builtins.hasAttr "hello" packageDefinitions;
+    assert builtins.hasAttr "neovim" packageDefinitions;
+    assert builtins.hasAttr "embedded-dev" packageDefinitions;
+    assert builtins.hasAttr "gnome-keyring" packageDefinitions;
+    assert builtins.hasAttr "pipewire" packageDefinitions;
     assert builtins.hasAttr "zsh" packageDefinitions;
     assert builtins.hasAttr "hyprland" packageDefinitions;
-    # hello is intentionally NOT migrated in Phase 1
-    assert !(builtins.hasAttr "hello" packageDefinitions);
     true;
 
   # Test: Migrated cross-platform user packages share consistent metadata
@@ -155,6 +160,30 @@ let
     && definition.metadata.missingStrategy
     == taxonomy.missingStrategies.hintManual) migratedDarwinHintPackages;
     true;
+
+  # Test: Migrated custom-constraint packages keep explicit metadata semantics
+  assertMigratedCustomConstraintMetadata = let
+    neovim = packageDefinitions.neovim.metadata;
+    embeddedDev = packageDefinitions."embedded-dev".metadata;
+    gnomeKeyring = packageDefinitions."gnome-keyring".metadata;
+    pipewire = packageDefinitions.pipewire.metadata;
+  in assert neovim.kind == "integration-heavy";
+  assert neovim.owner == taxonomy.owners.user;
+  assert neovim.missingStrategy == taxonomy.missingStrategies.hintManual;
+  assert embeddedDev.kind == "integration-heavy";
+  assert embeddedDev.owner == taxonomy.owners.user;
+  assert embeddedDev.missingStrategy == taxonomy.missingStrategies.hintManual;
+  assert gnomeKeyring.kind == "service";
+  assert gnomeKeyring.requiresDesktop;
+  assert gnomeKeyring.owner == taxonomy.owners.user;
+  assert pipewire.kind == "service";
+  assert pipewire.owner == taxonomy.owners.host;
+  assert pipewire.missingStrategy == taxonomy.missingStrategies.hintManual;
+  # Phase 1 keeps these packages projector-null by design
+  assert builtins.all
+    (id: packageDefinitions.${id}.backends.home-manager.home == null)
+    migratedCustomConstraintPackages;
+  true;
 
   # Test: Package definition structure is correct
   assertGitStructure = let git = packageDefinitions.git;
@@ -189,6 +218,7 @@ let
   # Test: Home catalog includes definition-based packages
   # Note: hello is still in home catalog but from legacy, not definition
   assertHomeCatalogDefinitions = assert builtins.hasAttr "git" homeCatalog;
+    assert builtins.hasAttr "hello" homeCatalog;
     assert builtins.hasAttr "android-tools" homeCatalog;
     assert builtins.hasAttr "lazygit" homeCatalog;
     assert builtins.hasAttr "bat" homeCatalog;
@@ -239,6 +269,7 @@ let
     assertMigratedCrossPlatformMetadata
     assertMigratedLinuxDesktopMetadata
     assertMigratedDarwinHintMetadata
+    assertMigratedCustomConstraintMetadata
     assertGitStructure
     assertHyprlandMetadata
     assertGitCrossPlatform

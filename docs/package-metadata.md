@@ -16,24 +16,23 @@
 
 ### Package Definition as Single Source of Truth (Phase 1)
 
-**当前阶段实现**：package 定义开始成为**工程层单点真源**雏形：
+**当前阶段实现**：package 定义开始成为**工程层单点真源**：
 - 每个 package 拥有独立的 definition 文件
 - definition 包含：元数据、backend 实现引用
 - catalog 和 projection registry 开始从 definitions 派生
 - loader 支持自动发现 `modules/package-definitions/*/default.nix`
-- 当前已迁移一批适合单一 metadata schema 的 package：
-  * 跨平台用户级：`bat`、`btop`、`direnv`、`eza`、`fastfetch`、`fzf`、`gh`、`git`、`jq`、`ripgrep`、`tmux`、`wget`、`zsh`
-  * Linux 桌面用户级：`hyprland`
+- home scope 的 package metadata 已全部由 definitions 驱动
+- system scope 仍处于 definitions + legacy 的混合阶段
 
 **Phase 1 限制**：
 - catalog 文件暂时使用 `lib = builtins` 传递给 definitions（后续将改为真实 nixpkgs lib）
 - definition 当前不应依赖 lib helper 函数
 - defaultSettings 运行时合成流程未实现
 - 完整的 definition 校验与错误报告未实现
-- 仅部分 package 迁移到 definition 系统
+- system scope 仍有部分 package 尚未迁移
 - **单一 metadata 结构无法表达"同一 package 在不同 scope 拥有不同 owner/targets"的情况**
   * 当前 Phase 1 schema 只支持"owner/targets 在所有 scope 下保持一致"的 package
-  * 此类 package 暂时保留 legacy catalog/registry 表达，待后续扩展 schema 时再迁移
+  * 对于此类 package，当前阶段通过在 definition 中手写完整 metadata 保持语义一致
 
 ### 不改变 Source Model
 
@@ -140,7 +139,7 @@ catalog 条目直接选择最匹配的预设，不需要再用 `//` 覆盖字段
 | `crossPlatformSystemHost` | 全平台系统主机包 | host | 全部 | 所有 system targets | false | notApplicable |
 | `linuxDesktopSystemHost` | Linux 桌面系统主机包 | host | nixos | nixosSystem | true | skip |
 
-超出预设覆盖范围的特殊包（如 `embedded-dev`、`gnome-keyring`、`pipewire`）可以直接手写完整元数据记录。
+超出预设覆盖范围的特殊包（如 `embedded-dev`、`gnome-keyring`、`pipewire`）可以直接手写完整元数据记录（已迁移为 definition 形式）。
 
 ### 设计原则
 - 每个预设产生的记录都是完整的，不需要后续 `//` 覆盖
@@ -394,44 +393,42 @@ Backend 实现文件仍然放在原位置，definition 只存储引用：
 - `modules/projection/backends/nix-darwin/packages/<packageId>.nix`
 
 ---
-## Catalog 派生（Phase 1 Hybrid）
+## Catalog 派生（Phase 1）
 
-`modules/packages/catalog/{home,system}.nix` 当前采用**混合模式**：
+当前按 scope 分两种形态：
+- `home`：definition-only（`legacyEntries = { }`）
+- `system`：hybrid（definitions + legacy）
 
 ### 当前实现
 
 ```nix
-# catalog/home.nix (Phase 1 hybrid)
+# catalog/home.nix (Phase 1 definition-only)
 let
   # 从 definitions 提取元数据
   homeDefinitionMetadata = builtins.mapAttrs (id: def: def.metadata) (
     # 过滤出有 home target 的 packages
     ...filtered definitions...
   );
-
-  # 尚未迁移的 legacy entries
-  legacyEntries = {
-    bat = crossPlatformUserPackage "package";
-    # ... 其他未迁移 packages
-  };
 in
-  # definitions 优先，legacy entries 补充
-  legacyEntries // homeDefinitionMetadata
+  # home scope 已完全由 definitions 派生
+  homeDefinitionMetadata
 ```
 
 ### 警告行为
 
 - 当 package **不在任何 catalog** 中（既不在 definitions 也不在 legacy entries）时，触发警告
 - 已在 definitions 中的 package 会覆盖同 ID 的 legacy entry
-- Phase 1 中 definitions 和 legacy entries 共存
+- system scope 仍为 definitions 和 legacy entries 共存
 
 ---
-## Projection Registry 派生（Phase 1 Hybrid）
+## Projection Registry 派生（Phase 1）
 
-`modules/projection/backends/*/packages/default.nix` 采用混合模式：
+`modules/projection/backends/*/packages/default.nix` 当前按 backend 处于不同阶段：
+- `home-manager/packages/default.nix`：definition-only（`legacyRegistry = { }`）
+- system backends：仍为 hybrid（definitions + legacy）
 
 ```nix
-# home-manager/packages/default.nix (Phase 1 hybrid)
+# home-manager/packages/default.nix (Phase 1 definition-only)
 { lib, input }:
 let
   # 从 definitions 派生 registry
@@ -440,14 +437,8 @@ let
     in if backendPath == null then null else import backendPath
   ) packageDefinitions;
 
-  # legacy hardcoded entries
-  legacyRegistry = {
-    bat = import ./bat.nix;
-    # ... 其他未迁移 packages
-  };
-
-  # definitions 优先，legacy 补充
-  registry = legacyRegistry // definitionRegistry;
+  # home-manager backend 已完全由 definitions 驱动
+  registry = definitionRegistry;
 in
   # 使用 registry 解析 packages
   ...
@@ -479,8 +470,11 @@ in
   * 例如：不能说"在 home scope 中仅限用户声明，在系统 scope 中仅限主机声明"
 - [ ] 这个 package 的 `requiresDesktop`、`missingStrategy` 等约束在所有支持的 scope 中相同
 
-**不适合 Phase 1 的例子**：
-- `pipewire`：需要 system scope 声明，home scope 只能作为 host-controlled（范围不一致）
+**不适合直接套用 presets 的例子**：
+- `pipewire`：需手写 owner/target 约束（`owner = host` + `nixosHome`），不适合直接使用通用 preset
+
+**已迁移但 projector 暂为 null 的例子**：
+- `neovim`、`embedded-dev`、`gnome-keyring`、`pipewire`：definition 已迁移，保留 legacy 等价行为（不生成 projector 输出）
 
 **适合 Phase 1 的例子**：
 - `git`：所有 scope 都是 `owner = user`，所有平台都适用
