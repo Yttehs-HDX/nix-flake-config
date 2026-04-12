@@ -319,6 +319,7 @@ assert !invalidUserDeclaredHostPackage.success;
 assert !invalidHostDeclaredUserHomePackage.success;
 assert nixvimStaysNixvim.pipeline.normalized.users.Alice.packages.nixvim.enable;
 assert nixvimStaysNixvim.pipeline.normalized.users.Alice.packages.neovim.enable;
+assert (builtins.tryEval nixvimStaysNixvim.pipeline.instances).success;
 assert invalidInitialHashedPasswordWithMutableUsersFalse.success;
 
 let
