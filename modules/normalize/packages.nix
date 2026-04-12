@@ -15,8 +15,6 @@ let
       settings = lib.recursiveUpdate implicitSettings explicitSettings;
     };
 
-  mergeDefinitions = definitions:
-    lib.foldl' lib.recursiveUpdate { } definitions;
 in {
   user = user: lib.mapAttrs normalizeEntry user.packages;
 
