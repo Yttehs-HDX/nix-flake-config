@@ -64,7 +64,7 @@
     lazygit = { };
     libnotify = { };
     lolcat = { };
-    neovim = { };
+    nixvim = { };
     net-tools = { };
     network-manager = { };
     nerd-fonts-jetbrains-mono = { };

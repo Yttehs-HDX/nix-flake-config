@@ -13,7 +13,6 @@ let
     cliphist = import ./cliphist.nix;
     cmatrix = import ./cmatrix.nix;
     codex = import ./codex.nix;
-    command-not-found = import ./command-not-found.nix;
     cryptsetup = import ./cryptsetup.nix;
     dig = import ./dig.nix;
     direnv = import ./direnv.nix;
@@ -55,7 +54,8 @@ let
     libnotify = import ./libnotify.nix;
     lolcat = import ./lolcat.nix;
     mikusays = import ./mikusays.nix;
-    neovim = import ./neovim.nix;
+    neovim = null;
+    nixvim = import ./nixvim.nix;
     net-tools = import ./net-tools.nix;
     network-manager = import ./network-manager.nix;
     nerd-fonts-jetbrains-mono = import ./nerd-fonts-jetbrains-mono.nix;
