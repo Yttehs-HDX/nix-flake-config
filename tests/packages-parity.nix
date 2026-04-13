@@ -55,6 +55,7 @@ let
           nix-index = { };
           nmap = { };
           onlyoffice = { };
+          playerctl = { };
           qq = { };
           ripgrep = { };
           rofi = { };
@@ -206,8 +207,14 @@ assert homeConfig.wayland.windowManager.hyprland.settings.plugin.hyprexpo.column
 assert homeConfig.wayland.windowManager.hyprland.settings.plugin.dynamic-cursors.mode
   == "tilt";
 assert builtins.length homeConfig.wayland.windowManager.hyprland.plugins == 2;
-assert homeConfig.home.sessionVariables.XDG_CURRENT_DESKTOP == "Hyprland";
-assert homeConfig.home.sessionVariables.QT_QPA_PLATFORM == "wayland;xcb";
+assert builtins.elem "XDG_CURRENT_DESKTOP,Hyprland"
+  homeConfig.wayland.windowManager.hyprland.settings.env;
+assert builtins.elem "XDG_SESSION_DESKTOP,Hyprland"
+  homeConfig.wayland.windowManager.hyprland.settings.env;
+assert builtins.elem "XDG_SESSION_TYPE,wayland"
+  homeConfig.wayland.windowManager.hyprland.settings.env;
+assert builtins.elem "QT_QPA_PLATFORM,wayland;xcb"
+  homeConfig.wayland.windowManager.hyprland.settings.env;
 assert homeConfig.programs.nix-index.enable;
 assert homeConfig.programs.nix-index.enableZshIntegration;
 assert homeConfig.programs.ripgrep.enable;

@@ -49,37 +49,35 @@ let
     ]) 9)
     ++ [[ "$mod, 0, workspace, 10" "$mod SHIFT, 0, movetoworkspace, 10" ]]);
 in {
-  home.packages = [ pkgs.playerctl ];
-
-  home.sessionVariables = {
-    XDG_CURRENT_DESKTOP = "Hyprland";
-    XDG_SESSION_DESKTOP = "Hyprland";
-    XDG_SESSION_TYPE = "wayland";
-    GDK_BACKEND = "wayland,x11,*";
-    GDK_SCALE = 1;
-    GDK_DPI_SCALE = 1;
-    NIXOS_OZONE_WL = 1;
-    ELECTRON_OZONE_PLATFORM_HINT = "auto";
-    MOZ_ENABLE_WAYLAND = 1;
-    OZONE_PLATFORM = "wayland";
-    EGL_PLATFORM = "wayland";
-    CLUTTER_BACKEND = "wayland";
-    SDL_VIDEODRIVER = "wayland";
-    QT_QPA_PLATFORM = "wayland;xcb";
-    QT_WAYLAND_DISABLE_WINDOWDECORATION = 1;
-    QT_AUTO_SCREEN_SCALE_FACTOR = 1;
-  };
-
   wayland.windowManager.hyprland = {
     enable = true;
     systemd.enable = true;
     xwayland.enable = definition.settings.xwaylandEnable or true;
     settings = {
+      env = [
+        "XDG_CURRENT_DESKTOP,Hyprland"
+        "XDG_SESSION_DESKTOP,Hyprland"
+        "XDG_SESSION_TYPE,wayland"
+        "GDK_BACKEND,wayland,x11,*"
+        "GDK_SCALE,1"
+        "GDK_DPI_SCALE,1"
+        "NIXOS_OZONE_WL,1"
+        "ELECTRON_OZONE_PLATFORM_HINT,auto"
+        "MOZ_ENABLE_WAYLAND,1"
+        "OZONE_PLATFORM,wayland"
+        "EGL_PLATFORM,wayland"
+        "CLUTTER_BACKEND,wayland"
+        "SDL_VIDEODRIVER,wayland"
+        "QT_QPA_PLATFORM,wayland;xcb"
+        "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
+        "QT_AUTO_SCREEN_SCALE_FACTOR,1"
+      ];
+
       "$mod" = "SUPER";
       exec-once = execOnce;
 
       bindm = [ "$mod, mouse:272, movewindow" "$mod, mouse:273, resizewindow" ];
-      bindl = [
+      bindl = lib.optionals (input.packages.home ? playerctl) [
         ", XF86AudioNext, exec, playerctl next"
         ", XF86AudioPause, exec, playerctl play-pause"
         ", XF86AudioPlay, exec, playerctl play-pause"
