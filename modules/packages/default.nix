@@ -19,7 +19,7 @@ let
   packageDirs = builtins.filter (name:
     allEntries.${name} == "directory"
     && builtins.pathExists (defPath + "/${name}/default.nix"))
-  (builtins.attrNames allEntries);
+    (builtins.attrNames allEntries);
 
   # Import each package definition
   # Each must have a default.nix that exports the definition structure
@@ -35,8 +35,9 @@ let
     else
       seen // { "${def.packageId}" = true; }) { } allDefinitions;
 
-  definitionsById = builtins.seq _validatedDefinitions (builtins.listToAttrs (map (def: {
-    name = def.packageId;
-    value = def;
-  }) allDefinitions));
+  definitionsById = builtins.seq _validatedDefinitions (builtins.listToAttrs
+    (map (def: {
+      name = def.packageId;
+      value = def;
+    }) allDefinitions));
 in definitionsById
