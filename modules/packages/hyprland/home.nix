@@ -1,5 +1,5 @@
 { input, definition, ... }:
-{ lib, ... }:
+{ lib, pkgs, ... }:
 let
   desktopTheme =
     if input.theme != null then input.theme.desktop or null else null;
