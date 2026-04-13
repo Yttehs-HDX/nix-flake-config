@@ -13,7 +13,7 @@ in {
     };
     nixos = {
       home = null;
-      system = ../../projection/backends/nixos/packages/zram.nix;
+      system = ./nixos.nix;
     };
     nix-darwin = {
       home = null;

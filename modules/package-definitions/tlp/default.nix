@@ -13,7 +13,7 @@ in {
     };
     nixos = {
       home = null;
-      system = ../../projection/backends/nixos/packages/tlp.nix;
+      system = ./nixos.nix;
     };
     nix-darwin = {
       home = null;

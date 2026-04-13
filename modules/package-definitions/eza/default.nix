@@ -8,15 +8,15 @@ in {
 
   backends = {
     home-manager = {
-      home = ../../projection/backends/home-manager/packages/eza.nix;
+      home = ./home.nix;
       system = null;
     };
     nixos = {
-      home = ../../projection/backends/home-manager/packages/eza.nix;
+      home = ./home.nix;
       system = null;
     };
     nix-darwin = {
-      home = ../../projection/backends/home-manager/packages/eza.nix;
+      home = ./home.nix;
       system = null;
     };
   };

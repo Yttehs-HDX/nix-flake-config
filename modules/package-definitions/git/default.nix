@@ -10,15 +10,15 @@ in {
   # Backend implementation references
   backends = {
     home-manager = {
-      home = ../../projection/backends/home-manager/packages/git.nix;
+      home = ./home.nix;
       system = null;
     };
     nixos = {
-      home = ../../projection/backends/home-manager/packages/git.nix;
+      home = ./home.nix;
       system = null;
     };
     nix-darwin = {
-      home = ../../projection/backends/home-manager/packages/git.nix;
+      home = ./home.nix;
       system = null;
     };
   };

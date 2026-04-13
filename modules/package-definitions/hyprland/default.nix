@@ -10,11 +10,11 @@ in {
   # Backend implementation references
   backends = {
     home-manager = {
-      home = ../../projection/backends/home-manager/packages/hyprland.nix;
+      home = ./home.nix;
       system = null;
     };
     nixos = {
-      home = ../../projection/backends/home-manager/packages/hyprland.nix;
+      home = ./home.nix;
       system = null; # Could add system-level hyprland setup here
     };
     nix-darwin = {

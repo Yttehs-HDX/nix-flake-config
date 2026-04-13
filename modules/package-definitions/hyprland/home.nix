@@ -23,8 +23,10 @@ let
     hyprlandTheme.background or "#1e1e2e"
   else
     "#1e1e2e";
-  sessionCommands =
-    import ../integrations/session-commands.nix { inherit input; };
+  sessionCommands = import
+    ../../projection/backends/home-manager/integrations/session-commands.nix {
+      inherit input;
+    };
   stripHash = color: lib.removePrefix "#" color;
   rgba = color: alpha: "rgba(${stripHash color}${alpha})";
   preferredTerminal = input.current.user.preferences.terminal;

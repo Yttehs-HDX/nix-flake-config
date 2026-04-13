@@ -8,18 +8,15 @@ in {
 
   backends = {
     home-manager = {
-      home =
-        ../../projection/backends/home-manager/packages/noto-fonts-emoji-blob-bin.nix;
+      home = ./home.nix;
       system = null;
     };
     nixos = {
-      home =
-        ../../projection/backends/home-manager/packages/noto-fonts-emoji-blob-bin.nix;
+      home = ./home.nix;
       system = null;
     };
     nix-darwin = {
-      home =
-        ../../projection/backends/home-manager/packages/noto-fonts-emoji-blob-bin.nix;
+      home = ./home.nix;
       system = null;
     };
   };

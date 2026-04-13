@@ -13,11 +13,11 @@ in {
     };
     nixos = {
       home = null;
-      system = ../../projection/backends/nixos/packages/docker.nix;
+      system = ./nixos.nix;
     };
     nix-darwin = {
       home = null;
-      system = ../../projection/backends/nix-darwin/packages/docker.nix;
+      system = ./darwin.nix;
     };
   };
 }
