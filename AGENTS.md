@@ -196,6 +196,19 @@ backend 差异应尽量在投影阶段吸收。
 ## 9. 测试要求
 任何实质性架构改动，至少应附带对应层级的验证。
 
+### 验证命令
+**每次修改后必须运行 `nix flake check` 并确认通过，再提交或结束改动。**
+
+运行前需确保 Nix 已启用以下实验性功能：
+```
+nix-command flakes
+```
+
+可通过以下方式临时启用：
+```bash
+nix --extra-experimental-features 'nix-command flakes' flake check
+```
+
 ### 最低要求
 - 改 schema：补 schema / normalization / validation 相关测试
 - 改 relation / instance：补实例生成测试
