@@ -1,6 +1,6 @@
 { lib, current }:
 let
-  packageCatalog = import ../packages { inherit lib; };
+  packageCatalog = import ../package-governance { inherit lib; };
   enabled = scope: declaredBy: definitions:
     lib.filterAttrs (packageId: definition:
       definition.enable

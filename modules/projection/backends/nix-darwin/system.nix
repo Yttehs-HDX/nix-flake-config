@@ -1,10 +1,15 @@
 { input }:
 { lib, ... }:
 let
-  packageModules = import ./packages/default.nix { inherit lib input; };
-  unsupportedWarnings = map (info:
-    "Package `${info.name}` is unsupported on `${info.backend}` (${info.platform}): ${info.reason} ${info.suggestion}")
-    (lib.attrValues input.unsupportedPackages.system);
+  packageModules = import ../../common/package-modules.nix {
+    inherit lib input;
+    backendType = "nix-darwin";
+    scope = "system";
+  };
+  unsupportedWarnings = import ../../common/unsupported-warnings.nix {
+    inherit lib input;
+    scope = "system";
+  };
 in {
   warnings = unsupportedWarnings;
   imports = packageModules;

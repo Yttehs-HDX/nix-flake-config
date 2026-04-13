@@ -1,6 +1,6 @@
 { lib, current }:
 let
-  packageCatalog = import ../packages { inherit lib; };
+  packageCatalog = import ../package-governance { inherit lib; };
 
   collect = scope: declaredBy: definitions:
     lib.filterAttrs (_: value: value != null) (lib.mapAttrs

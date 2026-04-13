@@ -1,10 +1,10 @@
 # Tests for package definition system
 { lib }:
 let
-  packageDefinitions = import ../modules/package-definitions { inherit lib; };
-  taxonomy = import ../modules/packages/taxonomy.nix;
-  homeCatalog = import ../modules/packages/catalog/home.nix;
-  systemCatalog = import ../modules/packages/catalog/system.nix;
+  packageDefinitions = import ../modules/packages { inherit lib; };
+  taxonomy = import ../modules/package-governance/taxonomy.nix;
+  homeCatalog = import ../modules/package-governance/catalog/home.nix;
+  systemCatalog = import ../modules/package-governance/catalog/system.nix;
   migratedCrossPlatformUserPackages = [
     "android-tools"
     "asciiquarium"

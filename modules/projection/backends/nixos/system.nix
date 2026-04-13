@@ -1,13 +1,18 @@
 { input }:
 { lib, config ? { users.mutableUsers = true; }, ... }:
 let
-  packageModules = import ./packages/default.nix { inherit lib input; };
+  packageModules = import ../../common/package-modules.nix {
+    inherit lib input;
+    backendType = "nixos";
+    scope = "system";
+  };
   integrationModules =
     import ./integrations/home-packages.nix { inherit lib input; };
   hasInitialHashedPassword = input.account.initialHashedPassword != null;
-  unsupportedWarnings = map (info:
-    "Package `${info.name}` is unsupported on `${info.backend}` (${info.platform}): ${info.reason} ${info.suggestion}")
-    (lib.attrValues input.unsupportedPackages.system);
+  unsupportedWarnings = import ../../common/unsupported-warnings.nix {
+    inherit lib input;
+    scope = "system";
+  };
 in {
   imports = packageModules ++ integrationModules;
   warnings = unsupportedWarnings;

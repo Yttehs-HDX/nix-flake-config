@@ -513,13 +513,14 @@ helper 应存在，但不能成为架构主轴。
 前者是契约材料，后者是契约出口。
 
 ---
-## `modules/packages/`
+## `modules/package-governance/`
 ### 作用
 集中承载软件包元数据注册表与判定规则。
 
 ### 推荐包含
 - `taxonomy.nix`：host kind / target / owner / missing strategy 与映射关系
 - `presets.nix`：metadata 模板构造器
+- `catalog/from-definitions.nix`：按 scope 从 package definitions 派生 catalog 的公共函数
 - `catalog/home.nix`：home scope 包元数据
 - `catalog/system.nix`：system scope 包元数据
 - `rules.nix`：可见性、支持性、元数据读取规则
@@ -532,7 +533,7 @@ helper 应存在，但不能成为架构主轴。
 
 ### 边界要求
 - `projection` 与 `assembly` 不应内嵌 package taxonomy 解释逻辑
-- `validate` / `context` 通过 `modules/packages/default.nix` 访问统一接口
+- `validate` / `context` 通过 `modules/package-governance/default.nix` 访问统一接口
 - 未注册包必须走收敛策略，不能因 fallback 获得全平台默认支持
 
 ---

@@ -5,7 +5,7 @@
 # - This file: Package validation, host checks (backend/platform/stateVersion), relation checks (scope fields, state),
 #              uniqueness checks (user@host pairs, host@identity pairs), and index building
 let
-  packageCatalog = import ../packages { inherit lib; };
+  packageCatalog = import ../package-governance { inherit lib; };
   references = import ./references.nix { inherit lib normalized; };
   capabilities = import ./capabilities.nix { inherit lib normalized; };
   hasSystemScope = backendType:
