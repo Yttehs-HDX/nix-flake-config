@@ -55,6 +55,7 @@ let
           nix-index = { };
           nmap = { };
           onlyoffice = { };
+          playerctl = { };
           qq = { };
           ripgrep = { };
           rofi = { };

@@ -25,6 +25,7 @@ let
           hyprpicker = { };
           hyprland = { };
           hyprpolkitagent = { };
+          playerctl = { };
           rofi = { };
           swaylock-effects = { };
           swaync = { };
