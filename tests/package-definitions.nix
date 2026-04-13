@@ -3,8 +3,10 @@
 let
   packageDefinitions = import ../modules/packages { inherit lib; };
   taxonomy = import ../modules/package-governance/taxonomy.nix;
-  homeCatalog = import ../modules/package-governance/catalog/home.nix;
-  systemCatalog = import ../modules/package-governance/catalog/system.nix;
+  homeCatalog =
+    import ../modules/package-governance/catalog/home.nix { inherit lib; };
+  systemCatalog =
+    import ../modules/package-governance/catalog/system.nix { inherit lib; };
   migratedCrossPlatformUserPackages = [
     "android-tools"
     "asciiquarium"
