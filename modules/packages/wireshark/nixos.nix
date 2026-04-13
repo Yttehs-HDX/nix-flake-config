@@ -1,4 +1,4 @@
-{ definition, ... }:
+{ input, definition, ... }:
 { pkgs, ... }:
 let
   packageName = definition.settings.package or "qt";
@@ -8,4 +8,6 @@ in {
     enable = true;
     inherit package;
   };
+
+  users.users.${input.identity.name}.extraGroups = [ "wireshark" ];
 }
