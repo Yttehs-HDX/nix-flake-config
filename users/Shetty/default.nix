@@ -79,6 +79,7 @@
     onlyoffice = { };
     osu-lazer-bin = { };
     pipes-rs = { };
+    playerctl = { };
     poppler-utils = { };
     pulseaudio = { };
     qq = { };
