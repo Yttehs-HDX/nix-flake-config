@@ -12,8 +12,8 @@
 let
   taxonomy = import ./taxonomy.nix;
   catalog = {
-    home = import ./catalog/home.nix;
-    system = import ./catalog/system.nix;
+    home = import ./catalog/home.nix { inherit lib; };
+    system = import ./catalog/system.nix { inherit lib; };
   };
 
   # ── 1. Context resolution helpers ─────────────────────────────────────
@@ -74,7 +74,7 @@ let
       result
     else
       builtins.trace
-      "WARNING: Package '${packageId}' is not registered in any catalog. It will be excluded from all targets. Add an explicit entry to modules/package-governance/catalog/${scope}.nix."
+      "WARNING: Package '${packageId}' is not registered in any catalog. It will be excluded from all targets. Ensure it has a definition under modules/packages/${packageId}/default.nix and that its metadata.allowedTargets includes the relevant ${scope} scope/targets."
       result;
 
   # ── 2. Metadata lookup ────────────────────────────────────────────────

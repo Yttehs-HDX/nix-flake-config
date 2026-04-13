@@ -1,7 +1,6 @@
-{ taxonomy }:
+{ lib, taxonomy }:
 scope:
 let
-  lib = builtins;
   packageDefinitions = import ../../packages { inherit lib; };
 
   allowedTargets = if scope == "home" then [
