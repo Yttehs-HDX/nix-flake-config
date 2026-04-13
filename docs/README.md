@@ -162,7 +162,7 @@
 - catalog、presets、rules、diagnostics 应如何分层
 - 未注册 package 的收敛策略是什么
 
-这份文档对应当前 `modules/packages/` 的实现边界与命名规范。
+这份文档对应当前 `modules/package-governance/` 的实现边界与命名规范。
 
 ---
 ## 文档之间的关系

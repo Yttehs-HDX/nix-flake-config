@@ -515,11 +515,28 @@ helper 应存在，但不能成为架构主轴。
 ---
 ## `modules/packages/`
 ### 作用
+承载每个 package 的 definition 与 backend 实现，是 package 语义与实现的单点真源。
+
+### 推荐包含
+- `<packageId>/default.nix`：metadata + backend 路径引用
+- `<packageId>/home.nix`：home scope/backend 行为
+- `<packageId>/nixos.nix`：nixos system 行为（含用户组/服务等系统集成）
+- `<packageId>/darwin.nix`：darwin system 行为
+- `default.nix`：definitions auto-discovery loader
+
+### 边界要求
+- 具体包行为（包括 NixOS 侧集成）应落在对应包目录，不要回流到 backend registry 目录
+- 该目录不负责可见性/支持性判定；判定逻辑归 `modules/package-governance/`
+
+---
+## `modules/package-governance/`
+### 作用
 集中承载软件包元数据注册表与判定规则。
 
 ### 推荐包含
 - `taxonomy.nix`：host kind / target / owner / missing strategy 与映射关系
 - `presets.nix`：metadata 模板构造器
+- `catalog/from-definitions.nix`：按 scope 从 package definitions 派生 catalog 的公共函数
 - `catalog/home.nix`：home scope 包元数据
 - `catalog/system.nix`：system scope 包元数据
 - `rules.nix`：可见性、支持性、元数据读取规则
@@ -532,7 +549,7 @@ helper 应存在，但不能成为架构主轴。
 
 ### 边界要求
 - `projection` 与 `assembly` 不应内嵌 package taxonomy 解释逻辑
-- `validate` / `context` 通过 `modules/packages/default.nix` 访问统一接口
+- `validate` / `context` 通过 `modules/package-governance/default.nix` 访问统一接口
 - 未注册包必须走收敛策略，不能因 fallback 获得全平台默认支持
 
 ---

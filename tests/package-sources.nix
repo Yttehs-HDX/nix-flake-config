@@ -8,10 +8,9 @@ let
     inherit system;
     config.allowUnfree = true;
   };
-  packageSources = import
-    ../modules/projection/backends/home-manager/packages/package-sources.nix {
-      inherit pkgs inputs;
-    };
+  packageSources = import ../modules/projection/common/package-sources.nix {
+    inherit pkgs inputs;
+  };
 in assert packageSources.homeCustomSources.hexecute
   == inputs.hexecute.packages.${system}.default;
 assert packageSources.homeCustomSources.mikusays
