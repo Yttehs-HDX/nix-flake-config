@@ -395,8 +395,8 @@ Backend 实现文件仍然放在原位置，definition 只存储引用：
 ## Catalog 派生（Phase 1）
 
 当前 `catalog/home.nix` 与 `catalog/system.nix` 都采用 definition-only：
-- `home`：`legacyEntries = { }`
-- `system`：`legacyEntries = { }`
+- `home`：仅由 definitions 派生（无 legacy 注入）
+- `system`：仅由 definitions 派生（无 legacy 注入）
 
 ### 当前实现
 
@@ -422,9 +422,9 @@ in
 ## Projection Registry 派生（Phase 1）
 
 `modules/projection/backends/*/packages/default.nix` 当前按 backend 处于不同阶段：
-- `home-manager/packages/default.nix`：definition-only（`legacyRegistry = { }`）
-- `nixos/packages/default.nix`：definition-driven（`legacyRegistry = { }`）
-- `nix-darwin/packages/default.nix`：definition-driven（`legacyRegistry = { }`）
+- `home-manager/packages/default.nix`：definition-only（直接从 definitions 构建 registry）
+- `nixos/packages/default.nix`：definition-driven（直接从 definitions 构建 registry）
+- `nix-darwin/packages/default.nix`：definition-driven（直接从 definitions 构建 registry）
 
 ```nix
 # home-manager/packages/default.nix (Phase 1 definition-only)

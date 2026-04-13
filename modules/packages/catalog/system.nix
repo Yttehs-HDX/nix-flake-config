@@ -1,16 +1,9 @@
 # System-scope package metadata registry.
 #
-# This registry now merges two sources:
-# 1. Package definitions from modules/package-definitions (preferred)
-# 2. Legacy inline entries (to be migrated)
-#
-# Packages with definitions take precedence. Legacy entries remain for
-# packages not yet migrated to the definition system.
+# This registry is derived only from package definitions in
+# modules/package-definitions.
 let
-  presets = import ../presets.nix;
   taxonomy = import ../taxonomy.nix;
-  inherit (presets)
-    linuxSystemHost crossPlatformSystemHost linuxDesktopSystemHost;
   inherit (taxonomy) targets;
 
   # Load package definitions
@@ -32,8 +25,4 @@ let
       } else
         null) (builtins.attrNames packageDefinitions))));
 
-  # Fully migrated in Phase 1 for system scope: keep explicit empty legacy set.
-  legacyEntries = { };
-  # Merge definitions (preferred) with legacy entries (fallback)
-  # Definitions override legacy entries for the same package ID
-in legacyEntries // systemDefinitionMetadata
+in systemDefinitionMetadata

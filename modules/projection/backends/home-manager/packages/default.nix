@@ -3,25 +3,18 @@ let
   # Load package definitions
   packageDefinitions = import ../../../../package-definitions { inherit lib; };
 
-  # Build registry from definitions + legacy entries
-  # Definitions take precedence over legacy hardcoded imports
+  # Build registry directly from package definitions.
   definitionRegistry = builtins.mapAttrs (id: def:
     let backendPath = def.backends.home-manager.home or null;
     in if backendPath == null then null else import backendPath)
     packageDefinitions;
 
-  # Fully migrated in Phase 1: keep an explicit empty legacy set for clarity.
-  legacyRegistry = { };
-
-  # Merge definitions (preferred) with legacy entries (fallback)
-  registry = legacyRegistry // definitionRegistry;
-
   resolve = packageId: definition:
-    if builtins.hasAttr packageId registry then
-      if registry.${packageId} == null then
+    if builtins.hasAttr packageId definitionRegistry then
+      if definitionRegistry.${packageId} == null then
         ({ ... }: { })
       else
-        registry.${packageId} { inherit input definition; }
+        definitionRegistry.${packageId} { inherit input definition; }
     else
       throw
       "Unsupported Home Manager package `${packageId}` on `${input.relationId}`.";
