@@ -29,6 +29,7 @@
     docker.settings.storageDriver = "btrfs";
     firewall = { };
     networking = { };
+    nix-features = { };
     nix-ld = { };
     nvidia.settings = {
       nvidiaBusId = "PCI:1:0:0";
