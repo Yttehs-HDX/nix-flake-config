@@ -2,6 +2,7 @@
 
 [English](README.md) | [简体中文](README.cn.md)
 
+[![CI](https://img.shields.io/github/actions/workflow/status/Yttehs-HDX/nix-flake-config/ci.yml?branch=main&style=for-the-badge&label=CI)](https://github.com/Yttehs-HDX/nix-flake-config/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-0b7285?style=for-the-badge)](LICENSE)
 [![Nix](https://img.shields.io/badge/Nix-Config-5277C3?logo=nixos&logoColor=white&style=for-the-badge)](https://nixos.org/)
 [![Flake](https://img.shields.io/badge/Nix-Flake-2F855A?style=for-the-badge)](https://nixos.wiki/wiki/Flakes)
