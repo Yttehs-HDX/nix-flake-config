@@ -76,6 +76,7 @@
     noto-fonts-cjk-serif = { };
     noto-fonts-emoji-blob-bin = { };
     obs-studio = { };
+    obsidian = { };
     onlyoffice = { };
     osu-lazer-bin = { };
     pipes-rs = { };
