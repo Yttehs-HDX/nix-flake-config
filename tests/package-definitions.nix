@@ -100,6 +100,7 @@ let
     "jetbrains-toolbox"
     "krita"
     "obs-studio"
+    "obsidian"
     "onlyoffice"
     "osu-lazer-bin"
     "qq"

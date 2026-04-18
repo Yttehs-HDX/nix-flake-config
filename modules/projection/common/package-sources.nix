@@ -8,6 +8,7 @@ let
   homeCustomSources = {
     hexecute = inputs.hexecute.packages.${system}.default;
     mikusays = inputs.nur.legacyPackages.${system}.repos.zerozawa.mikusays;
+    obsidian = unstablePkgs.obsidian;
     vscode = unstablePkgs.vscode;
   };
 in {

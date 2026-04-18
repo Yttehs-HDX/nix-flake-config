@@ -16,8 +16,10 @@ in assert packageSources.homeCustomSources.hexecute
 assert packageSources.homeCustomSources.mikusays
   == inputs.nur.legacyPackages.${system}.repos.zerozawa.mikusays;
 assert packageSources.homeCustomSources.vscode == unstablePkgs.vscode;
+assert packageSources.homeCustomSources.obsidian == unstablePkgs.obsidian;
 assert packageSources.hasCustomSource "hexecute";
 assert packageSources.hasCustomSource "mikusays";
+assert packageSources.hasCustomSource "obsidian";
 assert packageSources.hasCustomSource "vscode";
 assert !packageSources.hasCustomSource "wget";
 assert !packageSources.hasCustomSource "ripgrep";
