@@ -108,6 +108,7 @@
     waybar = { };
     cliphist = { };
     swww = { };
+    syncthing = { };
     wechat = { };
     wget = { };
     xdg = { };
