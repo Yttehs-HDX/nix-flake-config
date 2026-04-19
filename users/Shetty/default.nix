@@ -109,6 +109,7 @@
     cliphist = { };
     swww = { };
     syncthing = { };
+    taplo = { };
     wechat = { };
     wget = { };
     xdg = { };
