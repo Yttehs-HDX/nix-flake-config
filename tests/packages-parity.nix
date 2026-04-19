@@ -254,7 +254,7 @@ assert builtins.elem "tmux" homeConfig.programs.zsh.oh-my-zsh.plugins;
 assert homeConfig.programs.zsh.zplug.enable;
 assert lib.hasInfix "source ~/.p10k.zsh" homeConfig.programs.zsh.initContent;
 assert builtins.elem nixosConfig.pkgs.taplo homeConfig.home.packages;
-assert lib.hasInfix "taplo completion zsh" homeConfig.programs.zsh.initContent;
+assert lib.hasInfix "taplo completions zsh" homeConfig.programs.zsh.initContent;
 assert homeConfig.programs.kitty.enable;
 assert homeConfig.programs.kitty.themeFile == "Catppuccin-Mocha";
 assert homeConfig.programs.kitty.font.name == "JetBrainsMono Nerd Font";

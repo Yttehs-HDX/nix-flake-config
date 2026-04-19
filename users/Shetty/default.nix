@@ -71,6 +71,7 @@
     nixfmt-classic = { };
     nix-index = { };
     nmap = { };
+    nodejs = { };
     noto-fonts = { };
     noto-fonts-cjk-sans = { };
     noto-fonts-cjk-serif = { };
