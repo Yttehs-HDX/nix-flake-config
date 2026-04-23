@@ -30,6 +30,7 @@
     cava = { };
     cbonsai = { };
     clash-verge-rev = { };
+    claude-code = { };
     cmatrix = { };
     codex = { };
     cryptsetup = { };
