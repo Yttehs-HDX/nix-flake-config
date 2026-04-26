@@ -38,6 +38,7 @@
     direnv = { };
     duf = { };
     embedded-dev = { };
+    ettercap = { };
     eza = { };
     fastfetch = { };
     feishu = { };
