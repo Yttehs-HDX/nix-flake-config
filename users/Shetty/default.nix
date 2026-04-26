@@ -39,6 +39,7 @@
     duf = { };
     embedded-dev = { };
     ettercap = { };
+    ethtool = { };
     eza = { };
     fastfetch = { };
     feishu = { };
