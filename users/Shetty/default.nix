@@ -40,6 +40,7 @@
     embedded-dev = { };
     ettercap = { };
     ethtool = { };
+    hping = { };
     eza = { };
     fastfetch = { };
     feishu = { };
