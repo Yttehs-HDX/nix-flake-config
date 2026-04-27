@@ -68,6 +68,7 @@
     lazygit = { };
     libnotify = { };
     lolcat = { };
+    metasploit = { };
     nixvim = { };
     net-tools = { };
     network-manager = { };
