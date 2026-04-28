@@ -89,6 +89,7 @@
     playerctl = { };
     poppler-utils = { };
     pulseaudio = { };
+    qbittorrent = { };
     qq = { };
     ripgrep = { };
     rofi = { };
