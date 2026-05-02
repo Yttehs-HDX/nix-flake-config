@@ -122,6 +122,7 @@
     xdg = { };
     yazi = { };
     zip = { };
+    "7-zip" = { };
     zsh = { };
     hexecute = { };
     mikusays = { };
