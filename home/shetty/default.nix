@@ -59,6 +59,7 @@
     ../../modules/home/lolcat.nix
     ../../modules/home/metasploit.nix
     ../../modules/home/mikusays.nix
+    ../../modules/home/mpv.nix
     ../../modules/home/net-tools.nix
     ../../modules/home/nixfmt.nix
     ../../modules/home/nmap.nix
@@ -85,6 +86,7 @@
     ../../modules/home/unrar.nix
     ../../modules/home/unzip.nix
     ../../modules/home/usbutils.nix
+    ../../modules/home/v4l-utils.nix
     ../../modules/home/vlc.nix
     ../../modules/home/wechat.nix
     ../../modules/home/wget.nix
