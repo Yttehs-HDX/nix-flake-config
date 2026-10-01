@@ -15,6 +15,8 @@
     ../../modules/home/eza.nix
     ../../modules/home/fzf.nix
     ../../modules/home/gh.nix
+    ../../modules/home/gigolo.nix
+    ../../modules/home/glib.nix
     ../../modules/home/htop.nix
     ../../modules/home/lazydocker.nix
     ../../modules/home/lazygit.nix
