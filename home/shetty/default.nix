@@ -47,6 +47,7 @@
     ../../modules/home/file.nix
     ../../modules/home/github-copilot-cli.nix
     ../../modules/home/google-chrome.nix
+    ../../modules/home/gwenview.nix
     ../../modules/home/hexecute.nix
     ../../modules/home/hmcl.nix
     ../../modules/home/hping.nix
