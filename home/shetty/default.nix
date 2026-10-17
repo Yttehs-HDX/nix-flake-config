@@ -32,6 +32,7 @@
     ../../modules/home/android-tools.nix
     ../../modules/home/asciiquarium.nix
     ../../modules/home/cbonsai.nix
+    ../../modules/home/chatgpt.nix
     ../../modules/home/claude-code.nix
     ../../modules/home/cmatrix.nix
     ../../modules/home/codex.nix
