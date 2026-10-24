@@ -37,6 +37,7 @@
     ../../modules/home/cmatrix.nix
     ../../modules/home/codex.nix
     ../../modules/home/cryptsetup.nix
+    ../../modules/home/deepseek-harness.nix
     ../../modules/home/dig.nix
     ../../modules/home/duf.nix
     ../../modules/home/ethtool.nix
