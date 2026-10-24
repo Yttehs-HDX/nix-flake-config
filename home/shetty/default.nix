@@ -75,6 +75,7 @@
     ../../modules/home/p7zip.nix
     ../../modules/home/pi-coding-agent.nix
     ../../modules/home/pipes-rs.nix
+    ../../modules/home/pnpm.nix
     ../../modules/home/poppler-utils.nix
     ../../modules/home/qalculate-gtk.nix
     ../../modules/home/qbittorrent.nix
