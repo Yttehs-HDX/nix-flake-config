@@ -240,6 +240,26 @@
         "type": "github"
       }
     },
+    "openbot": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793282277,
+        "narHash": "sha256-JJ2RrUgL8diWILo3FMlVy6g3tT6bZ9LrE4AxIqVKm4M=",
+        "owner": "nightly-labs",
+        "repo": "openbot",
+        "rev": "1bad0f0a52a37e34f43d60a0f3b6741534fbc122",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nightly-labs",
+        "repo": "openbot",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "asus-numberpad-driver": "asus-numberpad-driver",
@@ -250,7 +270,8 @@
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
-        "nur": "nur"
+        "nur": "nur",
+        "openbot": "openbot"
       }
     },
     "systems": {

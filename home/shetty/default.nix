@@ -71,6 +71,7 @@
     ../../modules/home/noto-fonts-emoji-blob-bin.nix
     ../../modules/home/obsidian.nix
     ../../modules/home/obs-studio.nix
+    ../../modules/home/openbot.nix
     ../../modules/home/osu-lazer-bin.nix
     ../../modules/home/p7zip.nix
     ../../modules/home/pi-coding-agent.nix
