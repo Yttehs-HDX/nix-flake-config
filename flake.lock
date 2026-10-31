@@ -247,11 +247,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793282277,
-        "narHash": "sha256-JJ2RrUgL8diWILo3FMlVy6g3tT6bZ9LrE4AxIqVKm4M=",
+        "lastModified": 1793441493,
+        "narHash": "sha256-TdlObVGCLlf0U+HhHZl5OeYSamA4fn6bUD8YzQQtn9A=",
         "owner": "nightly-labs",
         "repo": "openbot",
-        "rev": "1bad0f0a52a37e34f43d60a0f3b6741534fbc122",
+        "rev": "82b611e555c3d79cf2b895012275801da40b00c1",
         "type": "github"
       },
       "original": {
