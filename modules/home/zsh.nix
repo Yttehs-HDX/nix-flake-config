@@ -51,6 +51,7 @@
     initContent = ''
       source ~/.p10k.zsh
       eval "$(codex completion zsh)"
+      eval "$(just --completions zsh)"
     '';
   };
 }

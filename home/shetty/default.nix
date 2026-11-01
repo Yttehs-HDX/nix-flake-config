@@ -57,6 +57,7 @@
     ../../modules/home/jetbrains-toolbox.nix
     ../../modules/home/jmtpfs.nix
     ../../modules/home/jq.nix
+    ../../modules/home/just.nix
     ../../modules/home/keepassxc.nix
     ../../modules/home/krita.nix
     ../../modules/home/libnotify.nix
