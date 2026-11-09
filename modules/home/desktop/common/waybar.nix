@@ -131,6 +131,15 @@ in
             { app-id = "(?i)^kitty$"; class = "terminal"; icon = ""; }
             { app-id = "(?i)^google-chrome$"; class = "browser"; icon = ""; }
             { app-id = "(?i)^code$"; class = "editor"; icon = "󰨞"; }
+            { app-id = "(?i)^discord$"; class = "discord"; icon = "󰙯"; }
+            { app-id = "(?i)^qq$"; class = "qq"; icon = ""; }
+            { app-id = "(?i)^wechat$"; class = "wechat"; icon = ""; }
+            { app-id = "(?i)^vlc$"; class = "vlc"; icon = "󰕼"; }
+            { app-id = "(?i)^(org[.]kde[.])?krita$"; class = "krita"; icon = ""; }
+            { app-id = "(?i)^mpv$"; class = "mpv"; icon = ""; }
+            { app-id = "(?i)^jetbrains-studio$"; class = "android-studio"; icon = ""; }
+            { app-id = "(?i)^(md[.]obsidian[.])?obsidian$"; class = "obsidian"; icon = ""; }
+            { class = "default"; icon = "󰞅"; }
           ];
         };
       };
