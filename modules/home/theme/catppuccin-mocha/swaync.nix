@@ -109,19 +109,19 @@ in
       --noti-bg-hover: ${palette.surface1};
       --noti-bg-focus: ${palette.surface1};
       --border-radius: 12px;
-      --notification-icon-size: 32px;
+      --notification-icon-size: 28px;
       --notification-app-icon-size: 14px;
       --notification-group-icon-size: 20px;
       --font-size-body: 14px;
-      --font-size-summary: 15px;
+      --font-size-summary: 14px;
 
-      font-family: "SF Pro", "Noto Sans CJK SC", sans-serif;
-      font-size: 14px;
+      font-family: "SF Pro", "JetBrainsMono Nerd Font", "Noto Sans CJK SC", sans-serif;
+      font-size: 15px;
       color: ${palette.text};
       background: ${palette.base};
-      border: 1px solid ${palette.surface1};
+      border: 2px solid ${palette.blue};
       border-radius: 20px;
-      padding: 18px;
+      padding: 20px;
     }
 
     .control-center .widget {
@@ -129,22 +129,20 @@ in
       padding: 0;
     }
 
-    .control-center .widget-label.controls {
-      margin: 2px 0 14px;
-      padding-left: 10px;
-      border-left: 3px solid ${palette.sky};
-      border-radius: 0;
+    .control-center .widget-label.clock {
+      margin-bottom: 12px;
     }
 
-    .control-center .widget-label.controls > label {
-      font-size: 24px;
-      font-weight: 700;
+    .control-center .widget-label.clock > label {
+      color: ${palette.lavender};
+      font-size: 28px;
+      font-weight: 600;
     }
 
     .control-center .widget-dnd,
     .control-center .widget-volume {
       background: ${palette.surface0};
-      padding: 10px 14px;
+      padding: 12px 14px;
     }
 
     .control-center .widget-dnd {
@@ -158,29 +156,35 @@ in
 
     .control-center .widget-dnd > label,
     .control-center .widget-volume > box > label {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
     }
 
     .control-center .widget-dnd switch {
-      min-width: 38px;
-      min-height: 22px;
-      padding: 2px;
-      border: none;
-      border-radius: 16px;
-      background: ${palette.surface2};
+      min-width: 34px;
+      min-height: 20px;
+      padding: 3px;
+      border: 1px solid ${palette.surface2};
+      border-radius: 999px;
+      background: ${palette.mantle};
+      background-image: none;
+      box-shadow: none;
     }
 
     .control-center .widget-dnd switch:checked {
       background: ${palette.sky};
+      border-color: ${palette.sky};
     }
 
     .control-center .widget-dnd switch slider {
-      min-width: 18px;
-      min-height: 18px;
-      background: ${palette.text};
+      min-width: 14px;
+      min-height: 14px;
+      margin: 0;
+      background: ${palette.subtext0};
+      background-image: none;
       border: none;
-      border-radius: 50%;
+      border-radius: 999px;
+      box-shadow: none;
     }
 
     .control-center .widget-dnd switch:checked slider {
@@ -232,17 +236,17 @@ in
     }
 
     .control-center .widget-buttons-grid {
-      margin: 6px 0 0;
+      margin: 6px -6px 0;
     }
 
     .control-center .widget-buttons-grid flowboxchild {
-      padding: 2px;
+      padding: 6px;
     }
 
     .control-center .widget-buttons-grid button {
       min-height: 28px;
       padding: 5px 14px;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
     }
 
@@ -259,7 +263,7 @@ in
     }
 
     .control-center .widget-mpris {
-      margin-top: 12px;
+      margin-bottom: 12px;
     }
 
     .control-center .widget-mpris .widget-mpris-player {
@@ -275,20 +279,21 @@ in
     }
 
     .control-center .widget-mpris-player .mpris-overlay {
-      min-height: 100px;
-      padding: 14px 16px 10px;
+      min-height: 88px;
+      padding: 14px 16px 12px;
+      border-radius: 14px;
       background: linear-gradient(100deg, rgba(17, 17, 27, 0.90), rgba(17, 17, 27, 0.56));
     }
 
     .control-center .widget-mpris-title {
       color: #ffffff;
-      font-size: 19px;
+      font-size: 17px;
       font-weight: 700;
     }
 
     .control-center .widget-mpris-subtitle {
       color: #e4e6f3;
-      font-size: 13px;
+      font-size: 14px;
     }
 
     .control-center .mpris-overlay button {
@@ -320,12 +325,21 @@ in
     }
 
     .control-center .widget-title {
-      margin: 16px 0 7px;
+      margin: 10px 0 0;
     }
 
     .control-center .widget-title > label {
-      font-size: 17px;
-      font-weight: 700;
+      margin: 0;
+    }
+
+    .control-center .widget-title button {
+      min-width: 30px;
+      min-height: 30px;
+      padding: 0;
+      border-radius: 50%;
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0;
     }
 
     .control-center .widget-title button:disabled {
@@ -333,13 +347,60 @@ in
       background: ${palette.mantle};
     }
 
+    .control-center .control-center-list {
+      margin-top: 6px;
+    }
+
     .control-center .control-center-list,
-    .control-center .notification-row {
+    .control-center .control-center-list row,
+    .control-center .notification-group,
+    .control-center .notification-group:focus,
+    .control-center .notification-row,
+    .control-center .notification-row:focus {
       background: transparent;
+      outline: none;
+      box-shadow: none;
+    }
+
+    .control-center .notification-group .notification-group-headers,
+    .control-center .notification-group .notification-group-buttons {
+      margin: 0 4px;
+    }
+
+    .control-center .notification-group .notification-group-headers {
+      padding: 4px 0;
+    }
+
+    .control-center .notification-group .notification-group-header {
+      font-size: 15px;
+      font-weight: 600;
+      color: ${palette.subtext1};
+    }
+
+    .control-center .notification-group .notification-group-icon {
+      -gtk-icon-size: 18px;
+      margin-right: 6px;
+    }
+
+    .control-center .notification-group .notification-group-buttons button {
+      min-width: 26px;
+      min-height: 26px;
+      padding: 0;
+      margin: 0 2px;
+      border: none;
+      border-radius: 50%;
+      background: ${palette.surface0};
+      color: ${palette.text};
+      box-shadow: none;
+    }
+
+    .control-center .notification-group .notification-group-buttons button:hover {
+      background: ${palette.surface1};
     }
 
     .control-center .notification-row .notification-background {
-      padding: 3px 1px;
+      background: transparent;
+      padding: 3px 0;
     }
 
     .control-center .notification-background .notification {
@@ -353,8 +414,20 @@ in
       border-color: ${palette.red};
     }
 
-    .control-center .notification-default-action {
-      padding: 9px 11px;
+    .control-center .notification-row .notification-background .notification .notification-default-action {
+      padding: 7px 10px;
+      border-radius: 12px;
+    }
+
+    .control-center .notification-row .notification-background .notification .summary {
+      font-weight: 600;
+    }
+
+    .control-center .notification-row .notification-background .notification .time {
+      margin-right: 6px;
+      font-size: 12px;
+      font-weight: 400;
+      color: ${palette.subtext0};
     }
 
     .control-center .notification .time,
@@ -363,14 +436,14 @@ in
     }
     .control-center .control-center-list-placeholder {
       opacity: 1;
-      margin: 6px 0 2px;
+      margin: 6px 0 0;
     }
 
     .control-center .control-center-list-placeholder image {
       /* The GTK template reserves a 96 px icon even when there are no messages. */
       opacity: 0.6;
       transform: scale(0.44);
-      margin: -23px 0;
+      margin: -28px 0;
     }
   '';
 }

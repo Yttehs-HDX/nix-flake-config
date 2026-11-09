@@ -6,6 +6,9 @@ in
 {
   services.swaync = {
     enable = true;
+    package = pkgs.swaynotificationcenter.overrideAttrs (old: {
+      patches = (old.patches or [ ]) ++ [ ./patches/swaync-hide-empty.patch ];
+    });
     settings = {
       control-center-positionX = "right";
       control-center-positionY = "top";
@@ -17,22 +20,22 @@ in
       text-empty = "暂无通知";
 
       widgets = [
-        "label#controls"
+        "label#clock"
+        "mpris"
         "dnd"
         "volume"
         "buttons-grid"
-        "mpris"
-        "title"
         "notifications"
+        "title"
       ];
       widget-config = {
-        "label#controls".text = "控制中心";
-        dnd.text = "勿扰模式";
+        "label#clock".text = "";
+        dnd.text = "󰂛  勿扰模式";
         volume = {
-          label = "输出音量";
+          label = "󰕾  输出音量";
           show-per-app = true;
           show-per-app-label = true;
-          expand-button-label = "分应用";
+          expand-button-label = "应用";
           collapse-button-label = "收起";
           empty-list-label = "暂无播放声音的应用";
         };
@@ -40,11 +43,13 @@ in
           buttons-per-row = 2;
           actions = [
             {
-              label = "网络配置";
+              label = "󰖩  网络配置";
+              update-command = "${pkgs.python3}/bin/python3 ${./scripts/swaync-connections.py} wifi ${pkgs.networkmanager}/bin/nmcli";
               command = "${closePanel} && exec ${pkgs.networkmanagerapplet}/bin/nm-connection-editor";
             }
             {
-              label = "蓝牙设备";
+              label = "󰂯  蓝牙设备";
+              update-command = "${pkgs.python3}/bin/python3 ${./scripts/swaync-connections.py} bluetooth ${pkgs.bluez}/bin/bluetoothctl";
               command = "${closePanel} && exec ${pkgs.blueman}/bin/blueman-manager";
             }
           ];
@@ -54,8 +59,8 @@ in
           autohide = true;
         };
         title = {
-          text = "通知";
-          button-text = "清空通知";
+          text = "";
+          button-text = "清除全部";
         };
         notifications.vexpand = false;
       };
