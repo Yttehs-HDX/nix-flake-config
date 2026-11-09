@@ -16,6 +16,10 @@
 
   programs.niri.enable = true;
 
+  services.dbus.packages = [ pkgs.swayosd ];
+  systemd.packages = [ pkgs.swayosd ];
+  systemd.services.swayosd-libinput-backend.wantedBy = [ "graphical.target" ];
+
   security.pam.services = {
     niri = { };
     swaylock = { };
