@@ -55,6 +55,7 @@ in
         };
 
         entry = {
+          placeholder = "Type to search";
           border-radius = mkLiteral "15px";
           background-color = mkLiteral "@bg-col";
           text-color = mkLiteral "@fg-col";
@@ -64,7 +65,7 @@ in
 
         listview = {
           background-color = mkLiteral "inherit";
-          columns = 3;
+          columns = 1;
           margin = mkLiteral "10px 10px 0px";
         };
 
@@ -90,7 +91,7 @@ in
         element-text = {
           border-radius = mkLiteral "10px";
           vertical-align = mkLiteral "0.5";
-          text-color = mkLiteral "0.5";
+          text-color = mkLiteral "inherit";
           padding = mkLiteral "10px";
         };
 

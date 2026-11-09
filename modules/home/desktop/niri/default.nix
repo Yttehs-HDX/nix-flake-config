@@ -1,6 +1,9 @@
 {
   imports = [
     ./niri.nix
+    ./window-menu.nix
+    ../common/screen-pin.nix
+    ../common/swayosd.nix
     ../common/fonts.nix
     ../common/blueman-applet.nix
     ../common/brightnessctl.nix

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ inputs, pkgs, ... }:
 
 let
   ocr = pkgs.writeShellApplication {
@@ -6,8 +6,8 @@ let
     runtimeInputs = [
       pkgs.coreutils
       pkgs.gnused
-      pkgs.grim
-      pkgs.slurp
+      inputs.latchshot.packages.${pkgs.stdenv.hostPlatform.system}.default
+      pkgs.libnotify
       pkgs.tesseract
       pkgs.wl-clipboard
     ];
@@ -17,8 +17,8 @@ let
       txt=$(mktemp /tmp/ocr_XXXXXX)
       trap 'rm -f "$img" "$txt" "$txt.txt"' EXIT
 
-      region=$(slurp) || exit 0
-      grim -g "$region" "$img"
+      latchshot --prefer-crop --no-notify --output "$img"
+      [[ -s "$img" ]] || exit 0
 
       tesseract "$img" "$txt" -l chi_sim+eng+jpn --psm 6
       raw=$(cat "$txt.txt" 2>/dev/null || true)
@@ -29,10 +29,24 @@ let
           | sed 's/[[:space:]]\+/ /g; s/^ //; s/ $//' \
       )
 
+      if [[ -z "$cleaned" ]]; then
+        notify-send --app-name=OCR "未识别到文字" "已保留原剪贴板"
+        exit 0
+      fi
+
       printf '%s' "$cleaned" | wl-copy
     '';
   };
 in
 {
   home.packages = [ ocr ];
+
+  xdg.desktopEntries.niri-ocr = {
+    name = "识别屏幕文字";
+    genericName = "Screen OCR";
+    exec = "${ocr}/bin/ocr";
+    icon = "edit-find";
+    categories = [ "Utility" ];
+    settings.Keywords = "OCR;文字识别;截图取字;识字;";
+  };
 }
