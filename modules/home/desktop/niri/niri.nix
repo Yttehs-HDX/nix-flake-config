@@ -202,7 +202,7 @@ let
         // ── Launch ───────────────────────────────────────────────────────────
         Mod+Return { spawn "kitty"; }
         Mod+D { spawn "rofi" "-show" "drun"; }
-        Mod+Space hotkey-overlay-title="Search apps, files and clipboard" { spawn "rofi" "-modes" "combi,quickterm" "-show" "combi" "-sort" "-sidebar-mode"; }
+        Alt+Space hotkey-overlay-title="Search apps, files and clipboard" { spawn "rofi" "-modes" "combi" "-show" "combi" "-sort" "-no-sidebar-mode"; }
         Mod+Escape { spawn "hexecute"; }
 
         // ── Window management ─────────────────────────────────────────────────
