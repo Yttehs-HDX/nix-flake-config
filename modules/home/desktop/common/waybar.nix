@@ -77,9 +77,9 @@ in
       gtk-layer-shell = true;
       ipc = true;
       fixed-center = true;
-      margin-top = 5;
-      margin-left = 3;
-      margin-right = 3;
+      margin-top = 1;
+      margin-left = 1;
+      margin-right = 1;
       margin-bottom = 0;
 
       modules-left = [

@@ -70,18 +70,18 @@ let
 
     // ── Layout ───────────────────────────────────────────────────────────────
     layout {
-        gaps 3
+        gaps 8
         center-focused-column "never"
         default-column-width {
             proportion 1.0;
         }
         focus-ring {
-            width 1
+            width 2
             active-color "${palette.lavender}"
             inactive-color "${palette.pink}"
         }
         border {
-            width 1
+            width 2
             active-color "${palette.lavender}"
             inactive-color "${palette.pink}"
             urgent-color "${palette.red}"
@@ -108,10 +108,10 @@ let
             color "${palette.lavender}80"
         }
         struts {
-            left 3
-            right 3
-            top 5
-            bottom 5
+            left -7
+            right -7
+            top -4
+            bottom -7
         }
         // Background color for workspaces (visible when no background tool is running).
         background-color "${palette.base}"
@@ -132,8 +132,7 @@ let
     // ── Window Rules ──────────────────────────────────────────────────────────
     // Global: rounded corners for all windows.
     window-rule {
-        match app-id=r#"."#
-        geometry-corner-radius 10
+        geometry-corner-radius 12
         clip-to-geometry true
     }
 
@@ -142,7 +141,7 @@ let
     // so there's enough transparency for blur to be visible.
     layer-rule {
         match namespace="rofi"
-        geometry-corner-radius 15
+        geometry-corner-radius 12
         background-effect {
             xray false
             blur true

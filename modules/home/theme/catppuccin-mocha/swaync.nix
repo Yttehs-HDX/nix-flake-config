@@ -27,17 +27,17 @@ in
     }
 
     .floating-notifications.background .notification-row .notification-background {
-      box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.8), inset 0 0 0 1px ${palette.surface0};
-      border-radius: 12.6px;
-      margin: 18px;
+      box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.8), inset 0 0 0 2px ${palette.surface0};
+      border-radius: 12px;
+      margin: 16px;
       background-color: ${palette.base};
       color: ${palette.text};
       padding: 0;
     }
 
     .floating-notifications.background .notification-row .notification-background .notification {
-      padding: 7px;
-      border-radius: 12.6px;
+      padding: 8px;
+      border-radius: 12px;
     }
 
     .floating-notifications.background .notification-row .notification-background .notification.critical {
@@ -45,7 +45,7 @@ in
     }
 
     .floating-notifications.background .notification-row .notification-background .notification .notification-content {
-      margin: 7px;
+      margin: 8px;
     }
 
     .floating-notifications.background .notification-row .notification-background .notification .notification-content .summary {
@@ -65,11 +65,11 @@ in
     }
 
     .floating-notifications.background .notification-row .notification-background .notification > *:last-child > * .notification-action {
-      border-radius: 7px;
+      border-radius: 8px;
       color: ${palette.text};
       background-color: ${palette.surface0};
       box-shadow: inset 0 0 0 1px ${palette.surface1};
-      margin: 7px;
+      margin: 8px;
     }
 
     .floating-notifications.background .notification-row .notification-background .notification > *:last-child > * .notification-action:hover {
@@ -87,7 +87,7 @@ in
     .floating-notifications.background .notification-row .notification-background .close-button {
       margin: 7px;
       padding: 2px;
-      border-radius: 6.3px;
+      border-radius: 8px;
       color: ${palette.base};
       background-color: ${palette.red};
     }
@@ -120,8 +120,8 @@ in
       color: ${palette.text};
       background: ${palette.base};
       border: 2px solid ${palette.blue};
-      border-radius: 20px;
-      padding: 20px;
+      border-radius: 12px;
+      padding: 16px;
     }
 
     .control-center .widget {
@@ -229,7 +229,7 @@ in
       background: ${palette.surface0};
       color: ${palette.text};
       border: 1px solid ${palette.surface1};
-      border-radius: 9px;
+      border-radius: 8px;
       box-shadow: none;
       padding: 4px 10px;
       min-height: 24px;
@@ -269,7 +269,7 @@ in
     .control-center .widget-mpris .widget-mpris-player {
       margin: 0;
       padding: 0;
-      border-radius: 14px;
+      border-radius: 12px;
       background: ${palette.surface0};
       box-shadow: none;
     }
@@ -281,7 +281,7 @@ in
     .control-center .widget-mpris-player .mpris-overlay {
       min-height: 88px;
       padding: 14px 16px 12px;
-      border-radius: 14px;
+      border-radius: 12px;
       background: linear-gradient(100deg, rgba(17, 17, 27, 0.90), rgba(17, 17, 27, 0.56));
     }
 

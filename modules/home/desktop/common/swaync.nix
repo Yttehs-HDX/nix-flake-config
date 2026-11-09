@@ -12,8 +12,8 @@ in
     settings = {
       control-center-positionX = "right";
       control-center-positionY = "top";
-      control-center-margin-top = 10;
-      control-center-margin-right = 10;
+      control-center-margin-top = 8;
+      control-center-margin-right = 8;
       control-center-width = 420;
       control-center-height = -1;
       fit-to-screen = false;

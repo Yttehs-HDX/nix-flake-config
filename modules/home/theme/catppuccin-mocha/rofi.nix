@@ -31,7 +31,7 @@ in
         window = {
           height = mkLiteral "480px";
           border = mkLiteral "2px";
-          border-radius = mkLiteral "15px";
+          border-radius = mkLiteral "12px";
           border-color = mkLiteral "@border-col";
           background-color = mkLiteral "@bg-col";
         };
@@ -42,13 +42,13 @@ in
 
         inputbar = {
           children = mkLiteral "[prompt,entry]";
-          border-radius = mkLiteral "5px";
+          border-radius = mkLiteral "8px";
           background-color = mkLiteral "inherit";
-          margin = mkLiteral "10px 10px 0px";
+          margin = mkLiteral "12px 12px 0px";
         };
 
         prompt = {
-          border-radius = mkLiteral "15px";
+          border-radius = mkLiteral "8px";
           background-color = mkLiteral "@blue";
           text-color = mkLiteral "@bg-col";
           padding = mkLiteral "10px";
@@ -56,25 +56,25 @@ in
 
         entry = {
           placeholder = "Type to search";
-          border-radius = mkLiteral "15px";
+          border-radius = mkLiteral "8px";
           background-color = mkLiteral "@bg-col";
           text-color = mkLiteral "@fg-col";
           padding = mkLiteral "13px 10px";
-          margin = mkLiteral "0px 0px 0px 5px";
+          margin = mkLiteral "0px 0px 0px 8px";
         };
 
         listview = {
           background-color = mkLiteral "inherit";
           columns = 2;
           spacing = mkLiteral "4px";
-          margin = mkLiteral "10px 10px 0px";
+          margin = mkLiteral "8px 12px 0px";
         };
 
         element = {
-          border-radius = mkLiteral "15px";
+          border-radius = mkLiteral "8px";
           background-color = mkLiteral "inherit";
           text-color = mkLiteral "@fg-col";
-          padding = mkLiteral "10px";
+          padding = mkLiteral "8px";
         };
 
         "element selected" = {
@@ -83,17 +83,17 @@ in
         };
 
         element-icon = {
-          border-radius = mkLiteral "10px";
+          border-radius = mkLiteral "8px";
           size = mkLiteral "32px";
           padding = mkLiteral "5px";
           margin = mkLiteral "0px 5px 0px 0px";
         };
 
         element-text = {
-          border-radius = mkLiteral "10px";
+          border-radius = mkLiteral "8px";
           vertical-align = mkLiteral "0.5";
           text-color = mkLiteral "inherit";
-          padding = mkLiteral "10px";
+          padding = mkLiteral "4px";
         };
 
         "element-text selected, element-icon selected" = {
@@ -103,11 +103,11 @@ in
 
         mode-switcher = {
           spacing = mkLiteral "4px";
-          margin = mkLiteral "10px";
+          margin = mkLiteral "8px 12px 12px";
         };
 
         button = {
-          border-radius = mkLiteral "10px";
+          border-radius = mkLiteral "8px";
           background-color = mkLiteral "transparent";
           text-color = mkLiteral "@text";
           padding = mkLiteral "10px";
@@ -120,11 +120,11 @@ in
 
         message = {
           background-color = mkLiteral "inherit";
-          margin = mkLiteral "10px 10px 0px";
+          margin = mkLiteral "8px 12px 0px";
         };
 
         textbox = {
-          border-radius = mkLiteral "10px";
+          border-radius = mkLiteral "8px";
           background-color = mkLiteral "@bg-col";
           text-color = mkLiteral "@accent";
           padding = mkLiteral "10px";
