@@ -115,13 +115,36 @@ in
       margin: 0 0.15rem;
       min-width: 0;
     }
-    #workspaces button.active,
     #workspaces button:hover {
+      background: @surface2;
+      color: @text;
+    }
+    #workspaces button.active {
       background: @sky;
       color: @surface1;
     }
+    .cffi-niri-windows {
+      margin: 4px 6px;
+    }
+    .cffi-niri-windows .tile {
+      background-color: @overlay0;
+      border-radius: 4px;
+      margin: 0 2px;
+    }
+    .cffi-niri-windows .tile label {
+      font-family: "JetBrainsMono Nerd Font";
+      font-size: 11px;
+      color: @base;
+    }
+    .cffi-niri-windows .tile:hover { background-color: @subtext0; }
+    .cffi-niri-windows .tile:active { background-color: @sky; }
     #window {
-      padding: 0 0rem;
+      padding: 0 0.2rem 0 0.35rem;
+      margin: 0;
+    }
+    window#waybar.empty .cffi-niri-windows,
+    window#waybar.empty #window {
+      padding: 0;
       margin: 0;
     }
 

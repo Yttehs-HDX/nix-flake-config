@@ -24,7 +24,7 @@ in
         };
 
         "element-text, element-icon , mode-switcher" = {
-          background-color = mkLiteral "inherit";
+          background-color = mkLiteral "transparent";
           text-color = mkLiteral "inherit";
         };
 
@@ -55,6 +55,7 @@ in
         };
 
         entry = {
+          placeholder = "Type to search";
           border-radius = mkLiteral "15px";
           background-color = mkLiteral "@bg-col";
           text-color = mkLiteral "@fg-col";
@@ -64,7 +65,8 @@ in
 
         listview = {
           background-color = mkLiteral "inherit";
-          columns = 3;
+          columns = 2;
+          spacing = mkLiteral "4px";
           margin = mkLiteral "10px 10px 0px";
         };
 
@@ -90,27 +92,29 @@ in
         element-text = {
           border-radius = mkLiteral "10px";
           vertical-align = mkLiteral "0.5";
-          text-color = mkLiteral "0.5";
+          text-color = mkLiteral "inherit";
           padding = mkLiteral "10px";
         };
 
-        "element-text selected" = {
-          background-color = mkLiteral "@accent";
+        "element-text selected, element-icon selected" = {
+          background-color = mkLiteral "transparent";
           text-color = mkLiteral "inherit";
         };
 
         mode-switcher = {
-          spacing = 0;
+          spacing = mkLiteral "4px";
+          margin = mkLiteral "10px";
         };
 
         button = {
-          background-color = mkLiteral "@bg-col-light";
+          border-radius = mkLiteral "10px";
+          background-color = mkLiteral "transparent";
           text-color = mkLiteral "@text";
           padding = mkLiteral "10px";
         };
 
         "button selected" = {
-          background-color = mkLiteral "transparent";
+          background-color = mkLiteral "@bg-col-light";
           text-color = mkLiteral "@blue";
         };
 

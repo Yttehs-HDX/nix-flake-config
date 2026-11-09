@@ -50,7 +50,24 @@ in
     enable = true;
     systemd.enable = false;
 
-    settings.main = {
+    settings.main = let
+      niriWindows = pkgs.buildGoModule {
+        pname = "waybar-niri-windows";
+        version = "2.3.1";
+        src = pkgs.fetchFromGitHub {
+          owner = "calico32";
+          repo = "waybar-niri-windows";
+          rev = "17828f901b56250e88acb421054b87ef311d8f3a";
+          hash = "sha256-bnPxKRugnIGj/Od8R+6PAl0MRhhl361H9rYydCWQ/yw=";
+        };
+        vendorHash = "sha256-jK87vZYfUe8znk65SmJ1mN8qP5K3dtt950hKGWTYXs4=";
+        nativeBuildInputs = [ pkgs.pkg-config ];
+        buildInputs = [ pkgs.gtk3 ];
+        buildPhase = ''make waybar-niri-windows.so'';
+        checkPhase = ''go test ./jsonc ./niri'';
+        installPhase = ''install -Dm644 waybar-niri-windows.so "$out/lib/waybar-niri-windows.so"'';
+      };
+    in {
       layer = "top";
       position = "top";
       mode = "dock";
@@ -81,13 +98,14 @@ in
         orientation = "horizontal";
         modules = [
           "niri/workspaces"
+          "cffi/niri-windows"
           "niri/window"
         ];
       };
 
       "niri/workspaces" = {
         disable-click = false;
-        all-outputs = true;
+        all-outputs = false;
         current-only = false;
         format = "{icon}";
         format-icons = {
@@ -104,8 +122,31 @@ in
         };
       };
 
+      "cffi/niri-windows" = {
+        module_path = "${niriWindows}/lib/waybar-niri-windows.so";
+        options = {
+          on-tile-middle-click = "";
+          icon-minimum-size = 14;
+          rules = [
+            { app-id = "(?i)^kitty$"; class = "terminal"; icon = ""; }
+            { app-id = "(?i)^google-chrome$"; class = "browser"; icon = ""; }
+            { app-id = "(?i)^code$"; class = "editor"; icon = "󰨞"; }
+            { app-id = "(?i)^discord$"; class = "discord"; icon = "󰙯"; }
+            { app-id = "(?i)^qq$"; class = "qq"; icon = ""; }
+            { app-id = "(?i)^wechat$"; class = "wechat"; icon = ""; }
+            { app-id = "(?i)^vlc$"; class = "vlc"; icon = "󰕼"; }
+            { app-id = "(?i)^(org[.]kde[.])?krita$"; class = "krita"; icon = ""; }
+            { app-id = "(?i)^mpv$"; class = "mpv"; icon = ""; }
+            { app-id = "(?i)^jetbrains-studio$"; class = "android-studio"; icon = ""; }
+            { app-id = "(?i)^(md[.]obsidian[.])?obsidian$"; class = "obsidian"; icon = ""; }
+            { class = "default"; icon = "󰞅"; }
+          ];
+        };
+      };
+
       "niri/window" = {
         format = "{app_id}";
+        max-length = 18;
         icon = true;
         icon-size = 15;
         separate-outputs = true;

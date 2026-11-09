@@ -119,7 +119,7 @@ let
 
     // ── Overview ──────────────────────────────────────────────────────────────
     overview {
-        zoom 1.0
+        zoom 0.5
         backdrop-color "${palette.base}"
         workspace-shadow {
             softness 40
@@ -202,6 +202,7 @@ let
         // ── Launch ───────────────────────────────────────────────────────────
         Mod+Return { spawn "kitty"; }
         Mod+D { spawn "rofi" "-show" "drun"; }
+        Alt+Space hotkey-overlay-title="Search apps, files and clipboard" { spawn "rofi" "-modes" "combi" "-show" "combi" "-sort" "-no-sidebar-mode"; }
         Mod+Escape { spawn "hexecute"; }
 
         // ── Window management ─────────────────────────────────────────────────
@@ -219,6 +220,7 @@ let
         Mod+Shift+V { switch-focus-between-floating-and-tiling; }
         Mod+Shift+W { toggle-column-tabbed-display; }
         Mod+Shift+E { quit; }
+        Mod+Slash repeat=false hotkey-overlay-title="窗口操作" { spawn "wlr-which-key" "windows"; }
         Mod+Shift+Slash { show-hotkey-overlay; }
 
         // ── Fine width / height adjustments ───────────────────────────────────
@@ -337,17 +339,17 @@ let
         XF86AudioPause allow-when-locked=true { spawn "playerctl" "play-pause"; }
         XF86AudioPlay  allow-when-locked=true { spawn "playerctl" "play-pause"; }
         XF86AudioPrev       { spawn "playerctl" "previous"; }
-        XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
-        XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
-        XF86AudioMute        allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
-        XF86AudioMicMute     allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
-        XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "s" "5%+"; }
-        XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "s" "5%-"; }
+        XF86AudioRaiseVolume allow-when-locked=true { spawn "niri-level-osd" "output" "5%+"; }
+        XF86AudioLowerVolume allow-when-locked=true { spawn "niri-level-osd" "output" "5%-"; }
+        XF86AudioMute        repeat=false allow-when-locked=true { spawn "niri-level-osd" "output" "toggle"; }
+        XF86AudioMicMute     repeat=false allow-when-locked=true { spawn "niri-level-osd" "input" "toggle"; }
+        XF86MonBrightnessUp   allow-when-locked=true { spawn "niri-level-osd" "brightness" "5%+"; }
+        XF86MonBrightnessDown allow-when-locked=true { spawn "niri-level-osd" "brightness" "5%-"; }
         xf86KbdBrightnessUp   { spawn "brightnessctl" "-d" "*::kbd_backlight" "set" "33%+"; }
         xf86KbdBrightnessDown { spawn "brightnessctl" "-d" "*::kbd_backlight" "set" "33%-"; }
 
         // ── Screenshots ───────────────────────────────────────────────────────
-        Print { screenshot show-pointer=false; }
+        Print { spawn "screenshot"; }
         Ctrl+Print { screenshot-screen show-pointer=false; }
         Alt+Print { screenshot-window show-pointer=false; }
         Mod+Shift+S { spawn "screenshot"; }
@@ -359,8 +361,8 @@ let
         Mod+Shift+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
 
         // ── Utilities ────────────────────────────────────────────────────────
-        Mod+W { spawn "sh" "-c" "cliphist list | rofi -dmenu | cliphist decode | wl-copy"; }
-        Mod+E { spawn "rofimoji" "--action" "copy" "--prompt" "emoji" "--use-icons"; }
+        Mod+W { spawn "rofi" "-show" "clipboard"; }
+        Mod+E { spawn "rofi" "-show" "emoji"; }
         Mod+Shift+O { spawn "ocr"; }
         Mod+Shift+T { spawn "ocr-trans"; }
         Mod+Alt+L { spawn "swaylock"; }

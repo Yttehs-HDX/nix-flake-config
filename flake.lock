@@ -143,6 +143,27 @@
         "type": "github"
       }
     },
+    "latchshot": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1788843842,
+        "narHash": "sha256-h8YmxTG/k10oUfvU+xVq/m1a2IvLUask0MEqSlrUU8Y=",
+        "owner": "so1ve",
+        "repo": "latchshot",
+        "rev": "a65a6f85855d25aa859273b62265c03d89c034bf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "so1ve",
+        "repo": "latchshot",
+        "rev": "a65a6f85855d25aa859273b62265c03d89c034bf",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -266,6 +287,7 @@
         "codex-desktop-linux": "codex-desktop-linux",
         "hexecute": "hexecute",
         "home-manager": "home-manager",
+        "latchshot": "latchshot",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
