@@ -98,12 +98,6 @@
     ../../modules/home/wechat.nix
     ../../modules/home/wget.nix
     ../../modules/home/zip.nix
+    ./home.nix
   ];
-
-  home = {
-    username = "shetty";
-    homeDirectory = "/home/shetty";
-  };
-
-  home.stateVersion = "26.05";
 }
