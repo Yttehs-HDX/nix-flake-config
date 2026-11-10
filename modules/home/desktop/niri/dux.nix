@@ -50,12 +50,16 @@ in
   # Seed the idle policy and search defaults once, then let the settings UI save changes.
   home.activation.duxInitialSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     if [ ! -e ${lib.escapeShellArg "${config.xdg.configHome}/dms/settings.json"} ] && \
-       [ ! -L ${lib.escapeShellArg "${config.xdg.configHome}/dms/settings.json"} ]; then
+       [ ! -L ${lib.escapeShellArg "${config.xdg.configHome}/dms/settings.json"} ] && \
+       [ ! -e ${lib.escapeShellArg "${config.xdg.configHome}/DankMaterialShell/settings.json"} ] && \
+       [ ! -L ${lib.escapeShellArg "${config.xdg.configHome}/DankMaterialShell/settings.json"} ]; then
       run install -Dm600 ${initialSettings} \
         ${lib.escapeShellArg "${config.xdg.configHome}/dms/settings.json"}
     fi
     if [ ! -e ${lib.escapeShellArg "${config.xdg.configHome}/dms/plugin_settings.json"} ] && \
-       [ ! -L ${lib.escapeShellArg "${config.xdg.configHome}/dms/plugin_settings.json"} ]; then
+       [ ! -L ${lib.escapeShellArg "${config.xdg.configHome}/dms/plugin_settings.json"} ] && \
+       [ ! -e ${lib.escapeShellArg "${config.xdg.configHome}/DankMaterialShell/plugin_settings.json"} ] && \
+       [ ! -L ${lib.escapeShellArg "${config.xdg.configHome}/DankMaterialShell/plugin_settings.json"} ]; then
       run install -Dm600 ${initialPluginSettings} \
         ${lib.escapeShellArg "${config.xdg.configHome}/dms/plugin_settings.json"}
     fi

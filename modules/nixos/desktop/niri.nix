@@ -8,7 +8,6 @@
     ./common/dbus.nix
     ./dux-files.nix
     ./dux-greeter.nix
-    ../theme/catppuccin-mocha
   ];
 
   programs.niri = {
