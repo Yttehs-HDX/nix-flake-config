@@ -35,7 +35,7 @@ Rofi、SwayNC、Waybar、Swaylock、SDDM、Omasnap、Swappy 等模块和主题�
 此次配置包含系统登录管理器、PAM 和文件选择器。先在仓库根目录检查构建。
 
 ```bash
-nix flake check --no-build
+nix flake check --no-build --no-update-lock-file
 nix build '.#homeConfigurations."shetty@Shetty-Laptop".activationPackage' --no-link
 nix build '.#nixosConfigurations."Shetty-Laptop".config.system.build.toplevel' --no-link
 ```
@@ -83,9 +83,11 @@ Search 首次运行建立本机索引，默认从用户主目录开始遍历，�
 
 ## 设置和后台
 
-初始界面使用 Dux 上游 Expressive 风格和 comfortable 密度。外观、面板和插件设置使用用户可写文件，可在图形设置界面保存。
+初始界面使用 Dux 上游 Material 3 Expressive 风格、Comfortable 密度和 Purple 配色。Dynamic 壁纸取色由用户在设置中选择。外观、面板和插件设置使用用户可写文件，可在图形设置界面保存。
 
 首次创建配置文件时，接电和电池模式都在空闲 300 秒时触发锁屏，330 秒时触发关闭屏幕，并启用睡眠前锁屏。上游渐变默认各有 5 秒宽限。初始化默认值仅作用于首次创建的文件。
+
+已有 `dms` 或旧版 `DankMaterialShell` 目录中的设置文件和符号链接均不会被初始化覆盖。旧目录的迁移交由 Dux 上游处理。
 
 niri 配置末尾引入 Dux 可写的三个片段，分别供图形界面的显示器、窗口规则和快捷键设置使用。
 
@@ -107,6 +109,8 @@ Files 的系统模块负责文件选择器 Portal，系统同时配置 GNOME 屏
 
 当前组合提供区域截图和焦点窗口截图，单击任意平铺窗口自动吸附仍需后续上游支持。Omasnap 贴图、Swappy 标注以及原 which-key 窗口菜单的定义可供按需导入。
 
+文件选择器浮动规则匹配英文标题前缀。应用传入的自定义标题或本地化标题可能仍按 niri 规则平铺，需要在目标机器检查。
+
 登录后检查服务状态，并在目标机器验证搜索、剪贴板、截图、OCR、锁屏解锁与浏览器屏幕共享。
 
 ```bash
@@ -114,3 +118,5 @@ systemctl --user status dms.service dfiles.service dsearch.service wl-clip-persi
 dms ipc call spotlight toggleWith all
 dms ipc call control-center toggle
 ```
+
+本次执行结果及未验收范围见 [迁移验证记录](dux-migration-validation.md)。Linux 环境可用 `bash tests/dux-initial-settings.sh` 重跑初始化回归检查。
