@@ -2,14 +2,16 @@
 
 let
   command = key: desc: cmd: { inherit key desc cmd; };
-  action = key: desc: step: command key desc "niri msg action ${step}";
+  action =
+    key: desc: step:
+    command key desc "niri msg action ${step}";
   group = key: desc: submenu: { inherit key desc submenu; };
 in
 {
   home.packages = [ pkgs.wlr-which-key ];
 
-  xdg.configFile."wlr-which-key/windows.yaml".text =
-    lib.concatStringsSep "\n" (lib.mapAttrsToList (name: value: "${name}: ${builtins.toJSON value}") {
+  xdg.configFile."wlr-which-key/windows.yaml".text = lib.concatStringsSep "\n" (
+    lib.mapAttrsToList (name: value: "${name}: ${builtins.toJSON value}") {
       border_width = 2;
       corner_r = 12;
       padding = 16;
@@ -20,9 +22,11 @@ in
       menu = [
         (group "w" "移动当前窗口" [
           (group "s" "送到工作区，焦点留在原处" (
-            map (i:
-              action (toString (if i == 10 then 0 else i)) "工作区 ${toString i}"
-                "move-window-to-workspace ${toString i} --focus false"
+            map (
+              i:
+              action (toString (
+                if i == 10 then 0 else i
+              )) "工作区 ${toString i}" "move-window-to-workspace ${toString i} --focus false"
             ) (lib.range 1 10)
           ))
           (group "m" "移到另一显示器" [
@@ -49,7 +53,8 @@ in
           (command "v" "钉住剪贴板图片" "niri-pin-image --clipboard")
         ])
       ];
-    });
+    }
+  );
 
   xdg.desktopEntries.niri-window-menu = {
     name = "窗口操作";
