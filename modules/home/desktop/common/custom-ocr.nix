@@ -6,7 +6,7 @@ let
     runtimeInputs = [
       pkgs.coreutils
       pkgs.gnused
-      inputs.latchshot.packages.${pkgs.stdenv.hostPlatform.system}.default
+      (import ../../../../packages/latchshot { inherit inputs pkgs; })
       pkgs.libnotify
       pkgs.tesseract
       pkgs.wl-clipboard

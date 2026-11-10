@@ -7,7 +7,7 @@ let
       pkgs.coreutils
       pkgs.gnugrep
       pkgs.gnused
-      inputs.latchshot.packages.${pkgs.stdenv.hostPlatform.system}.default
+      (import ../../../../packages/latchshot { inherit inputs pkgs; })
       pkgs.libnotify
       pkgs.tesseract
       pkgs.translate-shell

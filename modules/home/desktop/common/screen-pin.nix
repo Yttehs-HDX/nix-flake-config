@@ -25,7 +25,7 @@ let
           ;;
         --capture)
           ${if inputs ? latchshot then ''
-            ${lib.getExe inputs.latchshot.packages.${pkgs.stdenv.hostPlatform.system}.default} \
+            ${lib.getExe (import ../../../../packages/latchshot { inherit inputs pkgs; })} \
               --prefer-crop --no-notify --output "$image"
           '' else ''
             region=$(${pkgs.slurp}/bin/slurp) || exit 0
