@@ -27,6 +27,7 @@
 ## 文档
 
 - [docs/](docs/) — 使用教程
+- [Niri + Dux 桌面](docs/dux-desktop.md) — 组件组合、快捷键与首次切换
 
 ## 用法
 
@@ -46,6 +47,11 @@ home-manager switch --flake .
 | [nixvim](https://github.com/nix-community/nixvim) | 声明式 Neovim 配置 |
 | [NUR](https://github.com/nix-community/NUR) | 社区包仓库 |
 | [Hexecute](https://github.com/ThatOtherAndrew/Hexecute) | 第三方包 |
+| [Dux Shell](https://github.com/duxlabs-dev/dux-shell) | 桌面外壳、启动器、通知、锁屏与控制中心 |
+| [Dux Greeter](https://github.com/duxlabs-dev/dux-greeter) | 登录界面 |
+| [Dux Files](https://github.com/duxlabs-dev/dux-files) | 文件管理器与文件选择对话框 |
+| [Dux Search](https://github.com/duxlabs-dev/dux-search) | 文件索引与启动器搜索 |
+| [Dux Emoji Launcher](https://github.com/devnullvoid/dms-emoji-launcher) | Emoji 搜索插件 |
 ## 致谢
 
 部分配置基于 [Sly-Harvey/NixOS](https://github.com/Sly-Harvey/NixOS)。

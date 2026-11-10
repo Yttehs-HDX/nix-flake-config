@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }:
+{ config, pkgs, ... }:
 
 let
   ocr = pkgs.writeShellApplication {
@@ -6,7 +6,7 @@ let
     runtimeInputs = [
       pkgs.coreutils
       pkgs.gnused
-      inputs.latchshot.packages.${pkgs.stdenv.hostPlatform.system}.default
+      config.programs.dank-material-shell.package
       pkgs.libnotify
       pkgs.tesseract
       pkgs.wl-clipboard
@@ -17,7 +17,7 @@ let
       txt=$(mktemp /tmp/ocr_XXXXXX)
       trap 'rm -f "$img" "$txt" "$txt.txt"' EXIT
 
-      latchshot --prefer-crop --no-notify --output "$img"
+      dms screenshot --no-confirm --no-file --no-clipboard --no-notify --stdout > "$img"
       [[ -s "$img" ]] || exit 0
 
       tesseract "$img" "$txt" -l chi_sim+eng+jpn --psm 6

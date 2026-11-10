@@ -10,6 +10,31 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    dms = {
+      url = "github:duxlabs-dev/dux-shell/v2.1.0";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
+    dux-greeter = {
+      url = "github:duxlabs-dev/dux-greeter/v2.1.2";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
+    dux-files = {
+      url = "github:duxlabs-dev/dux-files/v2.1.2";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
+    dsearch = {
+      url = "github:duxlabs-dev/dux-search/v2.1.1";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
+    dms-emoji-launcher = {
+      url = "github:devnullvoid/dms-emoji-launcher/fc385900e6df292f0a7e5bdda4e3e37169897d7c";
+      flake = false;
+    };
+
     openbot = {
       url = "github:nightly-labs/openbot";
       inputs.nixpkgs.follows = "nixpkgs-unstable";

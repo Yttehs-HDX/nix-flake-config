@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }:
+{ config, pkgs, ... }:
 
 let
   ocr-trans = pkgs.writeShellApplication {
@@ -7,7 +7,7 @@ let
       pkgs.coreutils
       pkgs.gnugrep
       pkgs.gnused
-      inputs.latchshot.packages.${pkgs.stdenv.hostPlatform.system}.default
+      config.programs.dank-material-shell.package
       pkgs.libnotify
       pkgs.tesseract
       pkgs.translate-shell
@@ -19,7 +19,7 @@ let
       txt=$(mktemp /tmp/ocr-trans_XXXXXX)
       trap 'rm -f "$img" "$txt" "$txt.txt"' EXIT
 
-      latchshot --prefer-crop --no-notify --output "$img"
+      dms screenshot --no-confirm --no-file --no-clipboard --no-notify --stdout > "$img"
       [[ -s "$img" ]] || exit 0
 
       tesseract "$img" "$txt" -l chi_sim+eng+jpn --psm 6

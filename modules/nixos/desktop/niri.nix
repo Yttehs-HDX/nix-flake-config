@@ -1,27 +1,25 @@
-{ pkgs, ... }:
-
 {
   imports = [
     ./common/audio.nix
     ./common/bluetooth.nix
-    ./common/blueman.nix
     ./common/portal.nix
-    ./common/sushi.nix
     ./common/udisks2.nix
     ./common/polkit.nix
     ./common/dbus.nix
-    ./sddm.nix
+    ./dux-files.nix
+    ./dux-greeter.nix
     ../theme/catppuccin-mocha
   ];
 
-  programs.niri.enable = true;
+  programs.niri = {
+    enable = true;
+    useNautilus = false;
+  };
 
-  services.dbus.packages = [ pkgs.swayosd ];
-  systemd.packages = [ pkgs.swayosd ];
-  systemd.services.swayosd-libinput-backend.wantedBy = [ "graphical.target" ];
+  services.accounts-daemon.enable = true;
 
   security.pam.services = {
     niri = { };
-    swaylock = { };
+    dankshell = { };
   };
 }

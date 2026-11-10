@@ -136,22 +136,10 @@ let
         clip-to-geometry true
     }
 
-    // ── Layer Rules ───────────────────────────────────────────────────────────
-    // Rofi: layer-shell surface on overlay layer. Theme uses bg-col=#1e1e2ebf (~75% opaque)
-    // so there's enough transparency for blur to be visible.
-    layer-rule {
-        match namespace="rofi"
-        geometry-corner-radius 12
-        background-effect {
-            xray false
-            blur true
-        }
-        popups {
-            background-effect {
-                xray false
-                blur true
-            }
-        }
+    // Dux file dialogs should float above the application that opened them.
+    window-rule {
+        match app-id=r#"^dev\.duxlabs\.files$"# title=r#"^(Open|Save|Select|Upload|Export|Import)"#
+        open-floating true
     }
 
     // ── Animations ───────────────────────────────────────────────────────────
@@ -191,8 +179,6 @@ let
 
     // ── Startup ──────────────────────────────────────────────────────────────
     spawn-at-startup "fcitx5" "-d"
-    spawn-at-startup "waybar"
-    spawn-at-startup "awww"
 
     // ── Keybindings ──────────────────────────────────────────────────────────
     // Follows niri community conventions — primary nav via arrows + Home/End,
@@ -200,9 +186,9 @@ let
     binds {
         // ── Launch ───────────────────────────────────────────────────────────
         Mod+Return { spawn "kitty"; }
-        Mod+D { spawn "rofi" "-show" "drun"; }
-        Alt+Space hotkey-overlay-title="Search apps, files and clipboard" { spawn "rofi" "-modes" "combi" "-show" "combi" "-sort" "-no-sidebar-mode"; }
-        Mod+Escape { spawn "hexecute"; }
+        Mod+D hotkey-overlay-title="应用启动器" { spawn "dms" "ipc" "call" "spotlight" "toggleWith" "apps"; }
+        Alt+Space hotkey-overlay-title="全局搜索" { spawn "dms" "ipc" "call" "spotlight" "toggleWith" "all"; }
+        Mod+Escape hotkey-overlay-title="电源菜单" { spawn "dms" "ipc" "call" "powermenu" "toggle"; }
 
         // ── Window management ─────────────────────────────────────────────────
         Mod+Q repeat=false { close-window; }
@@ -219,7 +205,7 @@ let
         Mod+Shift+V { switch-focus-between-floating-and-tiling; }
         Mod+Shift+W { toggle-column-tabbed-display; }
         Mod+Shift+E { quit; }
-        Mod+Slash repeat=false hotkey-overlay-title="窗口操作" { spawn "wlr-which-key" "windows"; }
+        Mod+Slash repeat=false hotkey-overlay-title="快捷键速查" { spawn "dms" "ipc" "call" "keybinds" "toggle" "niri"; }
         Mod+Shift+Slash { show-hotkey-overlay; }
 
         // ── Fine width / height adjustments ───────────────────────────────────
@@ -334,24 +320,24 @@ let
         Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
 
         // ── Media keys ───────────────────────────────────────────────────────
-        XF86AudioNext       { spawn "playerctl" "next"; }
-        XF86AudioPause allow-when-locked=true { spawn "playerctl" "play-pause"; }
-        XF86AudioPlay  allow-when-locked=true { spawn "playerctl" "play-pause"; }
-        XF86AudioPrev       { spawn "playerctl" "previous"; }
-        XF86AudioRaiseVolume allow-when-locked=true { spawn "niri-level-osd" "output" "5%+"; }
-        XF86AudioLowerVolume allow-when-locked=true { spawn "niri-level-osd" "output" "5%-"; }
-        XF86AudioMute        repeat=false allow-when-locked=true { spawn "niri-level-osd" "output" "toggle"; }
-        XF86AudioMicMute     repeat=false allow-when-locked=true { spawn "niri-level-osd" "input" "toggle"; }
-        XF86MonBrightnessUp   allow-when-locked=true { spawn "niri-level-osd" "brightness" "5%+"; }
-        XF86MonBrightnessDown allow-when-locked=true { spawn "niri-level-osd" "brightness" "5%-"; }
+        XF86AudioNext       { spawn "dms" "ipc" "call" "mpris" "next"; }
+        XF86AudioPause allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "playPause"; }
+        XF86AudioPlay  allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "playPause"; }
+        XF86AudioPrev       { spawn "dms" "ipc" "call" "mpris" "previous"; }
+        XF86AudioRaiseVolume allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "increment" "5"; }
+        XF86AudioLowerVolume allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "decrement" "5"; }
+        XF86AudioMute        repeat=false allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "mute"; }
+        XF86AudioMicMute     repeat=false allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "micmute"; }
+        XF86MonBrightnessUp   allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "increment" "5" ""; }
+        XF86MonBrightnessDown allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "decrement" "5" ""; }
         xf86KbdBrightnessUp   { spawn "brightnessctl" "-d" "*::kbd_backlight" "set" "33%+"; }
         xf86KbdBrightnessDown { spawn "brightnessctl" "-d" "*::kbd_backlight" "set" "33%-"; }
 
         // ── Screenshots ───────────────────────────────────────────────────────
-        Print { spawn "screenshot"; }
-        Ctrl+Print { screenshot-screen show-pointer=false; }
-        Alt+Print { screenshot-window show-pointer=false; }
-        Mod+Shift+S { spawn "screenshot"; }
+        Print { spawn "dms" "screenshot" "--no-confirm"; }
+        Ctrl+Print { spawn "dms" "screenshot" "full"; }
+        Alt+Print { spawn "dms" "screenshot" "window"; }
+        Mod+Shift+S { spawn "dms" "screenshot" "--no-confirm"; }
 
         // ── Power ────────────────────────────────────────────────────────────
         Mod+Shift+P { power-off-monitors; }
@@ -360,13 +346,21 @@ let
         Mod+Shift+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
 
         // ── Utilities ────────────────────────────────────────────────────────
-        Mod+W { spawn "rofi" "-show" "clipboard"; }
-        Mod+E { spawn "rofi" "-show" "emoji"; }
+        Mod+W hotkey-overlay-title="剪贴板历史" { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
+        Mod+E hotkey-overlay-title="Emoji 搜索" { spawn "dms" "ipc" "call" "spotlight" "openQuery" ":e "; }
+        Mod+N hotkey-overlay-title="通知中心" { spawn "dms" "ipc" "call" "notifications" "toggle"; }
+        Mod+A hotkey-overlay-title="控制中心" { spawn "dms" "ipc" "call" "control-center" "toggle"; }
+        Mod+Alt+F hotkey-overlay-title="文件管理器" { spawn "dfiles" "open"; }
         Mod+Shift+O { spawn "ocr"; }
         Mod+Shift+T { spawn "ocr-trans"; }
-        Mod+Alt+L { spawn "swaylock"; }
-        Mod+Alt+Delete { spawn "hyprpicker" "--autocopy" "--format=hex"; }
+        Mod+Alt+L { spawn "dms" "ipc" "call" "lock" "lock"; }
+        Mod+Alt+Delete { spawn "dms" "color" "pick" "--autocopy"; }
     }
+
+    // Dux settings can save monitor, window-rule and shortcut overrides here.
+    include optional=true "dms/outputs.kdl"
+    include optional=true "dms/windowrules.kdl"
+    include optional=true "dms/binds.kdl"
   '';
 in
 {

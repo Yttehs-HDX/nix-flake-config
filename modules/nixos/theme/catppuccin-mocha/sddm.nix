@@ -28,4 +28,10 @@ in
   };
 
   environment.systemPackages = [ catppuccin-sddm ];
+
+  systemd.services.display-manager.environment = {
+    XCURSOR_THEME = cursorTheme;
+    XCURSOR_SIZE = "24";
+    XCURSOR_PATH = "${pkgs.catppuccin-cursors.mochaLavender}/share/icons";
+  };
 }
