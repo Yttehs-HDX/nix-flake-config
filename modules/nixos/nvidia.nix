@@ -1,10 +1,7 @@
 { lib, pkgs, ... }:
 
 {
-  nixpkgs.config = {
-    nvidia.acceptLicense = true;
-    cudaSupport = true;
-  };
+  nixpkgs.config.nvidia.acceptLicense = true;
 
   services.xserver.videoDrivers = [ "nvidia" ];
 
