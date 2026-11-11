@@ -10,6 +10,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    oh-my-pi.url = "github:can1357/oh-my-pi";
+
     openbot = {
       url = "github:nightly-labs/openbot";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
