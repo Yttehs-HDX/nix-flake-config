@@ -75,7 +75,11 @@
       cmp-emoji.enable = true;
       copilot-lua = {
         enable = true;
-        package = (import inputs.nixpkgs-unstable { inherit (pkgs.stdenv.hostPlatform) system; config.allowUnfree = true; }).vimPlugins.copilot-lua;
+        package =
+          (import inputs.nixpkgs-unstable {
+            inherit (pkgs.stdenv.hostPlatform) system;
+            config.allowUnfree = true;
+          }).vimPlugins.copilot-lua;
         settings.server = {
           type = "nodejs";
           custom_server_filepath = "${pkgs.copilot-language-server}/share/copilot-language-server/main.js";

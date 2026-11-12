@@ -1,10 +1,19 @@
-{ inputs, lib, pkgs, ... }:
+{
+  inputs,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   pinViewer = import ../../../../packages/omasnap-pin/package.nix { inherit pkgs; };
   pin = pkgs.writeShellApplication {
     name = "niri-pin-image";
-    runtimeInputs = with pkgs; [ coreutils libnotify wl-clipboard ];
+    runtimeInputs = with pkgs; [
+      coreutils
+      libnotify
+      wl-clipboard
+    ];
     text = ''
       # Match the viewer's private snapshot convention so the last pin/editor
       # holding the image cleans it up, including when a pin reopens in an editor.
@@ -24,13 +33,18 @@ let
           fi
           ;;
         --capture)
-          ${if inputs ? latchshot then ''
-            ${lib.getExe inputs.latchshot.packages.${pkgs.stdenv.hostPlatform.system}.default} \
-              --prefer-crop --no-notify --output "$image"
-          '' else ''
-            region=$(${pkgs.slurp}/bin/slurp) || exit 0
-            ${pkgs.grim}/bin/grim -g "$region" "$image"
-          ''}
+          ${
+            if inputs ? latchshot then
+              ''
+                ${lib.getExe (import ../../../../packages/latchshot { inherit inputs pkgs; })} \
+                  --prefer-crop --no-notify --output "$image"
+              ''
+            else
+              ''
+                region=$(${pkgs.slurp}/bin/slurp) || exit 0
+                ${pkgs.grim}/bin/grim -g "$region" "$image"
+              ''
+          }
           ;;
         *) echo "Usage: niri-pin-image [--clipboard|--capture]" >&2; exit 2 ;;
       esac

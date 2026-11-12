@@ -4,7 +4,7 @@ let
   screenshot = pkgs.writeShellApplication {
     name = "screenshot";
     runtimeInputs = [
-      inputs.latchshot.packages.${pkgs.stdenv.hostPlatform.system}.default
+      (import ../../../../packages/latchshot { inherit inputs pkgs; })
       pkgs.coreutils
       pkgs.swappy
     ];

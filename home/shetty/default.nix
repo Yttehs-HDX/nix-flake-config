@@ -71,6 +71,7 @@
     ../../modules/home/noto-fonts-emoji-blob-bin.nix
     ../../modules/home/obsidian.nix
     ../../modules/home/obs-studio.nix
+    ../../modules/home/oh-my-pi.nix
     ../../modules/home/openbot.nix
     ../../modules/home/osu-lazer-bin.nix
     ../../modules/home/p7zip.nix
@@ -97,12 +98,6 @@
     ../../modules/home/wechat.nix
     ../../modules/home/wget.nix
     ../../modules/home/zip.nix
+    ./home.nix
   ];
-
-  home = {
-    username = "shetty";
-    homeDirectory = "/home/shetty";
-  };
-
-  home.stateVersion = "26.05";
 }

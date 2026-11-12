@@ -6,7 +6,12 @@
   home.packages = [
     (pkgs.writeShellApplication {
       name = "niri-level-osd";
-      runtimeInputs = with pkgs; [ brightnessctl gawk swayosd wireplumber ];
+      runtimeInputs = with pkgs; [
+        brightnessctl
+        gawk
+        swayosd
+        wireplumber
+      ];
       text = ''
         export LC_ALL=C
         case "$1" in

@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   clipboardMode = pkgs.writeShellScript "rofi-clipboard" ''
@@ -29,11 +34,17 @@ in
     plugins = [ pkgs.rofi-file-browser ];
     modes = [
       "drun"
-      { name = "clipboard"; path = "${clipboardMode}"; }
+      {
+        name = "clipboard";
+        path = "${clipboardMode}";
+      }
       "window"
       "filebrowser"
       "run"
-      { name = "emoji"; path = lib.getExe pkgs.rofimoji; }
+      {
+        name = "emoji";
+        path = lib.getExe pkgs.rofimoji;
+      }
     ];
     terminal = "kitty";
 
