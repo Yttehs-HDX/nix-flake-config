@@ -9,8 +9,8 @@
 ├── modules/
 │   ├── nixos/                 # NixOS 系统模块
 │   └── home/                  # Home Manager 模块（扁平结构）
-│       ├── desktop/           # 桌面环境（如 niri）
-│       └── theme/             # 主题
+│       ├── desktop/           # 桌面环境（niri + Dux）
+│       └── theme/             # Catppuccin 主题
 └── docs/                      # 文档
 ```
 

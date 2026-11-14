@@ -1,0 +1,27 @@
+--- a/scripts/qt.sh
++++ b/scripts/qt.sh
+@@ -10,15 +10,15 @@
+ apply_qt_colors() {
+     local config_dir="$1"
+-    local color_scheme_path
+-    color_scheme_path="$(dirname "$config_dir")/.local/share/color-schemes/DankMatugen.colors"
+-
+-    if [ ! -f "$color_scheme_path" ]; then
+-        echo "Error: Qt color scheme not found at $color_scheme_path" >&2
+-        echo "Run matugen first to generate theme files" >&2
+-        exit 1
+-    fi
+-
+     update_qt_config() {
+         local config_file="$1"
++        # qt5ct/qt6ct parse [ColorScheme] active_colors, not KDE .colors files.
++        local color_scheme_path
++        color_scheme_path="$(dirname "$config_file")/colors/matugen.conf"
++
++        if [ ! -f "$color_scheme_path" ]; then
++            echo "Error: Qt color scheme not found at $color_scheme_path" >&2
++            echo "Run matugen first to generate theme files" >&2
++            exit 1
++        fi
+ 
+         if [ -f "$config_file" ]; then

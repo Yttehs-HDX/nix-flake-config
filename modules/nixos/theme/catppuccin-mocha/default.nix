@@ -1,6 +1,6 @@
 {
   imports = [
     ./cursor.nix
-    ./sddm.nix
+    ./dux-greeter.nix
   ];
 }

@@ -105,6 +105,175 @@
         "type": "github"
       }
     },
+    "dank-qml-common": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1793720721,
+        "narHash": "sha256-A266EMSFs169/cqH+9elzMX/6N+ycuEBXFw4qXdTD7k=",
+        "owner": "duxlabs-dev",
+        "repo": "dux-qml-common",
+        "rev": "be3e16ca62866a749b34cfefe1aaed81cfe21e94",
+        "type": "github"
+      },
+      "original": {
+        "owner": "duxlabs-dev",
+        "repo": "dux-qml-common",
+        "type": "github"
+      }
+    },
+    "dank-qml-common_2": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1794151661,
+        "narHash": "sha256-DhTvMaG7G0hG9eOZjgX24NR+cc9vRQ77LXrGfnF5dxY=",
+        "owner": "duxlabs-dev",
+        "repo": "dux-qml-common",
+        "rev": "2eb518fa47397d9b06d5ab1fd49bf045e16018e0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "duxlabs-dev",
+        "repo": "dux-qml-common",
+        "type": "github"
+      }
+    },
+    "dank-qml-common_3": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1794151087,
+        "narHash": "sha256-U8tfltFSLjvb+FqbRbydohaMFUt1MiHJqBMrcWCr6t4=",
+        "owner": "duxlabs-dev",
+        "repo": "dux-qml-common",
+        "rev": "b78c6fc861bcf1955d3db0c016779886add1f207",
+        "type": "github"
+      },
+      "original": {
+        "owner": "duxlabs-dev",
+        "repo": "dux-qml-common",
+        "type": "github"
+      }
+    },
+    "dms": {
+      "inputs": {
+        "dank-qml-common": "dank-qml-common",
+        "flake-compat": "flake-compat",
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793755740,
+        "narHash": "sha256-7t40yrXTwPUMWNkGv6QiPoZ49G6BHloQjDtKSeC3WVM=",
+        "owner": "duxlabs-dev",
+        "repo": "dux-shell",
+        "rev": "7627111c3ebd402662283f5f4a93223cda9e0a9d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "duxlabs-dev",
+        "ref": "v2.1.0",
+        "repo": "dux-shell",
+        "type": "github"
+      }
+    },
+    "dms-emoji-launcher": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1792904959,
+        "narHash": "sha256-bIXdsoT3vKkrFI13G7tvRmhzJfjVmC3b3iuyRfafm9k=",
+        "owner": "devnullvoid",
+        "repo": "dms-emoji-launcher",
+        "rev": "fc385900e6df292f0a7e5bdda4e3e37169897d7c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "devnullvoid",
+        "repo": "dms-emoji-launcher",
+        "rev": "fc385900e6df292f0a7e5bdda4e3e37169897d7c",
+        "type": "github"
+      }
+    },
+    "dsearch": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793984466,
+        "narHash": "sha256-/zbzTMX+LW5tUin2BkflxNx80I/dXywlr0b0j5xEtMk=",
+        "owner": "duxlabs-dev",
+        "repo": "dux-search",
+        "rev": "c6be234e35eec5f9c867fd7588ce793e1d5dc03b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "duxlabs-dev",
+        "ref": "v2.1.1",
+        "repo": "dux-search",
+        "type": "github"
+      }
+    },
+    "dux-files": {
+      "inputs": {
+        "dank-qml-common": "dank-qml-common_2",
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794152728,
+        "narHash": "sha256-QvzIP92EzO2d+1soAE2rZna+wmirZUfYdT+DPuWKF5k=",
+        "owner": "duxlabs-dev",
+        "repo": "dux-files",
+        "rev": "994e99772f78e52dc4b8cb9b947c95159252be10",
+        "type": "github"
+      },
+      "original": {
+        "owner": "duxlabs-dev",
+        "ref": "v2.1.2",
+        "repo": "dux-files",
+        "type": "github"
+      }
+    },
+    "dux-greeter": {
+      "inputs": {
+        "dank-qml-common": "dank-qml-common_3",
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794152731,
+        "narHash": "sha256-utF7VJ+2Pnv0TjCBHxg9RJl+G6T7tX6L8MkAPo/JFZs=",
+        "owner": "duxlabs-dev",
+        "repo": "dux-greeter",
+        "rev": "c1e6a0352d56a4ef169edffedf04361d0b9d0550",
+        "type": "github"
+      },
+      "original": {
+        "owner": "duxlabs-dev",
+        "ref": "v2.1.2",
+        "repo": "dux-greeter",
+        "type": "github"
+      }
+    },
+    "flake-compat": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1767039857,
+        "narHash": "sha256-vNpUSpF5Nuw8xvDLj2KCwwksIbjua2LZCqhV1LNRDns=",
+        "owner": "NixOS",
+        "repo": "flake-compat",
+        "rev": "5edf11c44bc78a0d334f6334cdaf7d60d732daab",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "flake-compat",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -209,26 +378,6 @@
         "type": "github"
       }
     },
-    "hexecute": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1782142426,
-        "narHash": "sha256-8003XFGgXUGE47ttuAVXT0MtIXrbggTppzTcnMHZDxA=",
-        "owner": "ThatOtherAndrew",
-        "repo": "Hexecute",
-        "rev": "80dbfa930a3fd0a3b08a6cad154b0173c94db64d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ThatOtherAndrew",
-        "repo": "Hexecute",
-        "type": "github"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -247,27 +396,6 @@
         "owner": "nix-community",
         "ref": "release-26.05",
         "repo": "home-manager",
-        "type": "github"
-      }
-    },
-    "latchshot": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1788843842,
-        "narHash": "sha256-h8YmxTG/k10oUfvU+xVq/m1a2IvLUask0MEqSlrUU8Y=",
-        "owner": "so1ve",
-        "repo": "latchshot",
-        "rev": "a65a6f85855d25aa859273b62265c03d89c034bf",
-        "type": "github"
-      },
-      "original": {
-        "owner": "so1ve",
-        "repo": "latchshot",
-        "rev": "a65a6f85855d25aa859273b62265c03d89c034bf",
         "type": "github"
       }
     },
@@ -469,9 +597,12 @@
       "inputs": {
         "asus-numberpad-driver": "asus-numberpad-driver",
         "codex-desktop-linux": "codex-desktop-linux",
-        "hexecute": "hexecute",
+        "dms": "dms",
+        "dms-emoji-launcher": "dms-emoji-launcher",
+        "dsearch": "dsearch",
+        "dux-files": "dux-files",
+        "dux-greeter": "dux-greeter",
         "home-manager": "home-manager",
-        "latchshot": "latchshot",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",

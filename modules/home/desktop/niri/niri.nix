@@ -1,9 +1,11 @@
 { pkgs, ... }:
 
 let
-  palette = import ../../theme/catppuccin-mocha/palette.nix;
-
   configKDL = ''
+    // Niri configuration for the Dux desktop.
+    // Dux owns ~/.config/niri/dms/*.kdl; this file only provides compositor
+    // defaults. Includes are textual, so later definitions override earlier ones.
+
     // ── Input ────────────────────────────────────────────────────────────────
     input {
         keyboard {
@@ -21,9 +23,6 @@ let
     }
 
     prefer-no-csd
-
-    // ── Screenshots ───────────────────────────────────────────────────────────
-    screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
     // ── Cursor ────────────────────────────────────────────────────────────────
     cursor {
@@ -60,117 +59,109 @@ let
         path "xwayland-satellite"
     }
 
-    // ── Blur ──────────────────────────────────────────────────────────────────
-    blur {
-        passes 3
-        offset 3.0
-        noise 0.02
-        saturation 1.5
+    // ── Dux defaults ─────────────────────────────────────────────────────────
+    config-notification {
+        disable-failed
     }
 
-    // ── Layout ───────────────────────────────────────────────────────────────
+    gestures {
+        hot-corners {
+            off
+        }
+    }
+
     layout {
-        gaps 8
+        background-color "transparent"
         center-focused-column "never"
-        default-column-width {
-            proportion 1.0;
+        default-column-width { proportion 0.5; }
+        border {
+            off
+            width 4
         }
         focus-ring {
-            width 2
-            active-color "${palette.lavender}"
-            inactive-color "${palette.pink}"
+            off
         }
-        border {
-            width 2
-            active-color "${palette.lavender}"
-            inactive-color "${palette.pink}"
-            urgent-color "${palette.red}"
-        }
-        // Drop shadows for windows.
         shadow {
-            on
             softness 30
             spread 5
             offset x=0 y=5
-            color "#00000070"
-        }
-        // Tab indicator for tabbed columns (Mod+Shift+W to toggle).
-        tab-indicator {
-            hide-when-single-tab
-            width 3
-            gap 2
-            active-color "${palette.lavender}"
-            inactive-color "${palette.pink}"
-            urgent-color "${palette.red}"
-        }
-        // Insert hint shown during interactive window moves.
-        insert-hint {
-            color "${palette.lavender}80"
+            color "#0007"
         }
         struts {
-            left -7
-            right -7
-            top -4
-            bottom -7
         }
-        // Background color for workspaces (visible when no background tool is running).
-        background-color "${palette.base}"
     }
 
-    // ── Overview ──────────────────────────────────────────────────────────────
     overview {
-        zoom 0.5
-        backdrop-color "${palette.base}"
         workspace-shadow {
-            softness 40
-            spread 10
-            offset x=0 y=10
-            color "#00000050"
+            off
         }
     }
 
     // ── Window Rules ──────────────────────────────────────────────────────────
-    // Global: rounded corners for all windows.
     window-rule {
+        open-maximized true
+    }
+
+    window-rule {
+        match app-id=r#"^org\.wezfurlong\.wezterm$"#
+        default-column-width {}
+    }
+
+    window-rule {
+        match app-id=r#"^org\.gnome\."#
+        draw-border-with-background false
         geometry-corner-radius 12
         clip-to-geometry true
     }
 
-    // ── Layer Rules ───────────────────────────────────────────────────────────
-    // Rofi: layer-shell surface on overlay layer. Theme uses bg-col=#1e1e2ebf (~75% opaque)
-    // so there's enough transparency for blur to be visible.
-    layer-rule {
-        match namespace="rofi"
-        geometry-corner-radius 12
-        background-effect {
-            xray false
-            blur true
-        }
-        popups {
-            background-effect {
-                xray false
-                blur true
-            }
-        }
+    window-rule {
+        match app-id=r#"^gnome-control-center$"#
+        match app-id=r#"^pavucontrol$"#
+        match app-id=r#"^nm-connection-editor$"#
+        default-column-width { proportion 0.5; }
+        open-floating false
+    }
+
+    window-rule {
+        match app-id=r#"^org\.gnome\.Calculator$"#
+        match app-id=r#"^gnome-calculator$"#
+        match app-id=r#"^galculator$"#
+        match app-id=r#"^blueman-manager$"#
+        match app-id=r#"^xdg-desktop-portal$"#
+        open-floating true
+    }
+
+    window-rule {
+        match app-id=r#"^steam$"# title=r#"^notificationtoasts_\d+_desktop$"#
+        default-floating-position x=10 y=10 relative-to="bottom-right"
+        open-focused false
+    }
+
+    window-rule {
+        match app-id=r#"^org\.wezfurlong\.wezterm$"#
+        match app-id="Alacritty"
+        match app-id="zen"
+        match app-id="com.mitchellh.ghostty"
+        match app-id="kitty"
+        draw-border-with-background false
+    }
+
+    window-rule {
+        match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+        match app-id="zoom"
+        open-floating true
+    }
+
+    // Dux file dialogs float above the application that opened them.
+    window-rule {
+        match app-id=r#"^dev\.duxlabs\.files$"# title=r#"^(Open|Save|Select|Upload|Export|Import)"#
+        open-floating true
     }
 
     // ── Animations ───────────────────────────────────────────────────────────
     animations {
-        slowdown 1
-
-        // Individual animation tuning.
-        // Spring defaults for workspace switching and view movement.
         workspace-switch {
-            spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
-        }
-        horizontal-view-movement {
-            spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
-        }
-        window-movement {
-            spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
-        }
-        window-resize {
-            spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+            spring damping-ratio=0.80 stiffness=523 epsilon=0.0001
         }
         window-open {
             duration-ms 150
@@ -180,193 +171,317 @@ let
             duration-ms 150
             curve "ease-out-quad"
         }
-        overview-open-close {
-            spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+        horizontal-view-movement {
+            spring damping-ratio=0.85 stiffness=423 epsilon=0.0001
+        }
+        window-movement {
+            spring damping-ratio=0.75 stiffness=323 epsilon=0.0001
+        }
+        window-resize {
+            spring damping-ratio=0.85 stiffness=423 epsilon=0.0001
+        }
+        config-notification-open-close {
+            spring damping-ratio=0.65 stiffness=923 epsilon=0.001
         }
         screenshot-ui-open {
             duration-ms 200
             curve "ease-out-quad"
         }
+        overview-open-close {
+            spring damping-ratio=0.85 stiffness=800 epsilon=0.0001
+        }
+    }
+
+    debug {
+        honor-xdg-activation-with-invalid-serial
+    }
+
+    recent-windows {
+        binds {
+            Alt+Tab         { next-window scope="output"; }
+            Alt+Shift+Tab   { previous-window scope="output"; }
+            Alt+grave       { next-window filter="app-id"; }
+            Alt+Shift+grave { previous-window filter="app-id"; }
+        }
     }
 
     // ── Startup ──────────────────────────────────────────────────────────────
     spawn-at-startup "fcitx5" "-d"
-    spawn-at-startup "waybar"
-    spawn-at-startup "awww"
 
-    // ── Keybindings ──────────────────────────────────────────────────────────
-    // Follows niri community conventions — primary nav via arrows + Home/End,
-    // with vim keys as secondary.
+    // Dux's version-dependent defaults; dms/binds.kdl (included last) overrides.
+    include optional=true "dms/binds-next.kdl"
+
+    // ── Keybindings (Dux stock map) ──────────────────────────────────────────
     binds {
-        // ── Launch ───────────────────────────────────────────────────────────
-        Mod+Return { spawn "kitty"; }
-        Mod+D { spawn "rofi" "-show" "drun"; }
-        Alt+Space hotkey-overlay-title="Search apps, files and clipboard" { spawn "rofi" "-modes" "combi" "-show" "combi" "-sort" "-no-sidebar-mode"; }
-        Mod+Escape { spawn "hexecute"; }
+        // === System & Overview ===
+        Mod+O repeat=false { toggle-overview; }
+        Mod+Tab repeat=false { toggle-overview; }
 
-        // ── Window management ─────────────────────────────────────────────────
+        // === Application Launchers ===
+        Mod+T hotkey-overlay-title="Open Terminal" { spawn "kitty"; }
+        Mod+Return hotkey-overlay-title="Open Terminal" { spawn "kitty"; }
+        Mod+Space hotkey-overlay-title="Application Launcher" {
+            spawn "dms" "ipc" "call" "spotlight" "toggle";
+        }
+        Alt+Space hotkey-overlay-title="Spotlight Bar" {
+            spawn "dms" "ipc" "call" "spotlight-bar" "toggle";
+        }
+        Mod+V hotkey-overlay-title="Clipboard Manager" {
+            spawn "dms" "ipc" "call" "clipboard" "toggle";
+        }
+        Mod+M hotkey-overlay-title="Media" {
+            spawn "dms" "ipc" "call" "dash" "toggle" "media";
+        }
+
+        Mod+X hotkey-overlay-title="Power Menu: Toggle" { spawn "dms" "ipc" "call" "powermenu" "toggle"; }
+        Mod+A hotkey-overlay-title="Control Center" { spawn "dms" "ipc" "call" "control-center" "toggle"; }
+        Mod+D hotkey-overlay-title="Dash" { spawn "dms" "ipc" "call" "dash" "toggle" ""; }
+        Mod+Shift+C hotkey-overlay-title="Color Picker" { spawn "dms" "ipc" "call" "color-picker" "toggle"; }
+        Mod+Alt+N hotkey-overlay-title="Night Mode" { spawn "dms" "ipc" "call" "night" "toggle"; }
+        Mod+Alt+I hotkey-overlay-title="Idle Inhibit" { spawn "dms" "ipc" "call" "inhibit" "toggle"; }
+        Mod+Comma hotkey-overlay-title="Settings" {
+            spawn "dms" "ipc" "call" "settings" "focusOrToggle";
+        }
+        Mod+Y hotkey-overlay-title="Browse Wallpapers" {
+            spawn "dms" "ipc" "call" "dash" "toggle" "wallpaper";
+        }
+        Mod+N hotkey-overlay-title="Notepad" { spawn "dms" "ipc" "call" "notepad" "toggle"; }
+        Mod+Shift+N hotkey-overlay-title="Notepad: Expand" { spawn "dms" "ipc" "call" "notepad" "toggleExpand"; }
+        Mod+Ctrl+N hotkey-overlay-title="Notification Center" { spawn "dms" "ipc" "call" "notifications" "toggle"; }
+
+        // === Security ===
+        Mod+Alt+L hotkey-overlay-title="Lock Screen" {
+            spawn "dms" "ipc" "call" "lock" "lock";
+        }
+        Mod+Shift+E { quit; }
+        Ctrl+Alt+Delete hotkey-overlay-title="Task Manager" {
+            spawn "dms" "ipc" "call" "processlist" "focusOrToggle";
+        }
+        Ctrl+Alt+M hotkey-overlay-title="Task Manager" {
+            spawn "dms" "ipc" "call" "processlist" "focusOrToggle";
+        }
+
+        // === Audio Controls ===
+        XF86AudioRaiseVolume allow-when-locked=true {
+            spawn "dms" "ipc" "call" "audio" "increment" "5";
+        }
+        XF86AudioLowerVolume allow-when-locked=true {
+            spawn "dms" "ipc" "call" "audio" "decrement" "5";
+        }
+        XF86AudioMute allow-when-locked=true {
+            spawn "dms" "ipc" "call" "audio" "mute";
+        }
+        XF86AudioMicMute allow-when-locked=true {
+            spawn "dms" "ipc" "call" "audio" "micmute";
+        }
+        XF86AudioPause allow-when-locked=true {
+            spawn "dms" "ipc" "call" "mpris" "playPause";
+        }
+        XF86AudioPlay allow-when-locked=true {
+            spawn "dms" "ipc" "call" "mpris" "playPause";
+        }
+        XF86AudioPrev allow-when-locked=true {
+            spawn "dms" "ipc" "call" "mpris" "previous";
+        }
+        XF86AudioNext allow-when-locked=true {
+            spawn "dms" "ipc" "call" "mpris" "next";
+        }
+        Ctrl+XF86AudioRaiseVolume allow-when-locked=true {
+            spawn "dms" "ipc" "call" "mpris" "increment" "3";
+        }
+        Ctrl+XF86AudioLowerVolume allow-when-locked=true {
+            spawn "dms" "ipc" "call" "mpris" "decrement" "3";
+        }
+
+        // === Brightness Controls ===
+        XF86MonBrightnessUp allow-when-locked=true {
+            spawn "dms" "ipc" "call" "brightness" "increment" "5" "";
+        }
+        XF86MonBrightnessDown allow-when-locked=true {
+            spawn "dms" "ipc" "call" "brightness" "decrement" "5" "";
+        }
+
+        // === Input ===
+        XF86TouchpadToggle allow-when-locked=true repeat=false {
+            spawn "niri" "msg" "action" "toggle-touchpad";
+        }
+        XF86TouchpadOn allow-when-locked=true repeat=false {
+            spawn "dms" "ipc" "call" "niri" "showTouchpadOsd" "true";
+        }
+        XF86TouchpadOff allow-when-locked=true repeat=false {
+            spawn "dms" "ipc" "call" "niri" "showTouchpadOsd" "false";
+        }
+
+        // === Window Management ===
         Mod+Q repeat=false { close-window; }
+        Alt+F4 repeat=false { close-window; }
         Mod+F { maximize-column; }
         Mod+Shift+F { fullscreen-window; }
-        Mod+M { maximize-window-to-edges; }
-        Mod+Ctrl+F { expand-column-to-available-width; }
-        Mod+C { center-column; }
-        Mod+Ctrl+C { center-visible-columns; }
-        Mod+O repeat=false { toggle-overview; }
-        Mod+R { switch-preset-column-width; }
-        Mod+Shift+R { switch-preset-column-width-back; }
-        Mod+V { toggle-window-floating; }
+        Mod+Shift+T { toggle-window-floating; }
         Mod+Shift+V { switch-focus-between-floating-and-tiling; }
-        Mod+Shift+W { toggle-column-tabbed-display; }
-        Mod+Shift+E { quit; }
-        Mod+Slash repeat=false hotkey-overlay-title="窗口操作" { spawn "wlr-which-key" "windows"; }
-        Mod+Shift+Slash { show-hotkey-overlay; }
+        Mod+W { toggle-column-tabbed-display; }
+        Mod+Shift+W hotkey-overlay-title="Create window rule" { spawn "dms" "ipc" "call" "window-rules" "toggle"; }
 
-        // ── Fine width / height adjustments ───────────────────────────────────
-        Mod+Minus { set-column-width "-10%"; }
-        Mod+Equal { set-column-width "+10%"; }
-        Mod+Shift+Minus { set-window-height "-10%"; }
-        Mod+Shift+Equal { set-window-height "+10%"; }
-        Mod+Ctrl+Shift+R { switch-preset-window-height; }
-        Mod+Ctrl+R { reset-window-height; }
-
-        // ── Column ops (niri's scrollable-tiling paradigm) ───────────────────
-        Mod+Comma  { consume-or-expel-window-left; }
-        Mod+Period { consume-or-expel-window-right; }
-        Mod+Shift+Comma  { consume-window-into-column; }
-        Mod+Shift+Period { expel-window-from-column; }
-
-        // ── Focus: ribbon navigation ─────────────────────────────────────────
+        // === Focus Navigation ===
         Mod+Left  { focus-column-left; }
-        Mod+Right { focus-column-right; }
-        Mod+Up    { focus-window-up; }
         Mod+Down  { focus-window-down; }
-        Mod+Home  { focus-column-first; }
-        Mod+End   { focus-column-last; }
+        Mod+Up    { focus-window-up; }
+        Mod+Right { focus-column-right; }
+        Mod+H     { focus-column-left; }
+        Mod+J     { focus-window-down; }
+        Mod+K     { focus-window-up; }
+        Mod+L     { focus-column-right; }
 
-        // ── Focus: vim keys (secondary) ──────────────────────────────────────
-        Mod+H { focus-column-left; }
-        Mod+L { focus-column-right; }
-        Mod+K { focus-window-up; }
-        Mod+J { focus-window-down; }
+        // === Window Movement ===
+        Mod+Shift+Left  { move-column-left; }
+        Mod+Shift+Down  { move-window-down; }
+        Mod+Shift+Up    { move-window-up; }
+        Mod+Shift+Right { move-column-right; }
+        Mod+Shift+H     { move-column-left; }
+        Mod+Shift+J     { move-window-down; }
+        Mod+Shift+K     { move-window-up; }
+        Mod+Shift+L     { move-column-right; }
 
-        // ── Focus: cross-workspace alternatives ───────────────────────────────
-        // Uncomment these instead of the regular focus binds to allow crossing
-        // workspace boundaries when reaching the first/last window in a column.
-        // Mod+J { focus-window-or-workspace-down; }
-        // Mod+K { focus-window-or-workspace-up; }
+        // === Column Navigation ===
+        Mod+Home { focus-column-first; }
+        Mod+End  { focus-column-last; }
+        Mod+Ctrl+Home { move-column-to-first; }
+        Mod+Ctrl+End  { move-column-to-last; }
 
-        // ── Move: ribbon reordering ──────────────────────────────────────────
-        Mod+Ctrl+Left  { move-column-left; }
-        Mod+Ctrl+Right { move-column-right; }
-        Mod+Ctrl+Up    { move-window-up; }
-        Mod+Ctrl+Down  { move-window-down; }
-        Mod+Ctrl+Home  { move-column-to-first; }
-        Mod+Ctrl+End   { move-column-to-last; }
+        // === Monitor Navigation ===
+        Mod+Ctrl+Left  { focus-monitor-left; }
+        Mod+Ctrl+Right { focus-monitor-right; }
+        Mod+Ctrl+H     { focus-monitor-left; }
+        Mod+Ctrl+J     { focus-monitor-down; }
+        Mod+Ctrl+K     { focus-monitor-up; }
+        Mod+Ctrl+L     { focus-monitor-right; }
 
-        // ── Move: vim keys (secondary) ───────────────────────────────────────
-        Mod+Ctrl+H { move-column-left; }
-        Mod+Ctrl+L { move-column-right; }
-        Mod+Ctrl+K { move-window-up; }
-        Mod+Ctrl+J { move-window-down; }
-
-        // ── Monitor navigation ────────────────────────────────────────────────
-        Mod+Shift+Left  { focus-monitor-left; }
-        Mod+Shift+Right { focus-monitor-right; }
-        Mod+Shift+Up    { focus-monitor-up; }
-        Mod+Shift+Down  { focus-monitor-down; }
-        Mod+Shift+H     { focus-monitor-left; }
-        Mod+Shift+L     { focus-monitor-right; }
-        Mod+Shift+K     { focus-monitor-up; }
-        Mod+Shift+J     { focus-monitor-down; }
-
+        // === Move to Monitor ===
         Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
-        Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
-        Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
         Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
+        Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
+        Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
         Mod+Shift+Ctrl+H     { move-column-to-monitor-left; }
-        Mod+Shift+Ctrl+L     { move-column-to-monitor-right; }
-        Mod+Shift+Ctrl+K     { move-column-to-monitor-up; }
         Mod+Shift+Ctrl+J     { move-column-to-monitor-down; }
+        Mod+Shift+Ctrl+K     { move-column-to-monitor-up; }
+        Mod+Shift+Ctrl+L     { move-column-to-monitor-right; }
 
-        // ── Workspaces ───────────────────────────────────────────────────────
-        Mod+1 { focus-workspace 1; }
-        Mod+Ctrl+1 { move-window-to-workspace 1; }
-        Mod+2 { focus-workspace 2; }
-        Mod+Ctrl+2 { move-window-to-workspace 2; }
-        Mod+3 { focus-workspace 3; }
-        Mod+Ctrl+3 { move-window-to-workspace 3; }
-        Mod+4 { focus-workspace 4; }
-        Mod+Ctrl+4 { move-window-to-workspace 4; }
-        Mod+5 { focus-workspace 5; }
-        Mod+Ctrl+5 { move-window-to-workspace 5; }
-        Mod+6 { focus-workspace 6; }
-        Mod+Ctrl+6 { move-window-to-workspace 6; }
-        Mod+7 { focus-workspace 7; }
-        Mod+Ctrl+7 { move-window-to-workspace 7; }
-        Mod+8 { focus-workspace 8; }
-        Mod+Ctrl+8 { move-window-to-workspace 8; }
-        Mod+9 { focus-workspace 9; }
-        Mod+Ctrl+9 { move-window-to-workspace 9; }
-        Mod+0 { focus-workspace 10; }
-        Mod+Ctrl+0 { move-window-to-workspace 10; }
+        // === Workspace Navigation ===
+        Mod+Page_Down      { focus-workspace-down; }
+        Mod+Page_Up        { focus-workspace-up; }
+        Mod+U              { focus-workspace-down; }
+        Mod+I              { focus-workspace-up; }
+        Mod+Ctrl+Down { move-column-to-workspace-down; }
+        Mod+Ctrl+Up   { move-column-to-workspace-up; }
+        Mod+Ctrl+U         { move-column-to-workspace-down; }
+        Mod+Ctrl+I         { move-column-to-workspace-up; }
 
-        // Workspace up/down (alternative to numbered shortcuts).
-        Mod+U { focus-workspace-down; }
-        Mod+I { focus-workspace-up; }
-        Mod+Ctrl+U { move-column-to-workspace-down; }
-        Mod+Ctrl+I { move-column-to-workspace-up; }
-        Mod+Shift+U { move-workspace-down; }
-        Mod+Shift+I { move-workspace-up; }
+        // === Workspace Management ===
+        Mod+Alt+R hotkey-overlay-title="Rename Workspace" {
+            spawn "dms" "ipc" "call" "workspace-rename" "open";
+        }
 
-        // ── Scroll (mouse wheel) ──────────────────────────────────────────────
+        // === Move Workspaces ===
+        Mod+Shift+Page_Down { move-workspace-down; }
+        Mod+Shift+Page_Up   { move-workspace-up; }
+        Mod+Shift+U         { move-workspace-down; }
+        Mod+Shift+I         { move-workspace-up; }
+
+        // === Mouse Wheel Navigation ===
         Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
         Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
         Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
         Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+
         Mod+WheelScrollRight      { focus-column-right; }
         Mod+WheelScrollLeft       { focus-column-left; }
         Mod+Ctrl+WheelScrollRight { move-column-right; }
         Mod+Ctrl+WheelScrollLeft  { move-column-left; }
+
         Mod+Shift+WheelScrollDown      { focus-column-right; }
         Mod+Shift+WheelScrollUp        { focus-column-left; }
         Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
         Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
 
-        // ── Media keys ───────────────────────────────────────────────────────
-        XF86AudioNext       { spawn "playerctl" "next"; }
-        XF86AudioPause allow-when-locked=true { spawn "playerctl" "play-pause"; }
-        XF86AudioPlay  allow-when-locked=true { spawn "playerctl" "play-pause"; }
-        XF86AudioPrev       { spawn "playerctl" "previous"; }
-        XF86AudioRaiseVolume allow-when-locked=true { spawn "niri-level-osd" "output" "5%+"; }
-        XF86AudioLowerVolume allow-when-locked=true { spawn "niri-level-osd" "output" "5%-"; }
-        XF86AudioMute        repeat=false allow-when-locked=true { spawn "niri-level-osd" "output" "toggle"; }
-        XF86AudioMicMute     repeat=false allow-when-locked=true { spawn "niri-level-osd" "input" "toggle"; }
-        XF86MonBrightnessUp   allow-when-locked=true { spawn "niri-level-osd" "brightness" "5%+"; }
-        XF86MonBrightnessDown allow-when-locked=true { spawn "niri-level-osd" "brightness" "5%-"; }
+        // === Numbered Workspaces ===
+        Mod+1 { focus-workspace 1; }
+        Mod+2 { focus-workspace 2; }
+        Mod+3 { focus-workspace 3; }
+        Mod+4 { focus-workspace 4; }
+        Mod+5 { focus-workspace 5; }
+        Mod+6 { focus-workspace 6; }
+        Mod+7 { focus-workspace 7; }
+        Mod+8 { focus-workspace 8; }
+        Mod+9 { focus-workspace 9; }
+
+        // === Move to Numbered Workspaces ===
+        Mod+Shift+1 { move-column-to-workspace 1; }
+        Mod+Shift+2 { move-column-to-workspace 2; }
+        Mod+Shift+3 { move-column-to-workspace 3; }
+        Mod+Shift+4 { move-column-to-workspace 4; }
+        Mod+Shift+5 { move-column-to-workspace 5; }
+        Mod+Shift+6 { move-column-to-workspace 6; }
+        Mod+Shift+7 { move-column-to-workspace 7; }
+        Mod+Shift+8 { move-column-to-workspace 8; }
+        Mod+Shift+9 { move-column-to-workspace 9; }
+
+        // === Column Management ===
+        Mod+BracketLeft  { consume-or-expel-window-left; }
+        Mod+BracketRight { consume-or-expel-window-right; }
+        Mod+Period { expel-window-from-column; }
+
+        // === Sizing & Layout ===
+        Mod+R { switch-preset-column-width; }
+        Mod+Shift+R { switch-preset-window-height; }
+        Mod+Ctrl+R { reset-window-height; }
+        Mod+Ctrl+F { expand-column-to-available-width; }
+        Mod+C { center-column; }
+        Mod+Ctrl+C { center-visible-columns; }
+
+        // === Manual Sizing ===
+        Mod+Minus { set-column-width "-10%"; }
+        Mod+Equal { set-column-width "+10%"; }
+        Mod+Shift+Minus { set-window-height "-10%"; }
+        Mod+Shift+Equal { set-window-height "+10%"; }
+
+        // === Screenshots ===
+        XF86Launch1 hotkey-overlay-title="Screenshot: Region" { spawn "dms" "screenshot"; }
+        Ctrl+XF86Launch1 hotkey-overlay-title="Screenshot: Full Screen" { spawn "dms" "screenshot" "full"; }
+        Alt+XF86Launch1 hotkey-overlay-title="Screenshot: Window" { spawn "dms" "screenshot" "window"; }
+        Print hotkey-overlay-title="Screenshot: Region" { spawn "dms" "screenshot"; }
+        Ctrl+Print hotkey-overlay-title="Screenshot: Full Screen" { spawn "dms" "screenshot" "full"; }
+        Alt+Print hotkey-overlay-title="Screenshot: Window" { spawn "dms" "screenshot" "window"; }
+
+        // === Display Profiles ===
+        Mod+P hotkey-overlay-title="Cycle Display Profile" {
+            spawn "dms" "ipc" "call" "outputs" "cycleProfile";
+        }
+
+        // === System Controls ===
+        Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+        Mod+Shift+P { power-off-monitors; }
+        Mod+Shift+question hotkey-overlay-title="Keyboard Shortcuts" {
+            spawn "dms" "ipc" "call" "keybinds" "toggle" "niri";
+        }
+
+        // === Laptop / Dux extras ===
         xf86KbdBrightnessUp   { spawn "brightnessctl" "-d" "*::kbd_backlight" "set" "33%+"; }
         xf86KbdBrightnessDown { spawn "brightnessctl" "-d" "*::kbd_backlight" "set" "33%-"; }
-
-        // ── Screenshots ───────────────────────────────────────────────────────
-        Print { spawn "screenshot"; }
-        Ctrl+Print { screenshot-screen show-pointer=false; }
-        Alt+Print { screenshot-window show-pointer=false; }
-        Mod+Shift+S { spawn "screenshot"; }
-
-        // ── Power ────────────────────────────────────────────────────────────
-        Mod+Shift+P { power-off-monitors; }
-
-        // ── Keyboard shortcuts inhibit escape hatch ───────────────────────────
-        Mod+Shift+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
-
-        // ── Utilities ────────────────────────────────────────────────────────
-        Mod+W { spawn "rofi" "-show" "clipboard"; }
-        Mod+E { spawn "rofi" "-show" "emoji"; }
-        Mod+Shift+O { spawn "ocr"; }
-        Mod+Shift+T { spawn "ocr-trans"; }
-        Mod+Alt+L { spawn "swaylock"; }
-        Mod+Alt+Delete { spawn "hyprpicker" "--autocopy" "--format=hex"; }
+        Mod+Alt+F hotkey-overlay-title="File Manager" { spawn "dfiles" "open"; }
+        Mod+E hotkey-overlay-title="Emoji Search" { spawn "dms" "ipc" "call" "spotlight" "openQuery" ":e "; }
     }
+
+    // Dux-managed fragments. binds-next is included above so these GUI-editable
+    // files take precedence over the defaults in this file.
+    include optional=true "dms/colors.kdl"
+    include optional=true "dms/layout.kdl"
+    include optional=true "dms/alttab.kdl"
+    include optional=true "dms/binds.kdl"
+    include optional=true "dms/outputs.kdl"
+    include optional=true "dms/cursor.kdl"
+    include optional=true "dms/input.kdl"
+    include optional=true "dms/windowrules.kdl"
+    include optional=true "dms/wpblur.kdl"
   '';
 in
 {
