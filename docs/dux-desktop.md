@@ -12,7 +12,7 @@
 | `modules/home/desktop/niri/default.nix` | niri 会话的用户组件 imports |
 | `modules/nixos/desktop/niri.nix` | niri 会话的系统组件 imports 和系统集成 |
 
-用户组件只保留 `niri.nix`、`dux.nix`、`dux-files.nix`，以及字体、亮度、Keyring、XWayland、剪贴板和 XDG 等基础设施。Dux 管理 shell、GTK/Qt、kitty 与 niri 的颜色；光标、Neovim、btop、cava 保留 Catppuccin Mocha 主题。
+用户组件只保留 `niri.nix`、`dux.nix`、`dux-files.nix`，以及字体、亮度、Keyring、XWayland、剪贴板和 XDG 等基础设施。Dux 管理 shell、GTK/Qt、kitty、Neovim 与 niri 的颜色；光标、btop、cava 保留 Catppuccin Mocha 主题。
 
 | Dux 组件 | 固定版本 | 职责 |
 | --- | --- | --- |
@@ -156,7 +156,13 @@ Search 首次运行建立本机索引，默认从用户主目录开始遍历，�
 
 已有 `dms` 或旧版 `DankMaterialShell` 目录中的设置文件和符号链接均不会被初始化覆盖。旧目录的迁移交由 Dux 上游处理。
 
-GTK/Qt 自定义主题模块和 Kvantum 配置已移除。Dux 的 matugen 生成 GTK3/4 颜色及 Qt5ct/Qt6ct 配色，相关文件保持可写，不由 Home Manager 接管。GTK3 使用 Dux 管理的 adw-gtk3 副本，Qt 使用 qtct 平台插件；Qt6 通过 `QT_QPA_PLATFORMTHEME_QT6=qt6ct` 选择后端。Kitty 模板与 Niri 模板显式启用：Kitty 加载 `dank-theme.conf` 和 `dank-tabs.conf`，Dux 生成后发送 SIGUSR1 重载；niri 加载 `dms/colors.kdl` 并热重载。Kitty 字体、字号、透明度与 niri 无边框、默认全宽规则保持不变。Neovim 模板仍关闭。已启动 GTK/Qt 应用可能需要重启；完整会话环境需重新登录后生效。
+GTK/Qt 自定义主题模块和 Kvantum 配置已移除。Dux 的 matugen 生成 GTK3/4 颜色及 Qt5ct/Qt6ct 配色，相关文件保持可写，不由 Home Manager 接管。GTK3 使用 Dux 管理的 adw-gtk3 副本。Qt 6 只读取未加版本后缀的 `QT_QPA_PLATFORMTHEME`，因此会话统一设为 `qt6ct`；Qt 5 应用需要单独以 `-platformtheme qt5ct` 启动才能使用 qt5ct 配色。Kitty 模板与 Niri 模板显式启用：Kitty 加载 `dank-theme.conf` 和 `dank-tabs.conf`，Dux 生成后发送 SIGUSR1 重载；niri 加载 `dms/colors.kdl` 并热重载。Kitty 字体、字号、透明度与 niri 无边框、默认全宽规则保持不变。已启动 GTK/Qt 应用可能需要重启；完整会话环境需重新登录后生效。
+
+### Qt 应用与 Neovim
+
+上游 `scripts/qt.sh` 把 qt5ct/qt6ct 的 `color_scheme_path` 指向 KDE 格式的 `~/.local/share/color-schemes/DankMatugen.colors`，但 qtct 需要 `[ColorScheme] active_colors` 格式，导致应用回退为浅色。本地 `dux-qtct-color-scheme.patch` 改为指向 `~/.config/qt{5,6}ct/colors/matugen.conf`，Dux 重新生成主题时仍保持正确。qt6ct 还需要 `QT_PLUGIN_PATH` 包含 profile 的 `lib/qt-6/plugins`，由 Home Manager 的 `qt` 模块提供。
+
+Neovim 使用 `duxlabs-dev/base46`（固定在提交 `b3beb80`），启动时执行 `colorscheme dms`，lualine 使用 `dms` 主题；Dux 的 Neovim 模板写入 `~/.config/nvim/colors/dms.lua` 并热重载。Fcitx5 的 Classic UI 仍使用 Dux 生成的 `dms` 皮肤，配置工具作为 Qt 应用跟随 qt6ct 配色。
 
 - PipeWire、NetworkManager、BlueZ、polkit、GNOME Keyring、udisks2 和 XDG Portal 提供系统能力。
 - `wl-clip-persist` 持有当前剪贴板内容，支持关闭来源程序后继续粘贴。Dux 提供历史和交互界面。

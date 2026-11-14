@@ -30,8 +30,9 @@ in
     platformTheme.name = "qtct";
   };
 
-  home.sessionVariables.QT_QPA_PLATFORMTHEME_QT6 = "qt6ct";
-  systemd.user.sessionVariables.QT_QPA_PLATFORMTHEME_QT6 = "qt6ct";
+  # Qt 6 only reads QT_QPA_PLATFORMTHEME; Qt 5 apps need a per-app qt5ct value.
+  home.sessionVariables.QT_QPA_PLATFORMTHEME = lib.mkForce "qt6ct";
+  systemd.user.sessionVariables.QT_QPA_PLATFORMTHEME = lib.mkForce "qt6ct";
 
   programs.dank-material-shell = {
     enable = true;
@@ -41,6 +42,9 @@ in
         ${pkgs.patch}/bin/patch --batch --fuzz=0 -p1 \
           -d "$out/share/quickshell/dms" \
           < ${./dux-control-center-four-columns.patch}
+        ${pkgs.patch}/bin/patch --batch --fuzz=0 -p1 \
+          -d "$out/share/quickshell/dms" \
+          < ${./dux-qtct-color-scheme.patch}
       '';
     });
     quickshell.package = inputs.nixpkgs-unstable.legacyPackages.${system}.quickshell;

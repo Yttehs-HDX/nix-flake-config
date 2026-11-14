@@ -22,6 +22,25 @@
       pkg-config
     ];
 
+    extraPlugins = [
+      (pkgs.vimUtils.buildVimPlugin {
+        pname = "dux-base46";
+        version = "2026-11-14";
+        # Integration modules require an active theme; they are not standalone APIs.
+        nvimRequireCheck = [ "base46" ];
+        src = pkgs.fetchzip {
+          url = "https://github.com/duxlabs-dev/base46/archive/b3beb806e1a5de9ea883b9968274dd908a50ce94.tar.gz";
+          hash = "sha256-B/S9RO+WvAz6A+3PbxThE+uvXpFS0ogMTt9KoXyNi/o=";
+        };
+      })
+    ];
+
+    extraConfigLua = ''
+      require("base46").setup({})
+      vim.cmd.colorscheme("dms")
+      require("lualine").setup({ options = { theme = "dms" } })
+    '';
+
     opts = {
       number = true;
       relativenumber = true;

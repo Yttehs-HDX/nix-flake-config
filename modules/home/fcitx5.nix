@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
   i18n.inputMethod = {
@@ -12,8 +12,16 @@
         fcitx5-pinyin-zhwiki
         fcitx5-pinyin-moegirl
         fcitx5-mozc
-        catppuccin-fcitx5
       ];
     };
   };
+
+  # Do not replace the entire fcitx5 directory: it contains user dictionaries.
+  home.activation.fcitx5Theme = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    if [ ! -e "$HOME/.config/fcitx5/conf/classicui.conf" ] && \
+       [ ! -L "$HOME/.config/fcitx5/conf/classicui.conf" ]; then
+      run install -Dm600 ${pkgs.writeText "fcitx5-classicui.conf" "Theme=dms\nDarkTheme=dms\n"} \
+        "$HOME/.config/fcitx5/conf/classicui.conf"
+    fi
+  '';
 }
