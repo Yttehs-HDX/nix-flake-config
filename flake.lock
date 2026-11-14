@@ -378,26 +378,6 @@
         "type": "github"
       }
     },
-    "hexecute": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1782142426,
-        "narHash": "sha256-8003XFGgXUGE47ttuAVXT0MtIXrbggTppzTcnMHZDxA=",
-        "owner": "ThatOtherAndrew",
-        "repo": "Hexecute",
-        "rev": "80dbfa930a3fd0a3b08a6cad154b0173c94db64d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ThatOtherAndrew",
-        "repo": "Hexecute",
-        "type": "github"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -416,27 +396,6 @@
         "owner": "nix-community",
         "ref": "release-26.05",
         "repo": "home-manager",
-        "type": "github"
-      }
-    },
-    "latchshot": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1788843842,
-        "narHash": "sha256-h8YmxTG/k10oUfvU+xVq/m1a2IvLUask0MEqSlrUU8Y=",
-        "owner": "so1ve",
-        "repo": "latchshot",
-        "rev": "a65a6f85855d25aa859273b62265c03d89c034bf",
-        "type": "github"
-      },
-      "original": {
-        "owner": "so1ve",
-        "repo": "latchshot",
-        "rev": "a65a6f85855d25aa859273b62265c03d89c034bf",
         "type": "github"
       }
     },
@@ -643,9 +602,7 @@
         "dsearch": "dsearch",
         "dux-files": "dux-files",
         "dux-greeter": "dux-greeter",
-        "hexecute": "hexecute",
         "home-manager": "home-manager",
-        "latchshot": "latchshot",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",

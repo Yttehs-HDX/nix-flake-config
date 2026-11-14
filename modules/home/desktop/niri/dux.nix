@@ -8,17 +8,8 @@
 
 let
   system = pkgs.stdenv.hostPlatform.system;
-  initialSettings = pkgs.writeText "dms-initial-settings.json" (
-    builtins.toJSON {
-      acLockTimeout = 300;
-      acMonitorTimeout = 330;
-      batteryLockTimeout = 300;
-      batteryMonitorTimeout = 330;
-      lockBeforeSuspend = true;
-      dankLauncherV2IncludeFilesInAll = true;
-      dankLauncherV2IncludeFoldersInAll = true;
-    }
-  );
+  # Full design seed, applied only on first run; Dux Settings owns later edits.
+  initialSettings = ./dux-initial-settings.json;
   initialPluginSettings = pkgs.writeText "dms-initial-plugin-settings.json" (
     builtins.toJSON {
       emojiLauncher.enabled = true;
@@ -33,9 +24,25 @@ in
 
   programs.dsearch.enable = true;
 
+  # Install Qt platform plugins without managing Dux's writable qtct configs.
+  qt = {
+    enable = true;
+    platformTheme.name = "qtct";
+  };
+
+  home.sessionVariables.QT_QPA_PLATFORMTHEME_QT6 = "qt6ct";
+  systemd.user.sessionVariables.QT_QPA_PLATFORMTHEME_QT6 = "qt6ct";
+
   programs.dank-material-shell = {
     enable = true;
-    package = inputs.dms.packages.${system}.default;
+    package = inputs.dms.packages.${system}.default.overrideAttrs (old: {
+      # QML comes from the upstream flake root, not the Go builder's src.
+      postInstall = (old.postInstall or "") + ''
+        ${pkgs.patch}/bin/patch --batch --fuzz=0 -p1 \
+          -d "$out/share/quickshell/dms" \
+          < ${./dux-control-center-four-columns.patch}
+      '';
+    });
     quickshell.package = inputs.nixpkgs-unstable.legacyPackages.${system}.quickshell;
     systemd.enable = true;
     plugins.emojiLauncher.src = inputs.dms-emoji-launcher;
@@ -45,6 +52,8 @@ in
   home.packages = [
     pkgs.util-linux
     pkgs.wtype
+    pkgs.adw-gtk3
+    pkgs.papirus-icon-theme
   ];
 
   # Seed the idle policy and search defaults once, then let the settings UI save changes.

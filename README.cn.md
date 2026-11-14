@@ -46,7 +46,6 @@ home-manager switch --flake .
 | [nix-darwin](https://github.com/nix-darwin/nix-darwin) | macOS 系统构建器（暂未使用） |
 | [nixvim](https://github.com/nix-community/nixvim) | 声明式 Neovim 配置 |
 | [NUR](https://github.com/nix-community/NUR) | 社区包仓库 |
-| [Hexecute](https://github.com/ThatOtherAndrew/Hexecute) | 第三方包 |
 | [Dux Shell](https://github.com/duxlabs-dev/dux-shell) | 桌面外壳、启动器、通知、锁屏与控制中心 |
 | [Dux Greeter](https://github.com/duxlabs-dev/dux-greeter) | 登录界面 |
 | [Dux Files](https://github.com/duxlabs-dev/dux-files) | 文件管理器与文件选择对话框 |
