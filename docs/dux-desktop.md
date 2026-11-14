@@ -162,7 +162,7 @@ GTK/Qt 自定义主题模块和 Kvantum 配置已移除。Dux 的 matugen 生成
 
 上游 `scripts/qt.sh` 把 qt5ct/qt6ct 的 `color_scheme_path` 指向 KDE 格式的 `~/.local/share/color-schemes/DankMatugen.colors`，但 qtct 需要 `[ColorScheme] active_colors` 格式，导致应用回退为浅色。本地 `dux-qtct-color-scheme.patch` 改为指向 `~/.config/qt{5,6}ct/colors/matugen.conf`，Dux 重新生成主题时仍保持正确。qt6ct 还需要 `QT_PLUGIN_PATH` 包含 profile 的 `lib/qt-6/plugins`，由 Home Manager 的 `qt` 模块提供。
 
-Neovim 使用 `duxlabs-dev/base46`（固定在提交 `b3beb80`），启动时执行 `colorscheme dms`，lualine 使用 `dms` 主题；Dux 的 Neovim 模板写入 `~/.config/nvim/colors/dms.lua` 并热重载。Fcitx5 的 Classic UI 仍使用 Dux 生成的 `dms` 皮肤，配置工具作为 Qt 应用跟随 qt6ct 配色。
+Neovim 使用 `duxlabs-dev/base46`（固定在提交 `b3beb80`），启动时执行 `colorscheme dms`，lualine 使用 `dms` 主题；Dux 的 Neovim 模板写入 `~/.config/nvim/colors/dms.lua` 并热重载。Fcitx5 输入法候选窗口保留 Catppuccin Fcitx5 的 `catppuccin-mocha-lavender` 皮肤；只有配置工具作为 Qt 应用跟随 qt6ct 配色。
 
 - PipeWire、NetworkManager、BlueZ、polkit、GNOME Keyring、udisks2 和 XDG Portal 提供系统能力。
 - `wl-clip-persist` 持有当前剪贴板内容，支持关闭来源程序后继续粘贴。Dux 提供历史和交互界面。
