@@ -12,6 +12,10 @@
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
 
+  # Applications (GTK file pickers, portals, browsers) write mimeapps.list at
+  # runtime, so preserve those writes instead of failing activation.
+  home-manager.backupFileExtension = "hm-backup";
+
   home-manager.extraSpecialArgs = { inherit inputs; };
 
   home-manager.users.shetty = {
