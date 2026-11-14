@@ -263,10 +263,10 @@ let
 
         // === Audio Controls ===
         XF86AudioRaiseVolume allow-when-locked=true {
-            spawn "dms" "ipc" "call" "audio" "increment" "3";
+            spawn "dms" "ipc" "call" "audio" "increment" "5";
         }
         XF86AudioLowerVolume allow-when-locked=true {
-            spawn "dms" "ipc" "call" "audio" "decrement" "3";
+            spawn "dms" "ipc" "call" "audio" "decrement" "5";
         }
         XF86AudioMute allow-when-locked=true {
             spawn "dms" "ipc" "call" "audio" "mute";
