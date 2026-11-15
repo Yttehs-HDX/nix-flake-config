@@ -58,6 +58,10 @@ in
     pkgs.wtype
     pkgs.adw-gtk3
     pkgs.papirus-icon-theme
+    (pkgs.colloid-icon-theme.override {
+      schemeVariants = [ "catppuccin" ];
+      colorVariants = [ "purple" ];
+    })
   ];
 
   # Seed the idle policy and search defaults once, then let the settings UI save changes.

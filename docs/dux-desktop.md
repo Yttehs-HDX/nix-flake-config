@@ -91,7 +91,7 @@ Dux 使用 Material 3 Expressive，密度为 Spacious。设计参数保存在 `m
 | 表面 | bar 透明度 0.92，控件 0.96，弹层 0.96，前景层 0.94 | 可读性优先的半透明玻璃 |
 | 模糊 | `blurStrength = 21` | 轻量背景模糊，降低高刷新屏幕上的合成负担；不承诺实测节电幅度 |
 | 动效 | Standard motion，spring bounce 1，popout 160 ms，modal 180 ms | 平滑但不拖沓 |
-| 图标与光标 | Papirus-Dark，Catppuccin Mocha 光标 | 与 Catppuccin 应用主题一致 |
+| 图标与光标 | 安装 Colloid（Catppuccin、紫色文件夹）与 Papirus；Catppuccin Mocha 光标 | 图标主题通过 Dux 设置选择，不由 GTK/Qt 模块强制配置 |
 | 状态栏 | 左侧启动器/工作区/窗口标题；中央时钟与天气；右侧托盘/通知/电池/控制中心 | 单一视觉锚点，状态区只保留高频信息 |
 | 状态栏几何 | Island 厚度 48，间距 6，内边距 6，控件内边距 10，图标倍率 1.15 | 提高文字、图标和点击区域的可辨识度 |
 | Dock | Compact，52 px 图标，间距 10，圆形指示，智能自动隐藏 | 放大应用入口，仍保留简洁布局 |
