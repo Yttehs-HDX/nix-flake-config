@@ -250,7 +250,7 @@ let
         Mod+Ctrl+N hotkey-overlay-title="Notification Center" { spawn "dms" "ipc" "call" "notifications" "toggle"; }
 
         // === Security ===
-        Mod+Alt+L hotkey-overlay-title="Lock Screen" {
+        Mod+Shift+L hotkey-overlay-title="Lock Screen" {
             spawn "dms" "ipc" "call" "lock" "lock";
         }
         Mod+Shift+E { quit; }
@@ -340,7 +340,6 @@ let
         Mod+Shift+H     { move-column-left; }
         Mod+Shift+J     { move-window-down; }
         Mod+Shift+K     { move-window-up; }
-        Mod+Shift+L     { move-column-right; }
 
         // === Column Navigation ===
         Mod+Home { focus-column-first; }
