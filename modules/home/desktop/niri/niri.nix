@@ -451,6 +451,8 @@ let
         Print hotkey-overlay-title="Screenshot: Region" { spawn "dms" "screenshot"; }
         Ctrl+Print hotkey-overlay-title="Screenshot: Full Screen" { spawn "dms" "screenshot" "full"; }
         Alt+Print hotkey-overlay-title="Screenshot: Window" { spawn "dms" "screenshot" "window"; }
+        Mod+Shift+O hotkey-overlay-title="OCR" { spawn "ocr"; }
+        Mod+Shift+S hotkey-overlay-title="Screenshot: Region" { spawn "dms" "screenshot" "--no-confirm"; }
 
         // === Display Profiles ===
         Mod+P hotkey-overlay-title="Cycle Display Profile" {

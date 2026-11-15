@@ -3,6 +3,7 @@
     ./niri.nix
     ./dux.nix
     ../common/dux-files.nix
+    ../common/custom-ocr.nix
     ../common/fonts.nix
     ../common/brightnessctl.nix
     ../common/gnome-keyring.nix
