@@ -5,6 +5,11 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    latchshot = {
+      url = "github:so1ve/latchshot/a65a6f85855d25aa859273b62265c03d89c034bf";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     dms = {
       url = "github:duxlabs-dev/dux-shell/v2.1.0";
       inputs.nixpkgs.follows = "nixpkgs-unstable";

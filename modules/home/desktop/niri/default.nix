@@ -4,6 +4,7 @@
     ./dux.nix
     ../common/dux-files.nix
     ../common/custom-ocr.nix
+    ../common/custom-screenshot.nix
     ../common/fonts.nix
     ../common/brightnessctl.nix
     ../common/gnome-keyring.nix

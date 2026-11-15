@@ -319,7 +319,7 @@ let
         Mod+Shift+F { fullscreen-window; }
         Mod+Shift+T { toggle-window-floating; }
         Mod+Shift+V { switch-focus-between-floating-and-tiling; }
-        Mod+W { toggle-column-tabbed-display; }
+        Mod+W hotkey-overlay-title="Clipboard Manager" { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
         Mod+Shift+W hotkey-overlay-title="Create window rule" { spawn "dms" "ipc" "call" "window-rules" "toggle"; }
 
         // === Focus Navigation ===
@@ -452,7 +452,7 @@ let
         Ctrl+Print hotkey-overlay-title="Screenshot: Full Screen" { spawn "dms" "screenshot" "full"; }
         Alt+Print hotkey-overlay-title="Screenshot: Window" { spawn "dms" "screenshot" "window"; }
         Mod+Shift+O hotkey-overlay-title="OCR" { spawn "ocr"; }
-        Mod+Shift+S hotkey-overlay-title="Screenshot: Region" { spawn "dms" "screenshot" "--no-confirm"; }
+        Mod+Shift+S hotkey-overlay-title="Screenshot and annotate" { spawn "screenshot"; }
 
         // === Display Profiles ===
         Mod+P hotkey-overlay-title="Cycle Display Profile" {

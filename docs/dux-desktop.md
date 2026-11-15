@@ -1,6 +1,6 @@
 # Niri + Dux 桌面
 
-当前桌面只使用 niri 与 Dux：旧的 Rofi、Waybar、SwayNC、Swaylock、SwayOSD、Swayidle、Awww、Swww、Cliphist、Rofimoji、Swappy、Omasnap、Screen-pin、Window-menu、Hexecute、OCR、udiskie、SDDM 及相关主题和本地包定义已全部删除。
+桌面主体使用 niri 与 Dux，另保留自定义截图与 OCR：Latchshot 负责选区和窗口识别，Swappy 负责截图标注，Tesseract 负责识别文字。旧的 Rofi、Waybar、SwayNC、Swaylock、SwayOSD、Swayidle、Awww、Swww、Cliphist、Rofimoji、Omasnap、Screen-pin、Window-menu、Hexecute、udiskie、SDDM 不再启用。
 
 ## 组件选择
 
@@ -120,7 +120,7 @@ CPU、内存、剪贴板等条目不再占用状态栏：剪贴板保留 `Super+
 | `Super+Space` | 应用启动器 |
 | `Alt+Space` | Spotlight Bar |
 | `Super+D` | Dash |
-| `Super+V` | 剪贴板历史 |
+| `Super+W` / `Super+V` | 剪贴板历史 |
 | `Super+M` | 媒体 |
 | `Super+X` | 电源菜单 |
 | `Super+A` | 控制中心 |
@@ -135,10 +135,12 @@ CPU、内存、剪贴板等条目不再占用状态栏：剪贴板保留 `Super+
 | `Super+Shift+?` | Dux 快捷键面板 |
 | `Super+Alt+F` | Dux Files |
 | `Super+E` | Emoji 搜索，预填 `:e ` |
-| `Super+W` / `Super+Shift+W` | 标签列显示 / 窗口规则编辑器 |
+| `Super+Shift+W` | 窗口规则编辑器 |
 | `Super+Shift+T` | 切换浮动窗口 |
 | `Super+O` / `Super+Tab` | 概览 |
 | `Print` / `Ctrl+Print` / `Alt+Print` | 区域 / 全屏 / 焦点窗口截图 |
+| `Super+Shift+S` | 自定义截图：Latchshot 选区后进入 Swappy 标注 |
+| `Super+Shift+O` | 自定义 OCR：Latchshot 选区 → Tesseract（简中/英语/日语）→ 清理文字并复制 |
 | `Super+P` | 循环显示器配置 |
 | `Super+Escape` | 切换快捷键抑制 |
 | `Super+Shift+P` | 关闭显示器 |
