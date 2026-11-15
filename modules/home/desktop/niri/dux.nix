@@ -60,7 +60,7 @@ in
     pkgs.papirus-icon-theme
     (pkgs.colloid-icon-theme.override {
       schemeVariants = [ "catppuccin" ];
-      colorVariants = [ "purple" ];
+      colorVariants = [ "default" ];
     })
   ];
 
