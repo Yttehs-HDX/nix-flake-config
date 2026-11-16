@@ -5,6 +5,13 @@
   ...
 }:
 
+let
+  copilotLua =
+    (import inputs.nixpkgs-unstable {
+      inherit (pkgs.stdenv.hostPlatform) system;
+      config.allowUnfree = true;
+    }).vimPlugins.copilot-lua;
+in
 {
   imports = [ inputs.nixvim.homeModules.nixvim ];
 
@@ -69,6 +76,7 @@
         enable = true;
         settings = {
           sources = [
+            { name = "copilot"; }
             { name = "buffer"; }
             { name = "path"; }
             { name = "conventionalcommits"; }
@@ -94,11 +102,7 @@
       cmp-emoji.enable = true;
       copilot-lua = {
         enable = true;
-        package =
-          (import inputs.nixpkgs-unstable {
-            inherit (pkgs.stdenv.hostPlatform) system;
-            config.allowUnfree = true;
-          }).vimPlugins.copilot-lua;
+        package = copilotLua;
         settings.server = {
           type = "nodejs";
           custom_server_filepath = "${pkgs.copilot-language-server}/share/copilot-language-server/main.js";
@@ -116,9 +120,21 @@
           yaml = true;
         };
       };
-      # nixpkgs' copilot-cmp currently depends on the retagged copilot.lua v2.0.4.
-      copilot-cmp.enable = lib.mkForce false;
-      copilot-chat.enable = lib.mkForce false;
+      copilot-cmp.enable = true;
+      # nixpkgs pins copilot-cmp and CopilotChat.nvim to the retagged
+      # copilot.lua v2.0.4, whose source hash no longer matches. Reuse the
+      # copilot.lua configured above instead of a second copy.
+      copilot-cmp.package = pkgs.vimPlugins.copilot-cmp.overrideAttrs (old: {
+        dependencies = builtins.map (
+          d: if (d.pname or "") == "copilot.lua" then copilotLua else d
+        ) old.dependencies;
+      });
+      copilot-chat.enable = true;
+      copilot-chat.package = pkgs.vimPlugins.CopilotChat-nvim.overrideAttrs (old: {
+        dependencies = builtins.map (
+          d: if (d.pname or "") == "copilot.lua" then copilotLua else d
+        ) old.dependencies;
+      });
       render-markdown.enable = true;
       markdown-preview.enable = true;
       lsp = {
