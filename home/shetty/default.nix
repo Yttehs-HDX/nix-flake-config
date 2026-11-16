@@ -47,7 +47,6 @@
     ../../modules/home/ffmpeg.nix
     ../../modules/home/figlet.nix
     ../../modules/home/file.nix
-    ../../modules/home/github-copilot-cli.nix
     ../../modules/home/google-chrome.nix
     ../../modules/home/gwenview.nix
     ../../modules/home/hmcl.nix
