@@ -1,8 +1,4 @@
-{ pkgs, inputs, ... }:
-
-let
-  unstable = import inputs.nixpkgs-unstable { inherit (pkgs.stdenv.hostPlatform) system; };
-in
+{ pkgs, ... }:
 
 {
   home.packages = with pkgs; [
@@ -10,7 +6,7 @@ in
     noto-fonts-cjk-sans
     noto-fonts-cjk-serif
     noto-fonts-emoji-blob-bin
-    unstable.nerd-fonts.jetbrains-mono
+    nerd-fonts.jetbrains-mono
   ];
 
   fonts.fontconfig = {
