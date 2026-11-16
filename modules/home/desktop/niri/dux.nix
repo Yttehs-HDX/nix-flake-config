@@ -36,7 +36,15 @@ in
 
   programs.dank-material-shell = {
     enable = true;
-    package = inputs.dms.packages.${system}.default.overrideAttrs (old: {
+    package = (
+      inputs.dms.packages.${system}.default.override {
+        # QML plugins such as homeAssistantMonitor import QtWebSockets; DMS only
+        # puts its built-in Qt modules on the QML import path.
+        extraQtPackages = [
+          inputs.nixpkgs-unstable.legacyPackages.${system}.qt6.qtwebsockets
+        ];
+      }
+    ).overrideAttrs (old: {
       # QML comes from the upstream flake root, not the Go builder's src.
       postInstall = (old.postInstall or "") + ''
         ${pkgs.patch}/bin/patch --batch --fuzz=0 -p1 \
