@@ -1,11 +1,5 @@
-{ pkgs, inputs, ... }:
-let
-  system = pkgs.stdenv.hostPlatform.system;
-  unstable = import inputs.nixpkgs-unstable {
-    inherit system;
-    config.allowUnfree = true;
-  };
-in
+{ pkgs, ... }:
+
 {
-  home.packages = [ unstable.keepassxc ];
+  home.packages = [ pkgs.keepassxc ];
 }

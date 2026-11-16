@@ -1,0 +1,11 @@
+diff --git a/Modules/ControlCenter/CcMetrics.qml b/Modules/ControlCenter/CcMetrics.qml
+--- a/Modules/ControlCenter/CcMetrics.qml
++++ b/Modules/ControlCenter/CcMetrics.qml
+@@ -9,6 +9,6 @@
+     readonly property real sheetWidthDefault: sheetWidthFor(defaultColumns)
+     readonly property int defaultColumns: 8
+-    readonly property int minimumColumns: 6
++    readonly property int minimumColumns: 4
+     readonly property real sheetPadding: PopoutMetrics.contentPadding
+     readonly property real columnWidth: tileHeight
+     readonly property real gridStep: 0.5

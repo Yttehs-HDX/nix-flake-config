@@ -27,5 +27,11 @@ in
       background_blur = 1;
       remember_window_size = false;
     };
+
+    # Dux owns these writable files; missing files are ignored on first launch.
+    extraConfig = ''
+      include dank-theme.conf
+      include dank-tabs.conf
+    '';
   };
 }

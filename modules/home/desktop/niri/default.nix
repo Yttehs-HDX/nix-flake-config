@@ -1,26 +1,14 @@
 {
   imports = [
     ./niri.nix
+    ./dux.nix
+    ../common/dux-files.nix
+    ../common/custom-ocr.nix
+    ../common/custom-screenshot.nix
     ../common/fonts.nix
-    ../common/blueman-applet.nix
     ../common/brightnessctl.nix
-    ../common/cliphist.nix
     ../common/gnome-keyring.nix
     ../common/xwayland-satellite.nix
-    ../common/hyprpicker.nix
-    ../common/network-manager-applet.nix
-    ../common/rofi.nix
-    ../common/swaylock.nix
-    ../common/swayidle.nix
-    ../common/swaync.nix
-    ../common/ocr.nix
-    ../common/playerctl.nix
-    ../common/pulseaudio.nix
-    ../common/rofimoji.nix
-    ../common/swappy.nix
-    ../common/udiskie.nix
-    ../common/awww.nix
-    ../common/waybar.nix
     ../common/wl-clipboard.nix
     ../common/xdg.nix
   ];

@@ -2,7 +2,9 @@
 
 {
   imports = [
+    ./asus-numberpad.nix
     ./boot.nix
+    ./certificates.nix
     ./desktop.nix
     ./firewall.nix
     ./graphics.nix
@@ -26,6 +28,8 @@
     ../../../modules/nixos/clash-verge-rev.nix
     ../../../modules/nixos/neovim.nix
     ../../../modules/nixos/zsh.nix
+    ../../../modules/nixos/cloudflare-warp.nix
+    ../../../modules/nixos/tailscale.nix
   ];
 
   networking.hostName = "Shetty-Laptop";

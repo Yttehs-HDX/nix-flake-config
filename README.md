@@ -25,6 +25,7 @@ A personal Nix flake configuration for declaratively managing NixOS and Home Man
 ## Documentation
 
 - [docs/](docs/) — 使用教程
+- [Niri + Dux desktop](docs/dux-desktop.md) — 组件组合、快捷键与首次切换
 
 ## Usage
 
@@ -46,7 +47,11 @@ home-manager switch --flake .
 | [nix-darwin](https://github.com/nix-darwin/nix-darwin) | macOS system builder (currently unused) |
 | [nixvim](https://github.com/nix-community/nixvim) | Declarative Neovim configuration |
 | [NUR](https://github.com/nix-community/NUR) | Community package repository |
-| [Hexecute](https://github.com/ThatOtherAndrew/Hexecute) | Third-party package |
+| [Dux Shell](https://github.com/duxlabs-dev/dux-shell) | Desktop shell, launcher, notifications, lock screen and control center |
+| [Dux Greeter](https://github.com/duxlabs-dev/dux-greeter) | Login screen |
+| [Dux Files](https://github.com/duxlabs-dev/dux-files) | File manager and file chooser portal |
+| [Dux Search](https://github.com/duxlabs-dev/dux-search) | File index and launcher search |
+| [Dux Emoji Launcher](https://github.com/devnullvoid/dms-emoji-launcher) | Emoji search plugin |
 ## Acknowledgements
 
 Some configurations are based on [Sly-Harvey/NixOS](https://github.com/Sly-Harvey/NixOS).

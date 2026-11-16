@@ -1,10 +1,5 @@
-{ pkgs, inputs, ... }:
-let
-  unstable = import inputs.nixpkgs-unstable {
-    system = pkgs.stdenv.system;
-    config.allowUnfree = true;
-  };
-in
+{ pkgs, ... }:
+
 {
-  home.packages = [ unstable.codex ];
+  home.packages = [ pkgs.codex ];
 }

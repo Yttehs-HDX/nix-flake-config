@@ -9,13 +9,14 @@
     ../../modules/home/tmux.nix
     ../../modules/home/btop.nix
     ../../modules/home/cava.nix
-    ../../modules/home/openclaw.nix
     ../../modules/home/clash-verge-rev.nix
     ../../modules/home/bat.nix
     ../../modules/home/direnv.nix
     ../../modules/home/eza.nix
     ../../modules/home/fzf.nix
     ../../modules/home/gh.nix
+    ../../modules/home/gigolo.nix
+    ../../modules/home/glib.nix
     ../../modules/home/htop.nix
     ../../modules/home/lazydocker.nix
     ../../modules/home/lazygit.nix
@@ -31,10 +32,12 @@
     ../../modules/home/android-tools.nix
     ../../modules/home/asciiquarium.nix
     ../../modules/home/cbonsai.nix
+    ../../modules/home/chatgpt.nix
     ../../modules/home/claude-code.nix
     ../../modules/home/cmatrix.nix
     ../../modules/home/codex.nix
     ../../modules/home/cryptsetup.nix
+    ../../modules/home/deepseek-harness.nix
     ../../modules/home/dig.nix
     ../../modules/home/duf.nix
     ../../modules/home/ethtool.nix
@@ -44,21 +47,22 @@
     ../../modules/home/ffmpeg.nix
     ../../modules/home/figlet.nix
     ../../modules/home/file.nix
-    ../../modules/home/github-copilot-cli.nix
     ../../modules/home/google-chrome.nix
-    ../../modules/home/hexecute.nix
+    ../../modules/home/gwenview.nix
     ../../modules/home/hmcl.nix
     ../../modules/home/hping.nix
     ../../modules/home/huggingface-hub.nix
     ../../modules/home/jetbrains-toolbox.nix
     ../../modules/home/jmtpfs.nix
     ../../modules/home/jq.nix
+    ../../modules/home/just.nix
     ../../modules/home/keepassxc.nix
     ../../modules/home/krita.nix
     ../../modules/home/libnotify.nix
     ../../modules/home/lolcat.nix
     ../../modules/home/metasploit.nix
     ../../modules/home/mikusays.nix
+    ../../modules/home/mpv.nix
     ../../modules/home/net-tools.nix
     ../../modules/home/nixfmt.nix
     ../../modules/home/nmap.nix
@@ -66,13 +70,17 @@
     ../../modules/home/noto-fonts-emoji-blob-bin.nix
     ../../modules/home/obsidian.nix
     ../../modules/home/obs-studio.nix
+    ../../modules/home/oh-my-pi.nix
+    ../../modules/home/openbot.nix
     ../../modules/home/osu-lazer-bin.nix
     ../../modules/home/p7zip.nix
     ../../modules/home/pi-coding-agent.nix
     ../../modules/home/pipes-rs.nix
+    ../../modules/home/pnpm.nix
     ../../modules/home/poppler-utils.nix
+    ../../modules/home/qalculate-gtk.nix
     ../../modules/home/qbittorrent.nix
-    # ../../modules/home/qq.nix
+    ../../modules/home/qq.nix
     ../../modules/home/scrcpy.nix
     ../../modules/home/seahorse.nix
     ../../modules/home/taplo.nix
@@ -84,16 +92,11 @@
     ../../modules/home/unrar.nix
     ../../modules/home/unzip.nix
     ../../modules/home/usbutils.nix
+    ../../modules/home/v4l-utils.nix
     ../../modules/home/vlc.nix
     ../../modules/home/wechat.nix
     ../../modules/home/wget.nix
     ../../modules/home/zip.nix
+    ./home.nix
   ];
-
-  home = {
-    username = "shetty";
-    homeDirectory = "/home/shetty";
-  };
-
-  home.stateVersion = "26.05";
 }
