@@ -250,7 +250,7 @@ let
         Mod+Ctrl+N hotkey-overlay-title="Notification Center" { spawn "dms" "ipc" "call" "notifications" "toggle"; }
 
         // === Security ===
-        Mod+Shift+L hotkey-overlay-title="Lock Screen" {
+        Mod+Alt+L hotkey-overlay-title="Lock Screen" {
             spawn "dms" "ipc" "call" "lock" "lock";
         }
         Mod+Shift+E { quit; }
@@ -319,7 +319,6 @@ let
         Mod+Shift+F { fullscreen-window; }
         Mod+Shift+T { toggle-window-floating; }
         Mod+Shift+V { switch-focus-between-floating-and-tiling; }
-        Mod+W hotkey-overlay-title="Clipboard Manager" { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
         Mod+Shift+W hotkey-overlay-title="Create window rule" { spawn "dms" "ipc" "call" "window-rules" "toggle"; }
 
         // === Focus Navigation ===
