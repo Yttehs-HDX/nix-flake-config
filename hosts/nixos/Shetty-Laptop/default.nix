@@ -4,7 +4,6 @@
   imports = [
     ./asus-numberpad.nix
     ./boot.nix
-    ./certificates.nix
     ./desktop.nix
     ./firewall.nix
     ./graphics.nix
