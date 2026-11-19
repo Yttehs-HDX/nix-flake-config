@@ -49,6 +49,7 @@
     ../../modules/home/file.nix
     ../../modules/home/google-chrome.nix
     ../../modules/home/gwenview.nix
+    ../../modules/home/hermes-agent.nix
     ../../modules/home/hmcl.nix
     ../../modules/home/hping.nix
     ../../modules/home/huggingface-hub.nix

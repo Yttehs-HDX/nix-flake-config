@@ -37,6 +37,11 @@
 
     oh-my-pi.url = "github:can1357/oh-my-pi";
 
+    hermes-agent = {
+      url = "github:NousResearch/hermes-agent/v0.23.2";
+      inputs.home-manager.follows = "home-manager";
+    };
+
     openbot = {
       url = "github:nightly-labs/openbot";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
