@@ -35,7 +35,10 @@
       flake = false;
     };
 
-    oh-my-pi.url = "github:can1357/oh-my-pi";
+    oh-my-pi = {
+      url = "github:can1357/oh-my-pi";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     hermes-agent = {
       url = "github:NousResearch/hermes-agent/v0.23.2";
