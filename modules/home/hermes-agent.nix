@@ -30,5 +30,14 @@ let
   };
 in
 {
-  home.packages = [ (hermes.override { extraPythonPackages = [ honcho-ai ]; }) ];
+  imports = [ inputs.hermes-agent.homeManagerModules.default ];
+
+  # `programs.hermes-agent.package` defaults to `services.hermes-agent.package`
+  # with `extraPythonPackages` applied, and the desktop package is a passthru
+  # of it (`package.hermesDesktop`). One override therefore feeds the CLI, the
+  # desktop launcher's HERMES_DESKTOP_HERMES, and any future service units.
+  services.hermes-agent.extraPythonPackages = [ honcho-ai ];
+
+  programs.hermes-agent.enable = true;
+  programs.hermes-agent.desktop.enable = true;
 }
