@@ -467,6 +467,26 @@
         "type": "github"
       }
     },
+    "magpie": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1795520712,
+        "narHash": "sha256-ZOnXQ4rMnJvKFX7iqngt2jz9IqGKTdD3uS1lWsNYFLs=",
+        "owner": "yetone",
+        "repo": "magpie-releases",
+        "rev": "e71e156ae4d2e25f1d8057c1bd42d28d39220419",
+        "type": "github"
+      },
+      "original": {
+        "owner": "yetone",
+        "repo": "magpie-releases",
+        "type": "github"
+      }
+    },
     "nix-bun": {
       "inputs": {
         "nixpkgs": [
@@ -725,6 +745,7 @@
         "hermes-agent": "hermes-agent",
         "home-manager": "home-manager",
         "latchshot": "latchshot",
+        "magpie": "magpie",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-unstable": "nixpkgs-unstable",

@@ -62,6 +62,7 @@
     ../../modules/home/krita.nix
     ../../modules/home/libnotify.nix
     ../../modules/home/lolcat.nix
+    ../../modules/home/magpie.nix
     ../../modules/home/metasploit.nix
     ../../modules/home/mikusays.nix
     ../../modules/home/mpv.nix

@@ -10,6 +10,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    magpie = {
+      url = "github:yetone/magpie-releases";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     dms = {
       url = "github:duxlabs-dev/dux-shell/v2.1.0";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
