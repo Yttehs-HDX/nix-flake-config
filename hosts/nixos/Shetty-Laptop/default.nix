@@ -17,6 +17,7 @@
     ../../../modules/nixos/docker.nix
     ../../../modules/nixos/android.nix
     ../../../modules/nixos/virtualization.nix
+    ../../../modules/nixos/openssh.nix
     ../../../modules/nixos/nvidia.nix
     ../../../modules/nixos/asus.nix
     ../../../modules/nixos/power.nix
